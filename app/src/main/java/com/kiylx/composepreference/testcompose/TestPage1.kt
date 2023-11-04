@@ -178,8 +178,6 @@ fun FirstPage() {
                 }
             )
         }
-
-
     }
 }
 

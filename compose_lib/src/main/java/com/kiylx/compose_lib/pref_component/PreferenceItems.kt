@@ -123,30 +123,20 @@ fun CollapsePreferenceItem(
                         enabled = enabled
                     )
                 }
-                if (!isOpen) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = null,
-                        modifier = Modifier.size(Dimens.large_x.dp),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropUp,
-                        contentDescription = null,
-                        modifier = Modifier.size(Dimens.large_x.dp),
-                    )
-
-                }
-
-            }
-            AnimatedVisibility(visible = isOpen) {
-                Column {
-                    content()
-                    HorizontalDivider(modifier =Modifier.padding(horizontal = Dimens.medium.dp))
-                }
+                JustIcon(
+                    icon = if (!isOpen) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropUp,
+                    modifier = Modifier
+                        .padding(end = Dimens.large.dp)
+                        .size(Dimens.large_x.dp),
+                )
             }
         }
-
+        AnimatedVisibility(visible = isOpen) {
+            Column {
+                content()
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
+            }
+        }
     }
 
 }
@@ -379,7 +369,7 @@ internal fun JustIcon(
     modifier: Modifier = Modifier,
     icon: Any? = null,
     enabled: Boolean = true,
-    contentDescription:String?=null,
+    contentDescription: String? = null,
     tint: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
 ) {
     when (icon) {
