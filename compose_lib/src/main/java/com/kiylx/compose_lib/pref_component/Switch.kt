@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.R
+import com.kiylx.compose_lib.pref_component.R
 import kotlinx.coroutines.launch
 
 
