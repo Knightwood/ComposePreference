@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kiylx.compose_lib"
+    namespace = "com.kiylx.compose_lib.pref_component"
     compileSdk = 34
 
     defaultConfig {

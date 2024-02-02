@@ -1,4 +1,4 @@
-package com.kiylx.compose_lib.common
+package com.kiylx.compose_lib.pref_component.common
 
 import android.app.Application
 import android.content.Context
