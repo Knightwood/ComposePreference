@@ -6,7 +6,7 @@ version [![](https://jitpack.io/v/Knightwood/compose-material3-preference.svg)](
 
 ```css
 dependencies {
-       implementation 'com.github.Knightwood:compose-material3-preference:Tag'
+       implementation 'com.github.Knightwood:ComposePreference:Tag'
 }
 ```
 
