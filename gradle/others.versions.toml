@@ -1,0 +1,95 @@
+[versions]
+knightwood_immersion = "1.01"
+knightwood_simpleStore = "1.0"
+knightwood_activityMessenger = "1.1"
+m3_compose_preference = "1.1"
+m3_preference = "1.4"
+recyclerviewNeko = "1.2.2"
+
+leak = "2.8.1"
+lottie_version = "4.2.0"
+coil_kt = "2.4.0"
+permissionx = "1.6.1"
+githubZoomage = "1.3.1"
+shizukuVersion = "13.0.0"
+logReport = "1.0.3"
+orhanobutLogger = "2.2.0"
+crasher = "0.0.2"
+utilcodex = "1.31.0"
+mmkv = "1.3.0"
+
+m3Color = "2023.8.1"
+svgSupport = "1.4"
+loadsir = "1.3.8"
+glide = "4.10.0"
+smartRefresh = "2.0.5"
+bravh = "2.9.50"
+indexablerecyclerview = "1.3.0"
+bangScreenToolsMaster = "v1.0.0"
+oxViewLib_Ver = "1.0.2"
+mpAndroidChart = "v3.1.0"
+ncalendar_ver = "5.0.2"
+circleProgressView_ver = "1.4"
+appUpdate = "4.0.0"
+
+[libraries]
+################################## 工具 #########################################
+github-knightwood-immersion = { group = "com.github.Knightwood", name = "ImmersionBar", version.ref = "knightwood_immersion" }
+github-knightwood-simpleStore = { group = "com.github.Knightwood", name = "SimpleStore", version.ref = "knightwood_simpleStore" }
+github-knightwood-activityMessenger = { group = "com.github.Knightwood", name = "ActivityMessenger", version.ref = "knightwood_activityMessenger" }
+github-knightwood-m3preference-compose = { module = "com.github.Knightwood:ComposePreference", version.ref = "m3_compose_preference" }
+github-knightwood-m3preference = { module = "com.github.Knightwood:material3-preference", version.ref = "m3_preference" }
+github-knightwood-recyclerviewNeko = { module = "com.github.Knightwood:RecyclerViewNeko", version.ref = "recyclerviewNeko" }
+
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leak" }
+
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie_version" }
+coil-kt = { module = "io.coil-kt:coil", version.ref = "coil_kt" }
+coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil_kt" }
+github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+github-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+
+github-perms = { module = "com.guolindev.permissionx:permissionx", version.ref = "permissionx" }
+github-utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+github-mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
+github-m3Color = { module = "com.github.Kyant0:m3color", version.ref = "m3Color" }
+
+github-loadsir = { module = "com.kingja.loadsir:loadsir", version.ref = "loadsir" }
+github-refresh-kernal = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "smartRefresh" }
+github-refresh-materialStyle = { module = "io.github.scwang90:refresh-header-material", version.ref = "smartRefresh" }
+github-bravh = { module = "com.github.CymChad:BaseRecyclerViewAdapterHelper", version.ref = "bravh" }
+
+github-AppUpdate = { module = "com.github.azhon:AppUpdate", version.ref = "appUpdate" }
+
+############################### 不常用 #########################################
+#shizuku
+github-shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizukuVersion" }
+github-shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizukuVersion" }
+# 日志，崩溃
+github-logReport = { module = "com.github.wenmingvs:LogReport", version.ref = "logReport" }
+#log库（不是okhttp的log库）
+github-orhanobutLogger = { module = "com.orhanobut:logger", version.ref = "orhanobutLogger" }
+github-crasher = { module = "me.jfenn:crasher", version.ref = "crasher" }
+#刘海屏适配
+github-BangScreenToolsMaster = { module = "com.github.KilleTom:BangScreenToolsMaster", version.ref = "bangScreenToolsMaster" }
+# 图表
+github-OXViewLib = { module = "com.openxu.viewlib:OXViewLib", version.ref = "oxViewLib_Ver" }
+github-MPAndroidChart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpAndroidChart" }
+# 组件
+github-Ncalendar = { module = "com.necer.ncalendar:ncalendar", version.ref = "ncalendar_ver" }
+github-CircleProgressView = { module = "com.github.jakob-grabner:Circle-Progress-View", version.ref = "circleProgressView_ver" }
+#图片缩放
+github-zoomage = { module = "com.jsibbold:zoomage", version.ref = "githubZoomage" }
+github-svgSupport = { module = "com.caverock:androidsvg-aar", version.ref = "svgSupport" }
+github-indexablerecyclerview = { module = "me.yokeyword:indexablerecyclerview", version.ref = "indexablerecyclerview" }
+
+[bundles]
+knightWoodBundle = [
+    "github-knightwood-activityMessenger",
+    "github-knightwood-immersion",
+    "github-knightwood-simpleStore"
+]
+usualTool = [
+    "github-loadsir", "github-perms",
+    "github-mmkv", "github-utilcodex"
+]

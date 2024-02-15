@@ -12,7 +12,15 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://www.jitpack.io")
-}
+    }
+    versionCatalogs {
+        create("composeLibs") {
+            from(files("./gradle/composeLibs.versions.toml"))
+        }
+        create("others") {
+            from(files("./gradle/others.versions.toml"))
+        }
+    }
 }
 rootProject.name = "ComposePreference"
 include(":app")

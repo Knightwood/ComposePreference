@@ -1,0 +1,40 @@
+[versions]
+lifecycle_version = "2.7.0"
+nav_version = "2.7.4"
+constraint_layout_version = "1.1.0-alpha07"
+activity_compose_version = "1.8.2"
+glance_version = "1.0.0"
+accompanist_version = "0.31.3-beta"
+
+[libraries]
+#lifecycle
+# Lifecycle utilities for Compose
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle_version" }
+# ViewModel utilities for Compose
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle_version" }
+
+#activity
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity_compose_version" }
+#布局
+androidx-constraintLayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraint_layout_version" }
+#导航
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "nav_version" }
+#glance
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance_version" }
+androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance_version" }
+
+#Accompanist
+google-accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist_version" }
+google-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist_version" }
+google-accompanist-systemUiController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist_version" }
+google-accompanist-webView = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanist_version" }
+google-accompanist-pagerLayouts = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist_version" }
+google-accompanist-pagerIndicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist_version" }
+google-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist_version" }
+
+#####################################其他组件库#############################
+
+[plugins]
+
+[bundles]
+glance = ["androidx-glance-appwidget", "androidx-glance-material3"]

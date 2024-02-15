@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -130,13 +131,14 @@ fun CollapsePreferenceItem(
                         .size(Dimens.large_x.dp),
                 )
             }
-        }
-        AnimatedVisibility(visible = isOpen) {
-            Column {
-                content()
-                HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
+            AnimatedVisibility(visible = isOpen) {
+                Column {
+                    content()
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
+                }
             }
         }
+
     }
 
 }

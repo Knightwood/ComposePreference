@@ -10,14 +10,14 @@ android {
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false //true会在打包后因为没有引用而导致class.jar为空
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -35,59 +35,86 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Android.compose_version
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-afterEvaluate {
     publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.github.knightwood"
-                artifactId = "ComposePreference"
-                version = "1.0.3"
-                from(components.getByName("release"))
-                //artifact(tasks.getByName("bundleReleaseAar"))
-            }
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 }
+
 dependencies {
-    implementation(AndroidX_KTX.core)
-    implementation(AndroidX.appCompat)
-    //Coroutines
-    implementation(Coroutines.android)
-    //lifecycle
-    implementation(Lifecycle_KTX.livedata)
-    implementation(Lifecycle_KTX.viewmodel)
-    //ktx
-    implementation(AndroidX_KTX.fragment)
-    implementation(AndroidX_KTX.activity)
-    implementation(AndroidX.material)
-
-    //compose
-    implementation(Compose.activityCompose)
-    implementation(Compose.composeUi)
-    implementation(Compose.composeUiToolingPreview)
-    implementation(Compose.composeFoundation)
-    implementation(Compose.composeMaterial3)
-    implementation(Compose.composeRuntime)
-    implementation(Accompanist.systemuicontroller)
-    implementation(Compose.composeMaterialIconsExtended)
-    implementation(Compose.composeMaterial3WindowSizeClass)
-    implementation("androidx.compose.ui:ui:${Android.compose_version}")
-    implementation("androidx.compose.ui:ui-tooling-preview:${Android.compose_version}")
-    //datastore
-    implementation(Datastore.datastorePrefs)
-    implementation(Datastore.datastore)
-
+    implementation(libs.bundles.bundleAndroidx)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(libs.google.material){
+        exclude("androidx.activity","activity")
+        exclude("androidx.appcompat","appcompat")
+        exclude("androidx.constraintlayout","constraintlayout")
+        exclude("androidx.core","core")
+        exclude("androidx.recyclerview","recyclerview")
+    }
+    implementation(libs.bundles.kotlins)
 
-    implementation(Tools.mmkv)
+    //compose
+    val composeBomVersion ="2024.01.00"
+
+    val composeBom = platform("androidx.compose:compose-bom:${composeBomVersion}")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    // Choose one of the following:
+    // Material Design 3
+    implementation("androidx.compose.material3:material3:1.2.0")
+    // Android Studio Preview support
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    //icons
+    implementation("androidx.compose.material:material-icons-extended")
+    // Optional - Add window size utils
+    implementation("androidx.compose.material3:material3-window-size-class")
+    // Optional - Integration with activities
+    implementation(composeLibs.androidx.activity.compose)
+    // Optional - Integration with ViewModels
+    implementation(composeLibs.androidx.lifecycle.viewmodel.compose)
+    // Optional - Integration with LiveData
+    implementation("androidx.compose.runtime:runtime-livedata")
+    //test
+    androidTestImplementation(platform("androidx.compose:compose-bom:${composeBomVersion}"))
+
+    implementation(composeLibs.google.accompanist.systemUiController)
+
+    //datastore
+    implementation(libs.bundles.dataStore) {
+        exclude("org.jetbrains.kotlinx","kotlinx-coroutines-core")
+    }
+
+    implementation(others.github.mmkv)
+
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.github.knightwood"
+                artifactId = "ComposePreference"
+                version = "1.1"
+                afterEvaluate {
+                    from(components["release"])
+                }
+            }
+        }
+    }
 }
