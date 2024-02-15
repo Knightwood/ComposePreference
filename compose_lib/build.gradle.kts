@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         minSdk = 26
-
+        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -77,8 +77,8 @@ dependencies {
     implementation(Compose.composeMaterial3)
     implementation(Compose.composeRuntime)
     implementation(Accompanist.systemuicontroller)
-    api(Compose.composeMaterialIconsExtended)
-    api(Compose.composeMaterial3WindowSizeClass)
+    implementation(Compose.composeMaterialIconsExtended)
+    implementation(Compose.composeMaterial3WindowSizeClass)
     implementation("androidx.compose.ui:ui:${Android.compose_version}")
     implementation("androidx.compose.ui:ui-tooling-preview:${Android.compose_version}")
     //datastore
@@ -89,5 +89,5 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
-    api(Tools.mmkv)
+    implementation(Tools.mmkv)
 }

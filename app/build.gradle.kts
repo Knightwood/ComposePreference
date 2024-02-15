@@ -78,7 +78,9 @@ dependencies {
     implementation(Compose.composeMaterial3)
     implementation(Compose.composeRuntime)
     implementation(Accompanist.systemuicontroller)
-
+    implementation(Compose.composeMaterial3WindowSizeClass)
+    implementation(Tools.mmkv)
+    implementation(Compose.composeMaterialIconsExtended)
     //test
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
