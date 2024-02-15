@@ -49,7 +49,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.github.knightwood"
                 artifactId = "ComposePreference"
-                version = "1.0"
+                version = "1.0.3"
                 from(components.getByName("release"))
                 //artifact(tasks.getByName("bundleReleaseAar"))
             }
