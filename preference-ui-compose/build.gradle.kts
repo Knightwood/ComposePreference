@@ -106,7 +106,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 groupId = "com.github.knightwood"
                 artifactId = "preference-ui-compose"
-                version = "1.2"
+                version = "1.2.1"
                 afterEvaluate {
                     from(components["release"])
                 }
