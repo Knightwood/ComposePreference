@@ -33,13 +33,9 @@ dependencies {
 
 ## 介绍图
 
-
-
-<img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" /> <img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" />
-
-
-
-![](README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif)
+|  |  |  |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|<img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" width="210" /> |<img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" width="210" />|<img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> 
 
 ## 支持的存储偏好值的工具
 
