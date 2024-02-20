@@ -1,35 +1,23 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    //kotlin("plugin.serialization") version "1.9.0"
+    id("maven-publish")
 }
 
 android {
-    namespace = "com.kiylx.composepreference"
+    namespace = "com.kiylx.compose_lib.pref_component"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.kiylx.composepreference"
         minSdk = 26
-        targetSdk = 32
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".debug"
-            isMinifyEnabled = false
-            isShrinkResources = false
-        }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false //true会在打包后因为没有引用而导致class.jar为空
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -52,7 +40,12 @@ android {
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/versions/9/previous-compilation-data.bin"
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 }
@@ -102,18 +95,22 @@ dependencies {
 
     implementation(composeLibs.google.accompanist.systemUiController)
 
-    //datastore
-    implementation(libs.bundles.dataStore) {
-        exclude("org.jetbrains.kotlinx","kotlinx-coroutines-core")
+
+    compileOnly(project(":preference-data-core"))
+
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.github.knightwood"
+                artifactId = "preference-ui-compose"
+                version = "1.1"
+                afterEvaluate {
+                    from(components["release"])
+                }
+            }
+        }
     }
-
-    implementation(others.github.mmkv)
-
-    //lib
-    implementation(project(":preference-ui-compose"))
-    implementation(project(":preference-data-core"))
-    implementation(project(":preference-mmkv-util"))
-    implementation(project(":preference-util"))
-    implementation(project(":datastore-util"))
-
 }

@@ -31,9 +31,9 @@ import com.kiylx.compose_lib.pref_component.PreferenceSwitchWithDivider
 import com.kiylx.compose_lib.pref_component.PreferencesCautionCard
 import com.kiylx.compose_lib.pref_component.PreferencesHintCard
 import com.kiylx.compose_lib.pref_component.PreferencesScope
-import com.kiylx.compose_lib.pref_component.core.DependenceNode
-import com.kiylx.compose_lib.pref_component.core.prefs.OldPreferenceHolder
 import com.kiylx.composepreference.AppCtx
+import com.kiylx.libx.pref_component.core.DependenceNode
+import com.kiylx.libx.pref_component.preference_util.OldPreferenceHolder
 
 
 const val TAG = "TestPage1"
@@ -88,7 +88,7 @@ fun FirstPage() {
                     //依赖这个节点的会改变显示状态，
                     //如果当前没有指定依赖，自身也会受到影响
                     holder.getDependence("bol")?.let {
-                        it.enableState.value = state
+                        it.enableStateFlow.tryEmit(state)
                     }
                 }
                 //依赖keyName为bol的PreferenceSwitch的state
@@ -107,7 +107,7 @@ fun FirstPage() {
                 dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
                 description = "description",
             ) {
-                node.enableState.value = it
+                node.enableStateFlow.tryEmit(it)
             }
             PreferenceListMenu(
                 title = "PreferenceListMenu",

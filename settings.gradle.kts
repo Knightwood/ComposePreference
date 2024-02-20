@@ -24,4 +24,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ComposePreference"
 include(":app")
-include(":compose_lib")
+include(":preference-ui-compose")
+include(":preference-data-core")
+include(":preference-mmkv-util")
+include(":preference-util")
+include(":datastore-util")
