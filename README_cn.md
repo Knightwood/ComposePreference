@@ -1,11 +1,19 @@
 # compose material design 3 ，Preference界面组件
 
 
-版本 [![](https://jitpack.io/v/Knightwood/compose-material3-preference.svg)](https://jitpack.io/#Knightwood/compose-material3-preference)
+**版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+
 
 ```css
 dependencies {
-       implementation 'com.github.Knightwood:compose-material3-preference:Tag'
+ 必选
+  implementation 'com.github.Knightwood.ComposePreference:preference-data-core:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:preference-ui-compose:1.2'
+
+可选（下面三选一，或者自己实现读写接口）
+  implementation 'com.github.Knightwood.ComposePreference:preference-util:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:datastore-util:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:preference-mmkv-util:1.2'
 }
 ```
 
