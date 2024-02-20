@@ -6,7 +6,15 @@ version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jit
 
 ```css
 dependencies {
-       implementation 'com.github.Knightwood:ComposePreference:Tag'
+
+Required
+  implementation 'com.github.Knightwood.ComposePreference:preference-data-core:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:preference-ui-compose:1.2'
+
+Optional, Choose one of the three, or implement your own
+  implementation 'com.github.Knightwood.ComposePreference:preference-util:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:datastore-util:1.2'
+  implementation 'com.github.Knightwood.ComposePreference:preference-mmkv-util:1.2'
 }
 ```
 
