@@ -52,7 +52,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 groupId = "com.github.knightwood"
                 artifactId = "preference-mmkv-util"
-                version = "1.1"
+                version = "1.2"
                 afterEvaluate {
                     from(components["release"])
                 }
