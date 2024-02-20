@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    //kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -59,9 +58,9 @@ android {
 
 dependencies {
     implementation(libs.bundles.bundleAndroidx)
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+//    testImplementation("junit:junit:4.13.2")
+//    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+//    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     implementation(libs.google.material){
         exclude("androidx.activity","activity")
         exclude("androidx.appcompat","appcompat")
@@ -85,7 +84,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+//    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     //icons
     implementation("androidx.compose.material:material-icons-extended")
@@ -98,7 +97,7 @@ dependencies {
     // Optional - Integration with LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
     //test
-    androidTestImplementation(platform("androidx.compose:compose-bom:${composeBomVersion}"))
+//    androidTestImplementation(platform("androidx.compose:compose-bom:${composeBomVersion}"))
 
     implementation(composeLibs.google.accompanist.systemUiController)
 
