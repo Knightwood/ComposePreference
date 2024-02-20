@@ -1,7 +1,6 @@
-# compose material design 3 ，Preference界面组件
+# compose material design 3 ，Preference界面组件，偏好值读取写入工具
 
-
-**版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+## **版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 
 ```css
@@ -10,12 +9,30 @@ dependencies {
   implementation 'com.github.Knightwood.ComposePreference:preference-data-core:1.2'
   implementation 'com.github.Knightwood.ComposePreference:preference-ui-compose:1.2'
 
-可选（下面三选一，或者自己实现读写接口）
+偏好值读写工具，可选（下面三选一，或者自己实现读写接口）
   implementation 'com.github.Knightwood.ComposePreference:preference-util:1.2'
   implementation 'com.github.Knightwood.ComposePreference:datastore-util:1.2'
   implementation 'com.github.Knightwood.ComposePreference:preference-mmkv-util:1.2'
 }
+注：如果使用mmkv,sharedpreference,你自己的工程不要忘记引入相应mmkv,sharedpreference依赖，以及初始化mmkv等。
 ```
+
+特性：
+
+使用简单，界面和偏好值读写分离
+
+支持切换多种存储/读取方式
+
+可自定义偏好值读写过程工具
+
+提供界面组件启用状态节点依赖功能
+
+可脱离界面，单独使用偏好值读写工具，并提供了统一写入和读取（使用flow观察值的变化）方法
+
+
+
+## 介绍图
+
 
 
 <img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" /> <img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" />
@@ -26,13 +43,35 @@ dependencies {
 
 ## 支持的存储偏好值的工具
 
-有三种可用的存储偏好值的工具
+内置三种可用的存储偏好值的工具
 
 1. DataStore
 2. MMKV
 3. SharedPreference
 
 但是注意，sharedpreference不支持存储double，mmkv不支持set<string>类型，他们所支持的有所差异。
+
+还可以继承`PreferenceHolder`和`IPreferenceReadWrite`实现额外的存储过程，例如存储到文件、数据库等。
+
+## 脱离界面，直接使用偏好值读写工具
+
+```
+//获取用来读写datastore文件的工具类
+val prefStoreHolder = DataStorePreferenceHolder.instance(
+                        dataStoreName = "test",
+                        ctx = AppCtx.instance
+                    )
+//获取某个偏好值
+val pref =prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+
+//flow持续观察偏好值变更
+pref.read().collect { s ->
+	//flow收集到偏好值的变更
+}
+
+//写入偏好值
+pref.write("")
+```
 
 
 

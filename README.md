@@ -2,7 +2,9 @@
 
 [中文](README_cn.md)
 
-version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+
+
+## version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 ```css
 dependencies {
@@ -16,7 +18,30 @@ Optional, Choose one of the three, or implement your own
   implementation 'com.github.Knightwood.ComposePreference:datastore-util:1.2'
   implementation 'com.github.Knightwood.ComposePreference:preference-mmkv-util:1.2'
 }
+Note: If you use mmkv and sharedpreference, don't forget to introduce the corresponding mmkv, sharedpreference dependencies, and initialize mmkv in your own project.
 ```
+
+
+
+**!!! The following documents are translated by Microsoft Translator**
+
+
+
+## Characteristic:
+
+Simple to use, interface and preference value read and write separation
+
+Multiple storage/reading modes can be switched
+
+Preference reading and writing processes can be customized
+
+Provides the UI component to enable the status node dependency function
+
+Preference reading and writing tools can be used separately from the interface, and a unified writing and reading method is provided
+
+
+
+## Introductory picture
 
 
 <img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" /> <img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" style="zoom: 33%;" />
@@ -34,6 +59,26 @@ There are three tools available to store preference values
 3. SharedPreference
 
 However, note that SharedPreference does not support storing double value, and MMKV does not support set <string>types, and they support different ones.
+
+You can also inherit PreferenceHolder and IPreferenceReadWrite to implement additional stored procedures, such as storing to a file, database, etc.
+
+```
+//get a pref holder
+val prefStoreHolder = DataStorePreferenceHolder.instance(
+                        dataStoreName = "test",
+                        ctx = AppCtx.instance
+                    )
+//read a preference from datastore
+val pref =prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+
+//use flow to observe data change
+pref.read().collect { s ->
+	//flow收集到偏好值的变更
+}
+
+//write data
+pref.write("")
+```
 
 
 
