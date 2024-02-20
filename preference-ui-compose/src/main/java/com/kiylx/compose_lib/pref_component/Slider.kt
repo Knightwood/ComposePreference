@@ -66,7 +66,7 @@ fun PreferenceSlider(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.small.dp),
+                .padding(Dimens.all.horizontal_start.dp, Dimens.all.vertical_bottom.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Slider(

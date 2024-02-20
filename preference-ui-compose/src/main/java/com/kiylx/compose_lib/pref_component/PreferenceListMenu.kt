@@ -72,7 +72,7 @@ fun PreferenceListMenu(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(Dimens.all.horizontal_start.dp, Dimens.all.vertical_top.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(icon = icon, enabled = dependenceState.value)

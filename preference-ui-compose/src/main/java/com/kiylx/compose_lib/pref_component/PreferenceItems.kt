@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.outlined.Translate
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +68,7 @@ fun PreferenceItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(icon = icon, enabled = enabled)
@@ -111,7 +110,7 @@ fun CollapsePreferenceItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -169,7 +168,12 @@ fun PreferenceItemVariant(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(
+                    start = Dimens.title.horizontal_start.dp,
+                    end = Dimens.title.horizontal_end.dp,
+                    top = Dimens.title.vertical_top.dp,
+                    bottom = Dimens.title.vertical_top.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(icon = icon, enabled = enabled)
@@ -209,7 +213,10 @@ fun PreferencesCautionCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal.dp, vertical = Dimens.all.vertical.dp)
+            .padding(
+                horizontal = Dimens.title.horizontal_start.dp,
+                vertical = Dimens.title.vertical_top.dp
+            )
             .clip(MaterialTheme.shapes.extraLarge)
             .background(MaterialTheme.colorScheme.errorContainer.harmonizeWithPrimary())
             .clickable { onClick() }
@@ -252,7 +259,10 @@ fun PreferencesHintCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal.dp, vertical = Dimens.all.vertical.dp)
+            .padding(
+                horizontal = Dimens.title.horizontal_start.dp,
+                vertical = Dimens.title.vertical_top.dp
+            )
             .clip(MaterialTheme.shapes.extraLarge)
             .background(backgroundColor)
             .clickable { onClick() }
@@ -305,7 +315,12 @@ fun PreferenceItemLargeTitle(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(
+                    start = Dimens.medium.dp,
+                    end = Dimens.medium.dp,
+                    top = Dimens.large.dp,
+                    bottom = Dimens.large.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(icon = icon, enabled = enabled)
@@ -333,7 +348,12 @@ fun PreferenceItemSubTitle(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+            .padding(
+                start = Dimens.title.horizontal_start.dp,
+                end = Dimens.title.horizontal_end.dp,
+                top = Dimens.title.vertical_top.dp,
+                bottom = Dimens.title.vertical_bottom.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         MediumTextContainer() {

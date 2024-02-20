@@ -31,8 +31,16 @@ object Dimens {
     const val large_xx = 36
 
     object all {
-        var horizontal = medium
-        var vertical = large
+        var horizontal_start = medium
+        var horizontal_end = medium
+        var vertical_top = medium
+        var vertical_bottom = small_ss
+    }
+    object title {
+        var horizontal_start = medium
+        var horizontal_end = medium
+        var vertical_top = large
+        var vertical_bottom = small_ss
     }
 
     //头部的icon相关

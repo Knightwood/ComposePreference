@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -27,29 +27,59 @@ import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
 import kotlinx.coroutines.launch
 
 /**
- * @param labels :Pair<id,text> pair包含着id值和文本
+ * @param labels 按照label名称的顺序生成存储值
  */
+@JvmName("PreferenceRadioGroup2")
 @Composable
 fun PreferenceRadioGroup(
     keyName: String,
     labels: List<String>,
     enabled: Boolean = true,
     dependenceKey: String? = null,
-    left:Boolean =false,
+    left: Boolean = false,
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
+        horizontal = Dimens.all.horizontal_start.dp,
         vertical = Dimens.small.dp
     ),
     changed: (newIndex: Int) -> Unit = {},
 ) {
+    val labels2 = labels.mapIndexed { index, s ->
+        s to index
+    }
+    PreferenceRadioGroup(keyName, labels2, enabled, dependenceKey, left, paddingValues, changed)
+}
+
+/**
+ * @param labelPairs :Pair<text,id> pair包含着文本和存储值
+ */
+@Composable
+fun PreferenceRadioGroup(
+    keyName: String,
+    labelPairs: List<Pair<String, Int>>,
+    enabled: Boolean = true,
+    dependenceKey: String? = null,
+    left: Boolean = false,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = Dimens.all.horizontal_start.dp,
+        vertical = Dimens.small.dp
+    ),
+    changed: (newIndex: Int) -> Unit = {},
+) {
+    if (labelPairs.isEmpty()) {
+        throw IllegalArgumentException("labels cannot empty")
+    }
     val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = 0)
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
 
     var selectedPos by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(labelPairs[0].second)
     }
     LaunchedEffect(key1 = Unit, block = {
         pref.read().collect {
@@ -66,26 +96,26 @@ fun PreferenceRadioGroup(
 
     Column {
         if (left) {
-            repeat(labels.size) { pos: Int ->
+            repeat(labelPairs.size) { pos: Int ->
                 PreferenceSingleChoiceItem(
-                    text = labels[pos],
+                    text = labelPairs[pos].first,
                     enabled = dependenceState.value,
-                    selected = (pos == selectedPos),
-                    paddingValues =paddingValues,
+                    selected = (labelPairs[pos].second == selectedPos),
+                    paddingValues = paddingValues,
                     onClick = {
-                        write(pos)
+                        write(labelPairs[pos].second)
                     }
                 )
             }
-        }else{
-            repeat(labels.size) { pos: Int ->
+        } else {
+            repeat(labelPairs.size) { pos: Int ->
                 PreferenceSingleChoiceItemRight(
-                    text = labels[pos],
+                    text = labelPairs[pos].first,
                     enabled = dependenceState.value,
-                    selected = (pos == selectedPos),
-                    paddingValues =paddingValues,
+                    selected = (labelPairs[pos].second == selectedPos),
+                    paddingValues = paddingValues,
                     onClick = {
-                        write(pos)
+                        write(labelPairs[pos].second)
                     }
                 )
             }
@@ -96,7 +126,7 @@ fun PreferenceRadioGroup(
 @Composable
 fun PreferenceSingleChoiceItem(
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
+        horizontal = Dimens.all.horizontal_start.dp,
         vertical = Dimens.small.dp
     ),
     text: String,
@@ -142,8 +172,8 @@ fun PreferenceSingleChoiceItem(
 @Composable
 fun PreferenceSingleChoiceItemRight(
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
-        vertical = Dimens.all.vertical.dp
+        horizontal = Dimens.medium.dp,
+        vertical = Dimens.medium.dp
     ),
     text: String,
     selected: Boolean,
@@ -165,7 +195,7 @@ fun PreferenceSingleChoiceItemRight(
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = Dimens.text.start.dp,end = Dimens.text.end.dp),
+                    .padding(start = Dimens.text.start.dp, end = Dimens.text.end.dp),
                 text = text,
                 maxLines = 1,
                 style = preferenceMediumTitle,

@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.kiylx.compose_lib.pref_component.CollapsePreferenceItem
+import com.kiylx.compose_lib.pref_component.EditTextPreference
 import com.kiylx.compose_lib.pref_component.MenuDivider
 import com.kiylx.compose_lib.pref_component.PreferenceCheckBoxGroup
 import com.kiylx.compose_lib.pref_component.PreferenceItem
@@ -63,14 +64,20 @@ fun FirstPage() {
             val customNodeName = "customNode"
             //创建一个自定义节点
             val node = holder.registerDependence(customNodeName, true)
-
-            PreferenceItem(title = "PreferenceItem", endIcon = Icons.Filled.ArrowCircleRight)
-            PreferenceItemVariant(title = "PreferenceItemVariant")
-            PreferencesHintCard(title = "PreferencesHintCard")
-            PreferenceItemLargeTitle(title = "PreferenceItemLargeTitle")
-            PreferenceItemSubTitle(text = "PreferenceItemSubTitle")
             PreferencesCautionCard(title = "PreferencesCautionCard")
+            PreferencesHintCard(title = "PreferencesHintCard")
 
+            PreferenceItemLargeTitle(title = "PreferenceItemLargeTitle")
+            PreferenceItem(title = "PreferenceItem1", endIcon = Icons.Filled.ArrowCircleRight)
+            PreferenceItem(title = "PreferenceItem2", endIcon = Icons.Filled.ArrowCircleRight)
+
+            PreferenceItemVariant(title = "PreferenceItemVariant")
+            EditTextPreference(
+                title = "编辑框", keyName = "edit11", icon = Icons.Filled.AccountCircle,
+                )
+
+
+            PreferenceItemSubTitle(text = "PreferenceItemSubTitle")
             CollapsePreferenceItem(
                 title = "title",
                 description = "description"
@@ -101,6 +108,7 @@ fun FirstPage() {
                 )
 
             }
+
             PreferenceSwitch(
                 keyName = "bol2",
                 title = "title",
@@ -135,12 +143,17 @@ fun FirstPage() {
                 Log.d(TAG, "menu item labelKey: $it")
             }
 
+            PreferenceItemSubTitle(text = "带Container的switch")
             PreferenceSwitchWithContainer(
                 keyName = "bol4",
                 dependenceKey = customNodeName,
                 title = "Title ".repeat(2),
                 icon = null
             )
+            PreferenceItem(title = "PreferenceItem1", endIcon = Icons.Filled.ArrowCircleRight)
+
+
+            PreferenceItemSubTitle(text = "前部可点击switch")
             PreferenceSwitchWithDivider(
                 keyName = "bol5",
                 title = "title",
@@ -149,16 +162,19 @@ fun FirstPage() {
                 icon = Icons.Filled.CenterFocusWeak
             )
 
+            PreferenceItemSubTitle(text = "RadioGroup")
             PreferenceRadioGroup(
                 keyName = "radioGroup",
                 dependenceKey = customNodeName,
-                labels = listOf(
-                    "first",
-                    "second"
+                labelPairs = listOf(
+                    "first" to 3,
+                    "second" to 1
                 ), changed = {
                     Log.d(TAG, "radio: ${it}")
                 }
             )
+
+            PreferenceItemSubTitle(text = "CheckBoxGroup")
             PreferenceCheckBoxGroup(
                 keyName = "CheckBoxGroup",
                 dependenceKey = customNodeName,
@@ -169,6 +185,8 @@ fun FirstPage() {
                     Log.d(TAG, "checkbox: ${it.joinToString(",")}")
                 }
             )
+
+            PreferenceItemSubTitle(text = "PreferenceSlider")
             PreferenceSlider(
                 keyName = "slider",
                 dependenceKey = customNodeName, //依赖key为customNode的状态

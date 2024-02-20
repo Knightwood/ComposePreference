@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.R
 import kotlinx.coroutines.launch
 
 
@@ -101,7 +100,9 @@ fun PreferenceSwitch(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp),
+                .padding(
+                    Dimens.all.horizontal_start.dp,
+                    Dimens.all.vertical_top.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(
@@ -190,7 +191,7 @@ fun PreferenceSwitchWithDivider(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal.dp, Dimens.all.vertical.dp)
+                .padding(Dimens.all.horizontal_start.dp, Dimens.all.vertical_top.dp)
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -271,7 +272,7 @@ fun PreferenceSwitchWithContainer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal.dp, vertical = Dimens.all.vertical.dp)
+            .padding(horizontal = Dimens.all.horizontal_start.dp, vertical = Dimens.all.vertical_top.dp)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(
                 (if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline).let {

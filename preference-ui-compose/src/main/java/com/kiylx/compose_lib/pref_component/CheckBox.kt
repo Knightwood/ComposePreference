@@ -29,23 +29,48 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "PrefCheckBoxGroup"
 
-
 /**
- * @param labels :Pair<id,text> pair包含着id值和文本
+ * @param labels 按照label名称的顺序生成存储值
  */
+@JvmName("PreferenceCheckBoxGroup2")
 @Composable
 fun PreferenceCheckBoxGroup(
     keyName: String,
     labels: List<String>,
     enabled: Boolean = true,
-    dependenceKey:String?=null,
-    left:Boolean =true,
+    dependenceKey: String? = null,
+    left: Boolean = true,
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
+        horizontal = Dimens.all.horizontal_start.dp,
         vertical = Dimens.small.dp
     ),
     changed: (newIndex: List<Int>) -> Unit = {},
 ) {
+    val labels2 = labels.mapIndexed { index, s ->
+        s to index
+    }
+    PreferenceCheckBoxGroup(keyName, labels2, enabled, dependenceKey, left, paddingValues, changed)
+}
+
+/**
+ * @param labelPairs :Pair<text,id> pair包含着文本和存储值
+ */
+@Composable
+fun PreferenceCheckBoxGroup(
+    keyName: String,
+    labelPairs: List<Pair<String, Int>>,
+    enabled: Boolean = true,
+    dependenceKey: String? = null,
+    left: Boolean = true,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = Dimens.all.horizontal_start.dp,
+        vertical = Dimens.small.dp
+    ),
+    changed: (newIndex: List<Int>) -> Unit = {},
+) {
+    if (labelPairs.isEmpty()){
+        throw IllegalArgumentException("labels cannot empty")
+    }
     fun getStr(list: List<Int>): String {
         return list.joinToString(",")
     }
@@ -67,12 +92,16 @@ fun PreferenceCheckBoxGroup(
 
     val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref =prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName,enabled,dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
 
     val selectedList = remember {
-        mutableStateListOf<Int>();
+        mutableStateListOf<Int>()
     }
     //读取prefs
     LaunchedEffect(key1 = Unit, block = {
@@ -91,39 +120,39 @@ fun PreferenceCheckBoxGroup(
     }
 
     Column {
-        repeat(labels.size) { pos: Int ->
+        repeat(labelPairs.size) { pos: Int ->
             val checked by remember {
                 derivedStateOf {
-                    selectedList.contains(pos)
+                    selectedList.contains(labelPairs[pos].second)
                 }
             }
             if (left) {
                 PreferenceCheckBoxItem(
-                    text = labels[pos],
+                    text = labelPairs[pos].first,
                     selected = checked,
                     enabled = dependenceState.value,
-                    paddingValues=paddingValues,
+                    paddingValues = paddingValues,
                     onCheckedChanged = { bol ->
                         if (bol) {
-                            selectedList.add(pos)
+                            selectedList.add(labelPairs[pos].second)
                         } else {
-                            selectedList.remove(pos)
+                            selectedList.remove(labelPairs[pos].second)
                         }
                         write()
                     }
                 )
-            }else{
+            } else {
                 PreferenceCheckBoxItemRight(
-                    text = labels[pos],
+                    text = labelPairs[pos].first,
                     selected = checked,
                     enabled = dependenceState.value,
-                    paddingValues=paddingValues,
+                    paddingValues = paddingValues,
 
                     onCheckedChanged = { bol ->
                         if (bol) {
-                            selectedList.add(pos)
+                            selectedList.add(labelPairs[pos].second)
                         } else {
-                            selectedList.remove(pos)
+                            selectedList.remove(labelPairs[pos].second)
                         }
                         write()
                     }
@@ -139,7 +168,7 @@ fun PreferenceCheckBoxItem(
     selected: Boolean,
     enabled: Boolean,
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
+        horizontal = Dimens.all.horizontal_start.dp,
         vertical = Dimens.small.dp
     ),
     onCheckedChanged: (newValue: Boolean) -> Unit
@@ -163,7 +192,7 @@ fun PreferenceCheckBoxItem(
 
             Checkbox(
                 checked = checked,
-                enabled=enabled,
+                enabled = enabled,
                 onCheckedChange = {
                     checked = it
                     onCheckedChanged(checked)
@@ -179,7 +208,7 @@ fun PreferenceCheckBoxItem(
                 text = text,
                 maxLines = 1,
                 style = preferenceMediumTitle,
-                color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled) ,
+                color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -192,7 +221,7 @@ fun PreferenceCheckBoxItemRight(
     selected: Boolean,
     enabled: Boolean,
     paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal.dp,
+        horizontal = Dimens.all.horizontal_start.dp,
         vertical = Dimens.small.dp
     ),
     onCheckedChanged: (newValue: Boolean) -> Unit
@@ -221,19 +250,19 @@ fun PreferenceCheckBoxItemRight(
                 text = text,
                 maxLines = 1,
                 style = preferenceMediumTitle,
-                color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled) ,
+                color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )
             Checkbox(
-                    checked = checked,
-            enabled=enabled,
-            onCheckedChange = {
-                checked = it
-                onCheckedChanged(checked)
-            },
-            modifier = Modifier
-                .padding()
-                .clearAndSetSemantics { },
+                checked = checked,
+                enabled = enabled,
+                onCheckedChange = {
+                    checked = it
+                    onCheckedChanged(checked)
+                },
+                modifier = Modifier
+                    .padding()
+                    .clearAndSetSemantics { },
             )
         }
     }

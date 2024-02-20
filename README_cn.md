@@ -143,10 +143,10 @@ PreferencesScope(holder=holder) {
     )
     PreferenceCheckBoxGroup(
         keyName = "CheckBoxGroup",
-        labels = listOf(
-            "first",
-            "second"
-        ), changed = {
+        labelPairs = listOf(
+              "first" to 3,
+              "second" to 1
+         ), changed = {
             Log.d(TAG, "checkbox: ${it.joinToString(",")}")
         }
     )
