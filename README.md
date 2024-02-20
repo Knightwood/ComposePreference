@@ -2,11 +2,11 @@
 
 [中文](README_cn.md)
 
-version [![](https://jitpack.io/v/Knightwood/compose-material3-preference.svg)](https://jitpack.io/#Knightwood/compose-material3-preference)
+version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 ```css
 dependencies {
-       implementation 'com.github.Knightwood:compose-material3-preference:Tag'
+       implementation 'com.github.Knightwood:ComposePreference:Tag'
 }
 ```
 
