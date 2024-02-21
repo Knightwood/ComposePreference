@@ -67,13 +67,24 @@ abstract class PreferenceHolder {
         return dependenceTree[key]
     }
 
+    /**
+     * 获取某个key对应的状态,如不存在，返回默认启用状态
+     */
+    fun getDependenceNotEmpty(
+        key: String?,
+        enable: Boolean=true,
+    ): DependenceNode {
+        return dependenceTree[key] ?: DependenceNode(enable, "")
+    }
+
+
 }
 
 class DependenceNode(
     enable: Boolean,
     val keyName: String,
 ) {
-    val enableStateFlow :MutableStateFlow<Boolean> = MutableStateFlow(enable)
+    val enableStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(enable)
 
 //    val enableState = mutableStateOf(enable)
 

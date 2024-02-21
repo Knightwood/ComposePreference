@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,16 @@ import com.kiylx.compose_lib.pref_component.Typography.preferenceDescription
 import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
 
 /**
- * preference item
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param endIcon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
+ * @param onLongClick 长按事件
+ * @param onClickLabel onClick 操作的语义/辅助功能标签
+ * @param onClick 点击事件
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -51,19 +61,24 @@ fun PreferenceItem(
     icon: Any? = null,
     endIcon: Any? = null,
     enabled: Boolean = true,
+    dependenceKey: String? = null,
     onLongClickLabel: String? = null,
     onLongClick: (() -> Unit)? = null,
     onClickLabel: String? = null,
     onClick: () -> Unit = {},
 ) {
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
     Surface(
         modifier = Modifier.combinedClickable(
             onClick = onClick,
             onClickLabel = onClickLabel,
-            enabled = enabled,
+            enabled = dependenceState.value,
             onLongClickLabel = onLongClickLabel,
             onLongClick = onLongClick
-        )
+        ),
     ) {
         Row(
             modifier = Modifier
@@ -71,94 +86,54 @@ fun PreferenceItem(
                 .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = enabled)
+            WrappedIcon(icon = icon, enabled = dependenceState.value)
             MediumTextContainer(icon = icon) {
-                PreferenceItemTitleText(text = title, enabled = enabled, maxLines = 2)
+                PreferenceItemTitleText(text = title, enabled = dependenceState.value, maxLines = 2)
                 if (description != null) PreferenceItemDescriptionText(
                     text = description,
-                    enabled = enabled
+                    enabled = dependenceState.value
                 )
             }
-            WrappedIcon(icon = endIcon, enabled = enabled)
+            WrappedIcon(icon = endIcon, enabled = dependenceState.value)
         }
     }
 
 }
+
 
 /**
- * preference item
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param endIcon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
+ * @param onLongClick 长按事件
+ * @param onClickLabel onClick 操作的语义/辅助功能标签
+ * @param onClick 点击事件
  */
-@Composable
-fun CollapsePreferenceItem(
-    title: String,
-    description: String? = null,
-    icon: Any? = null,
-    enabled: Boolean = true,
-    close: Boolean = false,
-    stateChanged: (isOpen: Boolean) -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit
-) {
-    var isOpen by remember {
-        mutableStateOf(close)
-    }
-    Surface(
-        modifier = Modifier.toggleable(isOpen, enabled, null) {
-            isOpen = it
-            stateChanged(it)
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                WrappedIcon(icon = icon, enabled = enabled)
-                MediumTextContainer(icon = icon) {
-                    PreferenceItemTitleText(text = title, enabled = enabled, maxLines = 2)
-                    if (description != null) PreferenceItemDescriptionText(
-                        text = description,
-                        enabled = enabled
-                    )
-                }
-                JustIcon(
-                    icon = if (!isOpen) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropUp,
-                    modifier = Modifier
-                        .padding(end = Dimens.large.dp)
-                        .size(Dimens.large_x.dp),
-                )
-            }
-            AnimatedVisibility(visible = isOpen) {
-                Column {
-                    content()
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
-                }
-            }
-        }
-
-    }
-
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreferenceItemVariant(
-    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
     icon: Any? = null,
     endIcon: Any? = null,
     enabled: Boolean = true,
+    dependenceKey: String? = null,
     onLongClickLabel: String? = null,
     onLongClick: () -> Unit = {},
     onClickLabel: String? = null,
     onClick: () -> Unit = {},
 ) {
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
     Surface(
         modifier = Modifier.combinedClickable(
-            enabled = enabled,
+            enabled = dependenceState.value,
             onClick = onClick,
             onClickLabel = onClickLabel,
             onLongClick = onLongClick,
@@ -166,7 +141,7 @@ fun PreferenceItemVariant(
         )
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = Dimens.title.horizontal_start.dp,
@@ -176,19 +151,21 @@ fun PreferenceItemVariant(
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = enabled)
+            WrappedIcon(icon = icon, enabled = dependenceState.value)
             MediumTextContainer(icon = icon) {
                 with(MaterialTheme) {
                     PreferenceItemTitleText(
                         text = title,
                         maxLines = 1,
+                        enabled = dependenceState.value,
                         style = typography.titleMedium,
-                        color = colorScheme.onSurface.applyOpacity(enabled)
+                        color = colorScheme.onSurface.applyOpacity(enabled = dependenceState.value)
                     )
                     description?.let {
                         PreferenceItemDescriptionText(
                             text = it,
-                            color = colorScheme.onSurfaceVariant.applyOpacity(enabled),
+                            enabled = dependenceState.value,
+                            color = colorScheme.onSurfaceVariant.applyOpacity(enabled = dependenceState.value),
                             maxLines = 2, overflow = TextOverflow.Ellipsis,
                             style = preferenceDescription,
                         )
@@ -201,7 +178,85 @@ fun PreferenceItemVariant(
 
 }
 
+/**
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param enabled 是否启用
+ * @param close 默认是打开、关闭状态
+ * @param stateChanged 展开、关闭状态事件通知
+ * @param content 折叠内容
+ */
+@Composable
+fun PreferenceCollapseBox(
+    title: String,
+    description: String? = null,
+    icon: Any? = null,
+    dependenceKey: String? = null,
+    enabled: Boolean = true,
+    close: Boolean = false,
+    stateChanged: (isOpen: Boolean) -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit
+) {
+    var isOpen by remember {
+        mutableStateOf(close)
+    }
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
 
+    Surface(
+        modifier = Modifier.toggleable(isOpen, dependenceState.value, null) {
+            isOpen = it
+            stateChanged(it)
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                WrappedIcon(icon = icon, enabled = dependenceState.value)
+                MediumTextContainer(icon = icon) {
+                    PreferenceItemTitleText(text = title, enabled = dependenceState.value, maxLines = 2)
+                    if (description != null) PreferenceItemDescriptionText(
+                        text = description,
+                        enabled = dependenceState.value
+                    )
+                }
+                JustIcon(
+                    icon = if (!isOpen) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropUp,
+                    enabled = dependenceState.value,
+                    modifier = Modifier
+                        .padding(end = Dimens.large.dp)
+                        .size(Dimens.large_x.dp),
+                )
+            }
+            AnimatedVisibility(visible = isOpen && dependenceState.value) {
+                Column {
+                    content()
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
+                }
+            }
+        }
+
+    }
+
+}
+
+
+
+/**
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param onClick 点击事件
+ */
 @Composable
 fun PreferencesCautionCard(
     title: String,
@@ -247,6 +302,14 @@ fun PreferencesCautionCard(
 
 }
 
+/**
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param backgroundColor 背景色
+ * @param contentColor 内容颜色
+ * @param onClick 点击事件
+ */
 @Composable
 fun PreferencesHintCard(
     title: String = "Title ".repeat(2),
@@ -290,24 +353,41 @@ fun PreferencesHintCard(
 }
 
 /**
- * preference item
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param endIcon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
+ * @param onLongClick 长按事件
+ * @param onClickLabel onClick 操作的语义/辅助功能标签
+ * @param onClick 点击事件
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreferenceItemLargeTitle(
     title: String,
+    description: String? = null,
     icon: Any? = null,
+    endIcon: Any? = null,
+    dependenceKey: String? = null,
     enabled: Boolean = true,
     onLongClickLabel: String? = null,
     onLongClick: (() -> Unit)? = null,
     onClickLabel: String? = null,
     onClick: () -> Unit = {},
 ) {
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+
     Surface(
         modifier = Modifier.combinedClickable(
             onClick = onClick,
             onClickLabel = onClickLabel,
-            enabled = enabled,
+            enabled = dependenceState.value,
             onLongClickLabel = onLongClickLabel,
             onLongClick = onLongClick
         )
@@ -323,30 +403,44 @@ fun PreferenceItemLargeTitle(
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = enabled)
+            WrappedIcon(icon = icon, enabled = dependenceState.value)
             MediumTextContainer(icon = icon) {
                 PreferenceItemTitleText(
                     text = title,
-                    enabled = enabled, maxLines = 1,
+                    enabled = dependenceState.value, maxLines = 1,
                     style = Typography.preferenceLargeTitle
                 )
+                if (description != null) PreferenceItemDescriptionText(
+                    text = description,
+                    enabled = dependenceState.value
+                )
             }
+            WrappedIcon(icon = endIcon, enabled = dependenceState.value)
         }
     }
 
 }
 
 /**
- * 类似小标题
+ * @param title 标题
+ * @param color 文本颜色
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  */
 @Composable
 fun PreferenceItemSubTitle(
-    modifier: Modifier = Modifier,
-    text: String,
+    title: String,
     color: Color = MaterialTheme.colorScheme.primary,
+    dependenceKey: String? = null,
+    enabled: Boolean = true,
 ) {
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(
                 start = Dimens.title.horizontal_start.dp,
@@ -357,14 +451,15 @@ fun PreferenceItemSubTitle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         MediumTextContainer() {
-            Text(
-                text = text,
+            PreferenceItemTitleText(
+                text = title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         top = Dimens.large_x.dp,
-                        bottom = Dimens.medium.dp
+                        bottom = Dimens.small.dp
                     ),
+                enabled = dependenceState.value,
                 color = color,
                 style = MaterialTheme.typography.labelLarge
             )

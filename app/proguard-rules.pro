@@ -159,13 +159,13 @@
 #-keep public class com.android.vending.licensing.ILicensingService
 
 #androidx包使用混淆
-#-keepnames class com.google.android.material.** {*;}
-#-keepnames class androidx.** {*;}
-#-keepnames public class * extends androidx.**
-#-keepnames interface androidx.** {*;}
-#-dontwarn com.google.android.material.**
-#-dontnote com.google.android.material.**
-#-dontwarn androidx.**
+-keepnames class com.google.android.material.** {*;}
+-keepnames class androidx.** {*;}
+-keepnames public class * extends androidx.**
+-keepnames interface androidx.** {*;}
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+-dontwarn androidx.**
 
 # 保留support下的所有类及其内部类
 #-keep class android.support.** {*;}
@@ -289,31 +289,31 @@
 
 # Don't print notes about potential mistakes or omissions in the configuration for kotlinx-serialization classes
 # See also https://github.com/Kotlin/kotlinx.serialization/issues/1900
--dontnote kotlinx.serialization.**
+#-dontnote kotlinx.serialization.**
 
 # Serialization core uses `java.lang.ClassValue` for caching inside these specified classes.
 # If there is no `java.lang.ClassValue` (for example, in Android), then R8/ProGuard will print a warning.
 # However, since in this case they will not be used, we can disable these warnings
--dontwarn kotlinx.serialization.internal.ClassValueReferences
+#-dontwarn kotlinx.serialization.internal.ClassValueReferences
 
 #############################################kotlin serialization######################################
 
 #-okhttp3
--dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.**{*;}
--dontwarn okio.**
- -keep public class org.codehaus.* { *; }
- -keep public class java.nio.* { *; }
+#-dontwarn com.squareup.okhttp.**
+#-keep class com.squareup.okhttp.**{*;}
+#-dontwarn okio.**
+# -keep public class org.codehaus.* { *; }
+# -keep public class java.nio.* { *; }
 
 # Retrofit
--keep class retrofit2.** { *; }
--dontwarn retrofit2.**
--keepattributes Exceptions
--dontwarn javax.annotation.**
+#-keep class retrofit2.** { *; }
+#-dontwarn retrofit2.**
+#-keepattributes Exceptions
+#-dontwarn javax.annotation.**
 
 #保留json转换
- -keep class com.jakewharton.retrofit2.converter.kotlinx.serialization.**
+# -keep class com.jakewharton.retrofit2.converter.kotlinx.serialization.**
 
 #排除http
- -keep class com.kiylx.weather.http.**
- -keep class com.kiylx.weather.repo.bean.**
+# -keep class com.kiylx.weather.http.**
+# -keep class com.kiylx.weather.repo.bean.**

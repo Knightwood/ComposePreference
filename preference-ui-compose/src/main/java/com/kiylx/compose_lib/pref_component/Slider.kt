@@ -21,11 +21,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
-class Slider {
-}
+
+
 
 /**
+ * @param keyName 标识存储偏好值的key的名称，也是启用状态的节点名称
+ * @param min 最小值
+ * @param max 最大值
  * @param steps 将min到max平均分为几份
+ * @param defaultValue 默认值、当前值
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  */
 @Composable
 fun PreferenceSlider(
@@ -33,19 +40,19 @@ fun PreferenceSlider(
     min: Float,
     max: Float,
     steps: Int,
-    value: Float,
+    defaultValue: Float,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     changed: (newValue: Float) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = value)
+    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
 
     var progress by remember {
-        mutableFloatStateOf(value)
+        mutableFloatStateOf(defaultValue)
     }
 
     //读取prefs

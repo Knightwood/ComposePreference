@@ -16,7 +16,12 @@ import com.kiylx.libx.pref_component.core.PreferenceHolder
 
 val LocalPrefs = compositionLocalOf<PreferenceHolder> { error("没有提供值！") }
 
-
+/**
+ * 在此方法 content中构建偏好值页面
+ *
+ * @param holder preference读写持有者,查看[PreferenceHolder]
+ * @param content compose函数
+ */
 @Composable
 fun PreferencesScope(
     holder: PreferenceHolder,

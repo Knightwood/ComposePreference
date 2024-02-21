@@ -35,7 +35,8 @@ dependencies {
 
 |  |  |  |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|<img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" width="210" /> |<img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" width="210" />|<img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> 
+|<img src="README.assets/1.jpg" width="210" /> |<img src="README.assets/3.jpg" width="210" />|<img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> |
+|<img src="README.assets/2.jpg" width="210" />|<img src="README.assets/6.jpg" width="210" />|<img src="README.assets/5.jpg" width="210" />|
 
 ## 支持的存储偏好值的工具
 
@@ -75,10 +76,12 @@ pref.write("")
 
 要构建一个preference界面，需要使用`PreferencesScope`包裹preference的界面组件（PreferencesScope内部使用了column，因此可以放置任意的compose函数，如果现有的preference组件无法满足需要，可以放置任意compose函数构建界面），且向`PreferencesScope`传入上面支持的三种工具之一（当然你也可以自己继承接口定制额外的存储方式，例如数据库和文件）
 
-示例代码：
+示例代码（仅展示部分组件和参数）：
 
-```kotlin
+```
 //使用PreferencesScope 包裹 preference的compose函数，并且传入存储偏好值的设置工具
+//PreferencesScope内部仅是使用column摆放组件，因此也可以放置自定义的compose组件
+
 
 //1. 可以使用DataStore存储偏好值
 // val holder = DataStorePreferenceHolder.instance(
@@ -93,44 +96,104 @@ val  holder =  OldPreferenceHolder.instance(
      AppCtx.instance.getSharedPreferences("ddd",Context.MODE_PRIVATE)
     )
 
-PreferencesScope(holder=holder) {
-    //这里就可以使用一些compose函数构造界面，或者其他的compose函数
-    PreferenceItem(title = "PreferenceItem")
-    PreferenceItemVariant(title = "PreferenceItemVariant")
-    PreferencesHintCard(title = "PreferencesHintCard")
-    PreferenceItemLargeTitle(title = "PreferenceItemLargeTitle")
-    PreferenceItemSubTitle(text = "PreferenceItemSubTitle")
-    PreferencesCautionCard(title = "PreferencesCautionCard")
-    PreferenceSwitch(
-        keyName = "bol",
-        title = "title",
-        description = "description"
-    )
-    //可折叠的preference组件
-    CollapsePreferenceItem(
-        title = "title",
-        description = "description"
-    ) {
-        PreferenceSwitch(
-            keyName = "bol2",
-            title = "title",
-            description = "description",
-            icon = Icons.Filled.CenterFocusWeak
-        )
+@Composable
+fun SettingPage() {
+	PreferencesScope(holder=holder) {
+    	//这里就可以使用一些compose函数构造界面，或者其他的compose函数
+    	
+    	 	PreferencesCautionCard(title = "PreferencesCautionCard")
+            PreferencesHintCard(title = "PreferencesHintCard")
 
-    }
-    PreferenceSwitchWithDivider(
-        keyName = "bol2",
-        title = "title",
-        description = "description",
-        icon = Icons.Filled.CenterFocusWeak
-    )
-    PreferenceSwitchWithContainer(
-        keyName = "bol2",
-        title = "Title ".repeat(2),
-        icon = null
-    )
-    PreferenceRadioGroup(
+            PreferenceItemLargeTitle(title = "PreferenceItem大标题")
+            PreferenceItem(
+                title = "普通的PreferenceItem",
+                description = "可以带图标",
+                icon = Icons.Filled.LiveTv,
+                endIcon = Icons.Filled.ChevronRight
+            )
+            PreferenceItem(
+                title = "绝大多数可带图标",
+                icon = Icons.Filled.Wifi,
+                endIcon = Icons.Filled.ChevronRight
+            )
+            //文本框
+            OutlinedEditTextPreference(
+                title = "outlined编辑框", keyName = "edit11",
+                defaultValue = "默认文本",
+                icon = Icons.Filled.AccountCircle,
+            )
+
+            FilledEditTextPreference(
+                defaultValue = "默认文本",
+                title = "Filled编辑框",
+                keyName = "edit12",
+                icon = Icons.Filled.AccountCircle,
+                changed = {
+
+                }
+            )
+            //可折叠box
+            CollapsePreferenceItem(
+                title = "可折叠菜单",
+                description = "preference描述",
+                dependenceKey = customNodeName,
+            ) {
+				//这里是展开时需要显示的组件
+                PreferenceSwitch(
+                    keyName = "bol",
+                    title = "title",
+                    dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
+                    description = "description",
+                    icon = Icons.Filled.AccountCircle
+                ) { state ->
+                    //这里获取并修改了当前的enable状态，
+                    //依赖这个节点的会改变显示状态，
+                    //如果当前没有指定依赖，自身也会受到影响
+                    holder.getDependence("bol")?.let {
+                        it.enableStateFlow.tryEmit(state)
+                    }
+                }
+                //依赖keyName为bol的PreferenceSwitch的state
+                PreferenceSwitch(
+                    keyName = "bol3",
+                    title = "title",
+                    dependenceKey = "bol",
+                    description = "description",
+                    icon = Icons.Filled.CenterFocusWeak
+                )
+
+            }
+			//菜单
+            PreferenceListMenu(
+                title = "list菜单",
+                keyName = "PreferenceListMenu",
+                description = "list菜单介绍",
+                dependenceKey = customNodeName,
+                //这里是需要展示的菜单
+                list = listOf(
+                //每个MenuEntity都是一个菜单项，指明了菜单的名称，图标，存储的label等
+                    MenuEntity(
+                        leadingIcon = Icons.Outlined.Edit,
+                        text = "edit",
+                        labelKey = 0
+                    ),
+                    MenuEntity(
+                        leadingIcon = Icons.Outlined.Settings,
+                        text = "Settings",
+                        labelKey = 1
+                    ),
+                    MenuDivider,//分割线
+                    MenuEntity(
+                        leadingIcon = Icons.Outlined.Email,
+                        text = "Send Feedback",
+                        labelKey = 2
+                    ),
+                )
+            ) {
+                Log.d(TAG, "menu item labelKey: $it")
+            }
+      
+      PreferenceRadioGroup(
         keyName = "radioGroup",
         labels = listOf(
             "first",
@@ -141,48 +204,70 @@ PreferencesScope(holder=holder) {
             Log.d(TAG, "radio: ${it}")
         }
     )
+    
     PreferenceCheckBoxGroup(
         keyName = "CheckBoxGroup",
         labelPairs = listOf(
               "first" to 3,
               "second" to 1
          ), changed = {
-            Log.d(TAG, "checkbox: ${it.joinToString(",")}")
+            
         }
     )
-    PreferenceSlider(
-        keyName = "slider", min = 0f,
-        max = 10f, steps = 9, value = 0f, changed = {
-            Log.d(TAG, "slider: $it")
-        }
-    )
-    //下拉菜单
-    PreferenceListMenu(
-        title = "PreferenceListMenu",
-        keyName = "PreferenceListMenu",
-        list = listOf(
-            MenuEntity(
-                leadingIcon = Icons.Outlined.Edit,
-                text = "edit",
-                labelKey = 0
-            ),
-            MenuEntity(
-                leadingIcon = Icons.Outlined.Settings,
-                text = "Settings",
-                labelKey = 1
-            ),
-            MenuDivider,//分割线
-            MenuEntity(
-                leadingIcon = Icons.Outlined.Email,
-                text = "Send Feedback",
-                labelKey = 2
-            ),
-        )
-    )
+    	//其他组件
+	}
 }
-
-
 ```
+
+
+
+可用的组件（如上方代码，在PreferencesScope中）：
+
+**大卡片**
+
+* PreferencesCautionCard
+* PreferencesHintCard
+
+**preference item / 标题**
+
+* PreferenceItemLargeTitle
+* PreferenceItemSubTitle
+* PreferenceItem
+* PreferenceItemVariant
+
+**文本输入框**
+
+* FilledEditTextPreference
+* OutlinedEditTextPreference
+
+**switch**
+
+* PreferenceSwitch
+* PreferenceSwitchWithContainer
+* PreferenceSwitchWithDivider
+
+**可折叠其他组件的box**
+
+* CollapsePreferenceItem
+
+**点击菜单**
+
+* PreferenceListMenu
+
+**Radio**
+
+* PreferenceRadioGroup
+
+**CheckBox**
+
+* PreferenceCheckBoxGroup
+
+**Slider**
+
+* PreferenceSlider
+
+
+
 ## 依赖和置灰
 
 * enable使用: preference组件传入enable为false的同时，指定dependenceKey为DependenceNode.rootName，可以置灰组件，使之无法相应事件。

@@ -41,7 +41,11 @@ fun PreferenceListMenu(
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = 0)
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
     //当前的选择
@@ -85,12 +89,16 @@ fun PreferenceListMenu(
             }
 
             Surface {
-                IconButton(onClick = { expanded = true }) {
-                    JustIcon(
-                        icon = Icons.Default.MoreVert,
-                        enabled = dependenceState.value,
-                    )
-                }
+//                IconButton(onClick = { expanded = true }, enabled = dependenceState.value) {
+//                    JustIcon(
+//                        icon = Icons.Default.MoreVert,
+//                        enabled = dependenceState.value,
+//                    )
+//                }
+                WrappedIcon(
+                    icon = Icons.Default.MoreVert,
+                    enabled = dependenceState.value,
+                )
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }

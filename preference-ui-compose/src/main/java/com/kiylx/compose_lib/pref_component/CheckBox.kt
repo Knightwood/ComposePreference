@@ -30,7 +30,13 @@ import kotlinx.coroutines.launch
 private const val TAG = "PrefCheckBoxGroup"
 
 /**
- * @param labels 按照label名称的顺序生成存储值
+ * @param keyName 标识存储偏好值的key的名称，也是启用状态的节点名称
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param labels 每个条目的显示名称，而且会按照显示名称在数组中的顺序生成"存储值label"
+ * @param left checkbox位于左侧或是右侧
+ * @param paddingValues 调整边框的padding
+ * @param changed "存储值label"初始化或更新后，会通过此参数通知
  */
 @JvmName("PreferenceCheckBoxGroup2")
 @Composable
@@ -53,7 +59,13 @@ fun PreferenceCheckBoxGroup(
 }
 
 /**
- * @param labelPairs :Pair<text,id> pair包含着文本和存储值
+ * @param keyName 标识存储偏好值的key的名称，也是启用状态的节点名称
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param labelPairs :Pair<text,int> 包含着每个可选条目的显示文本和"存储值label"
+ * @param left checkbox位于左侧或是右侧
+ * @param paddingValues 调整边框的padding
+ * @param changed "存储的偏好值label"初始化或更新后，会通过此参数通知
  */
 @Composable
 fun PreferenceCheckBoxGroup(

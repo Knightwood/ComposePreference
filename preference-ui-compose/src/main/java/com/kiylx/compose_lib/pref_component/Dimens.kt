@@ -75,7 +75,9 @@ object Typography {
 
     val preferenceLargeTitle: TextStyle
         @Composable
-        get() = MaterialTheme.typography.titleLarge
+        get() = MaterialTheme.typography.titleLarge.copy(
+            fontSize = 24.sp
+        )
 
     val preferenceSmallTitle: TextStyle
         @Composable

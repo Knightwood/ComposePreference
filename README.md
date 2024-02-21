@@ -42,9 +42,11 @@ Preference reading and writing tools can be used separately from the interface, 
 
 
 ## Introductory picture
+
 |  |  |  |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|<img src="README.assets/Screenshot_2023-11-03-20-26-55-611_com.kiylx.composepreference.debug.jpg" width="210" /> |<img src="README.assets/Screenshot_2023-11-03-20-27-00-301_com.kiylx.composepreference.debug.jpg" width="210" />|<img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> 
+|<img src="README.assets/1.jpg" width="210" /> |<img src="README.assets/3.jpg" width="210" />|<img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> |
+|<img src="README.assets/2.jpg" width="210" />|<img src="README.assets/6.jpg" width="210" />|<img src="README.assets/5.jpg" width="210" />|
 
 ## supported tools for storing preference values
 

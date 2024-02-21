@@ -43,11 +43,6 @@ android {
 
 dependencies {
     implementation(libs.bundles.kotlins)
-//    implementation(libs.androidx.core.ktx)
-//    implementation(libs.androidx.appCompat)
-//    testImplementation(libs.junit)
-//    androidTestImplementation(libs.androidx.test.ext.junit)
-//    androidTestImplementation(libs.espresso.core)
 }
 afterEvaluate {
     publishing {

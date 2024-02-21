@@ -38,10 +38,15 @@ import kotlinx.coroutines.launch
 
 
 /**
- * @param changed 将会得到新值
- * @param enabled 状态，若存在dependenceKey，自身的状态则依据dependenceKey指定的依赖，而不是enable参数
- * 若不存在dependenceKey，自身和其依赖者都会依据enable参数
- * @param dependenceKey 依赖于哪个key的状态，若为null，自身显现出来的状态依据enable参数
+ * @param keyName 标识存储偏好值的key的名称，也是标识此组件启用状态的节点名称
+ * @param defaultValue 默认值、当前值
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param checkedIcon switch置为true时的图标
+ * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  */
 @Composable
 fun PreferenceSwitch(
@@ -78,7 +83,7 @@ fun PreferenceSwitch(
     }
 
     val thumbContent: (@Composable () -> Unit)? = if (isChecked) {
-        {
+        { ->
             Icon(
                 imageVector = checkedIcon,
                 contentDescription = null,
@@ -130,9 +135,16 @@ fun PreferenceSwitch(
 }
 
 /**
- * @param onClick 点击除了switch之外的部分，例如点击后，触发跳转另一个页面
- * @param changed 将得到switch的新值
- *
+ * @param keyName 标识存储偏好值的key的名称，也是标识此组件启用状态的节点名称
+ * @param defaultValue 默认值、当前值
+ * @param title 标题
+ * @param description 标题下方的描述信息
+ * @param icon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param checkedIcon switch置为true时的图标
+ * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
+ * @param onClick switch左侧区域点击事件
  */
 @Composable
 fun PreferenceSwitchWithDivider(
@@ -227,6 +239,15 @@ fun PreferenceSwitchWithDivider(
     }
 }
 
+/**
+ * @param keyName 标识存储偏好值的key的名称，也是标识此组件启用状态的节点名称
+ * @param defaultValue 默认值、当前值
+ * @param title 标题
+ * @param icon 左侧图标
+ * @param enabled 是否启用
+ * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
+ */
 @Composable
 fun PreferenceSwitchWithContainer(
     keyName: String,
