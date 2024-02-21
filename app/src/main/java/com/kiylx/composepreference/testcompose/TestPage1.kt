@@ -184,7 +184,8 @@ fun FirstPage() {
             )
             PreferenceSwitchWithContainer(
                 keyName = "bol4",
-                title = "带Container的",
+                title = "带Container的Switch",
+                description = "描述，描述，描述，描述，描述",
                 dependenceKey = customNodeName,
                 icon = null
             )

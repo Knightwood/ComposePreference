@@ -64,7 +64,11 @@ fun PreferenceSwitch(
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
 
     var isChecked by remember {
         mutableStateOf(defaultValue)
@@ -107,7 +111,8 @@ fun PreferenceSwitch(
                 .fillMaxWidth()
                 .padding(
                     Dimens.all.horizontal_start.dp,
-                    Dimens.all.vertical_top.dp),
+                    Dimens.all.vertical_top.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             WrappedIcon(
@@ -164,7 +169,11 @@ fun PreferenceSwitchWithDivider(
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
 
     var isChecked by remember {
         mutableStateOf(defaultValue)
@@ -243,6 +252,7 @@ fun PreferenceSwitchWithDivider(
  * @param keyName 标识存储偏好值的key的名称，也是标识此组件启用状态的节点名称
  * @param defaultValue 默认值、当前值
  * @param title 标题
+ * @param description 标题下方的描述信息
  * @param icon 左侧图标
  * @param enabled 是否启用
  * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
@@ -253,6 +263,7 @@ fun PreferenceSwitchWithContainer(
     keyName: String,
     defaultValue: Boolean = false,
     title: String,
+    description: String? = null,
     icon: Any? = null,
     enabled: Boolean = true,
     dependenceKey: String? = null,
@@ -262,7 +273,11 @@ fun PreferenceSwitchWithContainer(
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
-    val dependenceState = prefStoreHolder.getDependence(keyName, enabled, dependenceKey).enableStateFlow.collectAsState()
+    val dependenceState = prefStoreHolder.getDependence(
+        keyName,
+        enabled,
+        dependenceKey
+    ).enableStateFlow.collectAsState()
 
     var isChecked by remember {
         mutableStateOf(defaultValue)
@@ -293,7 +308,10 @@ fun PreferenceSwitchWithContainer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal_start.dp, vertical = Dimens.all.vertical_top.dp)
+            .padding(
+                horizontal = Dimens.all.horizontal_start.dp,
+                vertical = Dimens.all.vertical_top.dp
+            )
             .clip(MaterialTheme.shapes.extraLarge)
             .background(
                 (if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline).let {
@@ -315,15 +333,18 @@ fun PreferenceSwitchWithContainer(
             tint = if (isChecked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface
         )
         MediumTextContainer(icon = icon) {
-            with(MaterialTheme) {
-                PreferenceItemTitleText(
-                    text = title,
-                    maxLines = 2,
-                    enabled = dependenceState.value,
-                    style = Typography.preferenceMediumTitle,
-                    color = if (isChecked) colorScheme.onPrimary else colorScheme.surface
-                )
-            }
+            PreferenceItemTitleText(
+                text = title,
+                maxLines = 2,
+                enabled = dependenceState.value,
+                style = Typography.preferenceMediumTitle,
+                color = if (isChecked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface
+            )
+            if (!description.isNullOrEmpty()) PreferenceItemDescriptionText(
+                text = description,
+                enabled = dependenceState.value,
+                color = if (isChecked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface
+            )
         }
         Switch(
             checked = isChecked,
