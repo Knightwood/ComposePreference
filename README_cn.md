@@ -133,7 +133,7 @@ fun SettingPage() {
                 }
             )
             //可折叠box
-            CollapsePreferenceItem(
+            PreferenceCollapseBox(
                 title = "可折叠菜单",
                 description = "preference描述",
                 dependenceKey = customNodeName,
@@ -248,7 +248,7 @@ fun SettingPage() {
 
 **可折叠其他组件的box**
 
-* CollapsePreferenceItem
+* PreferenceCollapseBox
 
 **点击菜单**
 
