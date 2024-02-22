@@ -7,17 +7,20 @@ import kotlin.reflect.KProperty
 
 /**
  * 使用方式：
- * ```
- * 1.先搞一个mmkv实例
- * val mv = MMKV.defaultMMKV()
- * 2.使用委托的方式生成一个委托对象，除了[parcelableM]方法，初始值可选
- * var example by mv.strM("kk","初始值")
- * 3.使用赋值将值存入
- * example="新的值"
- * 4.直接使用即读取值，如果没有值写入，读取出来的会是默认值。
- * log.d(TAG,example)
- * ```
  *
+ * ```
+ * class MMKVHelper private constructor(val mmkv: MMKV) {
+ * //使用委托的方式生成一个委托对象，除了[parcelableM]方法，初始值可选
+ * var name by mv.strM("tom","初始值")
+ * }
+ *
+ * //1. 获取单例
+ * val helper =MMKVHelper.getInstance(prefs)
+ * //2. 使用赋值将值存入
+ * helper.name="Tom"
+ * //3. 直接使用即读取值，如果没有值写入，读取出来的会是默认值。
+ * log.d(TAG,helper.name)*
+ * ```
  */
 class MExt
 
@@ -37,7 +40,7 @@ inline fun <T> MMKV.delegate(
 }
 
 /**
- *  read write string
+ * read write string
  *
  * @param key
  * @param defValue
@@ -101,7 +104,7 @@ inline fun <reified T : Parcelable> MMKV.parcelableM(
     defValue: T,
 ): ReadWriteProperty<Any, T> {
     return delegate(key, defValue, getter = { key1, def ->
-        return@delegate this.decodeParcelable(key1, T::class.java, def)?:def
+        return@delegate this.decodeParcelable(key1, T::class.java, def) ?: def
     }, MMKV::encode)
 }
 

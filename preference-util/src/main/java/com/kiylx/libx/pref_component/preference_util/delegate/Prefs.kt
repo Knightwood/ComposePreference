@@ -19,7 +19,11 @@ import kotlin.reflect.KProperty
  *
  * 注意，实际使用过程中 PrefsHelper 应该是单例。
  */
-class Prefs
+class Prefs private constructor(){
+    companion object{
+
+    }
+}
 
 private inline fun <T> SharedPreferences.delegate(
     key: String? = null,
