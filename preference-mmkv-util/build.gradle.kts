@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("maven-publish")
-
 }
 
 android {
@@ -52,7 +51,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 groupId = "com.github.knightwood"
                 artifactId = "preference-mmkv-util"
-                version = "1.2"
+                version = rootProject.ext["version"].toString()
                 afterEvaluate {
                     from(components["release"])
                 }

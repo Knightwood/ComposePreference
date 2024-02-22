@@ -18,27 +18,27 @@ class OldReadWritePrefTool<T : Any>(
     private val flow: MutableSharedFlow<T> = MutableSharedFlow<T>(1)
     var readWrite:SharedPreferencesUtil<T> =  (when (defaultValue) {
         is Int -> {
-            sp.int(keyName, defaultValue)
+            sp.intRW(keyName, defaultValue)
         }
 
         is Boolean -> {
-            sp.boolean(keyName, defaultValue)
+            sp.booleanRW(keyName, defaultValue)
         }
 
         is String -> {
-            sp.string(keyName, defaultValue)
+            sp.stringRW(keyName, defaultValue)
         }
 
         is Float -> {
-            sp.float(keyName, defaultValue)
+            sp.floatRW(keyName, defaultValue)
         }
 
         is Long -> {
-            sp.long(keyName, defaultValue)
+            sp.longRW(keyName, defaultValue)
         }
 
         is Set<*> -> {
-            sp.stringSet(keyName)
+            sp.stringSetRW(keyName)
         }
 
         else -> {

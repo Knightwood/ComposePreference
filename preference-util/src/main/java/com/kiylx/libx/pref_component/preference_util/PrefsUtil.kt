@@ -1,6 +1,5 @@
 package com.kiylx.libx.pref_component.preference_util
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 
@@ -28,7 +27,7 @@ private fun <T> SharedPreferences.delegate(
     setter: Editor.(String, T) -> Editor
 ): SharedPreferencesUtil<T> = SharedPreferencesUtil(this, key, defaultValue, getter, setter)
 
-fun SharedPreferences.int(
+fun SharedPreferences.intRW(
     key: String,
     defValue: Int = 0,
 
@@ -36,7 +35,7 @@ fun SharedPreferences.int(
     return delegate(key, defValue, SharedPreferences::getInt, Editor::putInt)
 }
 
-fun SharedPreferences.long(
+fun SharedPreferences.longRW(
     key: String,
     defValue: Long = 0,
 
@@ -44,14 +43,14 @@ fun SharedPreferences.long(
     return delegate(key, defValue, SharedPreferences::getLong, Editor::putLong)
 }
 
-fun SharedPreferences.float(
+fun SharedPreferences.floatRW(
     key: String,
     defValue: Float = 0f,
 ): SharedPreferencesUtil<Float> {
     return delegate(key, defValue, SharedPreferences::getFloat, Editor::putFloat)
 }
 
-fun SharedPreferences.boolean(
+fun SharedPreferences.booleanRW(
     key: String,
     defValue: Boolean = false,
 
@@ -60,7 +59,7 @@ fun SharedPreferences.boolean(
 }
 
 
-fun SharedPreferences.stringSet(
+fun SharedPreferences.stringSetRW(
     key: String,
     defValue: Set<String> = emptySet(),
 ): SharedPreferencesUtil<Set<String>> {
@@ -70,7 +69,7 @@ fun SharedPreferences.stringSet(
 
 }
 
-fun SharedPreferences.string(
+fun SharedPreferences.stringRW(
     key: String,
     defValue: String = "",
 
@@ -80,18 +79,4 @@ fun SharedPreferences.string(
         this.getString(key, defValue) ?: defValue
     }, Editor::putString)
 
-}
-
-/**
- * 获取sharedpreference的快捷方法
- */
-public fun getPreference(context: Context, name: String): SharedPreferences {
-    return context.getSharedPreferences(name, Context.MODE_PRIVATE)
-}
-
-/**
- * 删除某个偏好值
- */
-public fun SharedPreferences.removePreference(name: String) {
-    edit().remove(name).apply()
 }

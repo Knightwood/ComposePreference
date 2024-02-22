@@ -4,3 +4,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
 }
+
+ext {
+    this["version"] = "1.2.2"
+}

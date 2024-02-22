@@ -1,4 +1,4 @@
-package com.kiylx.libx.pref_component.mmkv_util
+package com.kiylx.libx.pref_component.mmkv_util.delegate
 
 import android.os.Parcelable
 import com.tencent.mmkv.MMKV
@@ -36,6 +36,13 @@ inline fun <T> MMKV.delegate(
     }
 }
 
+/**
+ *  read write string
+ *
+ * @param key
+ * @param defValue
+ * @return
+ */
 fun MMKV.strM(
     key: String,
     defValue: String = "",

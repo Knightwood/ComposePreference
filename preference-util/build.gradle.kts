@@ -53,7 +53,7 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 groupId = "com.github.knightwood"
                 artifactId = "preference-util"
-                version = "1.2"
+                version = rootProject.ext["version"].toString()
                 afterEvaluate {
                     from(components["release"])
                 }
