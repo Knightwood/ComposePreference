@@ -145,9 +145,7 @@ fun OutlinedEditTextPreference(
         OutlinedTextField(
             value = text,
             onValueChange = {
-                text = it
                 write(it)
-                //changed(it)
             },
             label = { Text(text = title) },
             enabled = dependenceState.value,
@@ -286,9 +284,7 @@ fun FilledEditTextPreference(
         TextField(
             value = text,
             onValueChange = {
-                text = it
                 write(it)
-                //changed(it)
             },
             label = { Text(text = title) },
             enabled = dependenceState.value,
