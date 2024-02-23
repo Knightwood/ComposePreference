@@ -51,53 +51,17 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.bundleAndroidx)
-//    testImplementation("junit:junit:4.13.2")
-//    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    implementation(libs.google.material){
-        exclude("androidx.activity","activity")
-        exclude("androidx.appcompat","appcompat")
-        exclude("androidx.constraintlayout","constraintlayout")
-        exclude("androidx.core","core")
-        exclude("androidx.recyclerview","recyclerview")
-    }
-    implementation(libs.bundles.kotlins)
-
+    implementation(others.github.knightwood.m3ColorUtilities)
+    implementation(libs.kotlin.coroutines.core)
     //compose
-    val composeBomVersion ="2024.01.00"
-
-    val composeBom = platform("androidx.compose:compose-bom:${composeBomVersion}")
+    val composeBom = platform(composeLibs.androidx.compose.bom)
     implementation(composeBom)
-//    androidTestImplementation(composeBom)
-
-    // Choose one of the following:
     // Material Design 3
-    implementation("androidx.compose.material3:material3:1.2.0")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // UI Tests
-//    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation(composeLibs.androidx.compose.material3)
     //icons
-    implementation("androidx.compose.material:material-icons-extended")
-    // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class")
-    // Optional - Integration with activities
-    implementation(composeLibs.androidx.activity.compose)
-    // Optional - Integration with ViewModels
-    implementation(composeLibs.androidx.lifecycle.viewmodel.compose)
-    // Optional - Integration with LiveData
-    implementation("androidx.compose.runtime:runtime-livedata")
-    //test
-//    androidTestImplementation(platform("androidx.compose:compose-bom:${composeBomVersion}"))
-
-    implementation(composeLibs.google.accompanist.systemUiController)
-
-
+//    implementation("androidx.compose.material:material-icons-extended")
+//    implementation("androidx.compose.material:material-icons-core")
     compileOnly(project(":preference-data-core"))
-
 }
 
 afterEvaluate {

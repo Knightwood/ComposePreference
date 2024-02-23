@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import com.google.android.material.color.MaterialColors
+import com.kiylx.common.lib_materialcolorutilities.blend.Blend
 
 fun Color.applyOpacity(enabled: Boolean): Color {
     return if (enabled) this else this.copy(alpha = 0.62f)
@@ -14,7 +14,7 @@ fun Color.applyOpacity(enabled: Boolean): Color {
 
 @Composable
 fun Color.harmonizeWith(other: Color) =
-    Color(MaterialColors.harmonize(this.toArgb(), other.toArgb()))
+    Color(Blend.harmonize(this.toArgb(), other.toArgb()))
 
 @Composable
 fun Color.harmonizeWithPrimary(): Color =

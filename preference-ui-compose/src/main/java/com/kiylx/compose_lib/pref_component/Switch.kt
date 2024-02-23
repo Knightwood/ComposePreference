@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.kiylx.compose_lib.pref_component.icons.Check
 import kotlinx.coroutines.launch
 
 
@@ -57,7 +56,7 @@ fun PreferenceSwitch(
     icon: Any? = null,
     enabled: Boolean = true,
     dependenceKey: String? = null,
-    checkedIcon: ImageVector = Icons.Outlined.Check,
+    checkedIcon: ImageVector = Icons.Default.Check,
     changed: (newValue: Boolean) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -161,7 +160,7 @@ fun PreferenceSwitchWithDivider(
     enabled: Boolean = true,
     dependenceKey: String? = null,
     isSwitchEnabled: Boolean = enabled,
-    checkedIcon: ImageVector = Icons.Outlined.Check,
+    checkedIcon: ImageVector = Icons.Default.Check,
     changed: (it: Boolean) -> Unit = {},
     onClick: (() -> Unit) = {},
 ) {
@@ -206,7 +205,7 @@ fun PreferenceSwitchWithDivider(
         modifier = Modifier.clickable(
             enabled = dependenceState.value,
             onClick = onClick,
-            onClickLabel = stringResource(id = R.string.open_settings)
+            onClickLabel = "open settings"
         )
     ) {
         Row(
@@ -297,7 +296,7 @@ fun PreferenceSwitchWithContainer(
     val thumbContent: (@Composable () -> Unit)? = if (isChecked) {
         {
             Icon(
-                imageVector = Icons.Outlined.Check,
+                imageVector = Icons.Default.Check,
                 contentDescription = null,
                 modifier = Modifier.size(SwitchDefaults.IconSize),
             )

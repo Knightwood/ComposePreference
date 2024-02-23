@@ -5,6 +5,7 @@ knightwood_activityMessenger = "1.1"
 m3_compose_preference = "1.1"
 m3_preference = "1.4"
 recyclerviewNeko = "1.2.2"
+m3ColorUtilities="1.0"
 
 leak = "2.8.1"
 lottie_version = "4.2.0"
@@ -40,6 +41,7 @@ github-knightwood-activityMessenger = { group = "com.github.Knightwood", name = 
 github-knightwood-m3preference-compose = { module = "com.github.Knightwood:ComposePreference", version.ref = "m3_compose_preference" }
 github-knightwood-m3preference = { module = "com.github.Knightwood:material3-preference", version.ref = "m3_preference" }
 github-knightwood-recyclerviewNeko = { module = "com.github.Knightwood:RecyclerViewNeko", version.ref = "recyclerviewNeko" }
+github-knightwood-m3ColorUtilities = { module = "com.github.knightwood:MaterialColorUtilities", version.ref = "m3ColorUtilities" }
 
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leak" }
 

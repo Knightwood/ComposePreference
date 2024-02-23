@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +37,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kiylx.compose_lib.pref_component.Typography.preferenceDescription
 import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
+import com.kiylx.compose_lib.pref_component.icons.ArrowDropDown
+import com.kiylx.compose_lib.pref_component.icons.ArrowDropUp
+import com.kiylx.compose_lib.pref_component.icons.Translate
 
 /**
  * @param title 标题
@@ -230,7 +230,7 @@ fun PreferenceCollapseBox(
                     )
                 }
                 JustIcon(
-                    icon = if (!isOpen) Icons.Filled.ArrowDropDown else Icons.Filled.ArrowDropUp,
+                    icon = if (!isOpen) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
                     enabled = dependenceState.value,
                     modifier = Modifier
                         .padding(end = Dimens.large.dp)
@@ -314,7 +314,7 @@ fun PreferencesCautionCard(
 fun PreferencesHintCard(
     title: String = "Title ".repeat(2),
     description: String? = "Description text ".repeat(3),
-    icon: Any? = Icons.Outlined.Translate,
+    icon: Any? = Icons.Default.Translate,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     contentColor: Color = MaterialTheme.colorScheme.onSecondary,
     onClick: () -> Unit = {},

@@ -1,60 +1,54 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("java-library")
+    kotlin("jvm")
     id("maven-publish")
-
 }
 
-android {
-    namespace = "com.kiylx.libx.pref_component.core"
-    compileSdk = 34
-
-    defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+    withJavadocJar()
 }
 
 dependencies {
-    implementation(libs.bundles.kotlins)
+    implementation(libs.kotlin.coroutines.core)
 }
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                groupId = "com.github.knightwood"
-                artifactId = "preference-data-core"
-                version = rootProject.ext["version"].toString()
-                afterEvaluate {
-                    from(components["release"])
-                }
-            }
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = "com.github.knightwood"
+            artifactId = "preference-data-core"
+            version = rootProject.ext["version"].toString()
+            from(components.findByName("java"))
         }
     }
 }
+
+//private fun Project.configureKotlin() {
+//    // Use withType to workaround https://youtrack.jetbrains.com/issue/KT-55947
+//    tasks.withType<KotlinCompile>().configureEach {
+//        kotlinOptions {
+//            // Set JVM target to 11
+//            jvmTarget = JavaVersion.VERSION_11.toString()
+//            // Treat all Kotlin warnings as errors (disabled by default)
+//            // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
+//            val warningsAsErrors: String? by project
+//            allWarningsAsErrors = warningsAsErrors.toBoolean()
+//            freeCompilerArgs = freeCompilerArgs + listOf(
+//                // Enable experimental coroutines APIs, including Flow
+//                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+//            )
+//        }
+//    }
+//}
