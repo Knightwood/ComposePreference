@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.kotlins)
+    implementation(libs.kotlin.coroutines.core)
     compileOnly(project(":preference-data-core"))
     implementation(others.github.mmkv)
 }

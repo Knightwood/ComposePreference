@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.kotlins)
+    implementation(libs.kotlin.coroutines.core)
     compileOnly(project(":preference-data-core"))
     //datastore
     implementation(libs.bundles.dataStore) {
