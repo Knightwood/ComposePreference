@@ -125,15 +125,22 @@ fun OutlinedEditTextPreference(
     ).enableStateFlow.collectAsState()
 
     var text by remember { mutableStateOf("") }
+    var first by remember {
+        mutableStateOf(true)
+    }
     LaunchedEffect(key1 = Unit, block = {
         pref.read().collect {
-            text = it
+           if (first) {
+                text = it
+                first = false
+            }
             changed(it)
         }
     })
 
     fun write(checked: String) {
         scope.launch {
+             text = it
             pref.write(checked)
         }
     }
@@ -264,15 +271,22 @@ fun FilledEditTextPreference(
     ).enableStateFlow.collectAsState()
 
     var text by remember { mutableStateOf("") }
+    var first by remember {
+        mutableStateOf(true)
+    }
     LaunchedEffect(key1 = Unit, block = {
         pref.read().collect {
-            text = it
+            if (first) {
+                text = it
+                first = false
+            }
             changed(it)
         }
     })
 
     fun write(checked: String) {
         scope.launch {
+             text = it
             pref.write(checked)
         }
     }
