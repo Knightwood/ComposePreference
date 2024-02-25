@@ -140,7 +140,6 @@ fun OutlinedEditTextPreference(
 
     fun write(checked: String) {
         scope.launch {
-             text = it
             pref.write(checked)
         }
     }
@@ -152,6 +151,7 @@ fun OutlinedEditTextPreference(
         OutlinedTextField(
             value = text,
             onValueChange = {
+                text = it
                 write(it)
             },
             label = { Text(text = title) },
@@ -286,7 +286,6 @@ fun FilledEditTextPreference(
 
     fun write(checked: String) {
         scope.launch {
-             text = it
             pref.write(checked)
         }
     }
@@ -298,6 +297,7 @@ fun FilledEditTextPreference(
         TextField(
             value = text,
             onValueChange = {
+                text = it
                 write(it)
             },
             label = { Text(text = title) },
