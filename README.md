@@ -1,6 +1,6 @@
-# compose material design 3 ，Preference interface components
-
-## **[中文](README_cn.md)** 
+# Preference component of the Material 3 design
+like androidx preference library, it can auto save and show preference
+**[中文](README_cn.md)**
 
 ## version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
@@ -26,8 +26,6 @@ dependencies {
 
 Simple to use, interface and preference value read and write separation
 
-Multiple storage/reading modes can be switched
-
 Preference reading and writing processes can be customized
 
 Provides the UI component to enable the status node dependency function
@@ -35,12 +33,14 @@ Provides the UI component to enable the status node dependency function
 Preference reading and writing tools can be used separately from the interface, and a unified
 writing and reading method is provided
 
-## Introductory picture
+## Preview
 
 |                                               |                                               |                                                                                    |
 |:---------------------------------------------:|:---------------------------------------------:|:----------------------------------------------------------------------------------:|
 | <img src="README.assets/1.jpg" width="210" /> | <img src="README.assets/3.jpg" width="210" /> | <img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> |
 | <img src="README.assets/2.jpg" width="210" /> | <img src="README.assets/6.jpg" width="210" /> |                   <img src="README.assets/5.jpg" width="210" />                    |
+
+# Usage
 
 ## supported tools for storing preference values
 

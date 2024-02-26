@@ -1,8 +1,8 @@
 # compose material design 3 ，Preference界面组件，偏好值读取写入工具
 
-## **版本
+与 AndroidX preference库一样，它可以自动保存并显示首选项
 
-** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+## **版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 ```kotlin
 dependencies {
