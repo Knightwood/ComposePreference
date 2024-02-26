@@ -1,5 +1,9 @@
 # Preference component of the Material 3 design
+
 like androidx preference library, it can auto save and show preference
+
+
+
 **[中文](README_cn.md)**
 
 ## version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
