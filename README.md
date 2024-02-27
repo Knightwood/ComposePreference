@@ -2,7 +2,7 @@
 
 like androidx preference library, it can auto save and show preference
 
-also we have multiplatform version：[link](KMM_Version)
+also we have multiplatform version：[link](https://github.com/Knightwood/ComposePreferenceMultiplatform)
 
 **[中文](README_cn.md)**
 
@@ -416,5 +416,3 @@ If you want switch A to be affected by its own node status, you only need to lea
 without specifying the dependenceKey.
 
 
-
-[KMM_Version]: https://github.com/Knightwood/ComposePreferenceMultiplatform

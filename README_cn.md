@@ -2,7 +2,7 @@
 
 与 AndroidX preference库一样，它可以自动保存并显示首选项
 
-当然，也有跨平台版：[链接][KMM_Version]
+当然，也有跨平台版：[链接](https://github.com/Knightwood/ComposePreferenceMultiplatform)
 
 ## **版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
@@ -416,6 +416,3 @@ A会受到DependenceNode.rootName节点影响
 
 
 
-
-
-[KMM_Version]: https://github.com/Knightwood/ComposePreferenceMultiplatform
