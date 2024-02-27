@@ -2,6 +2,8 @@
 
 与 AndroidX preference库一样，它可以自动保存并显示首选项
 
+当然，也有跨平台版：[链接][KMM_Version]
+
 ## **版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 ```kotlin
@@ -411,3 +413,9 @@ switch B 就会重组从而置灰。
 A会受到DependenceNode.rootName节点影响
 却不会受到自身节点状态的影响。
 若希望switch A收到自身节点状态的影响，只需要switch A不指定dependenceKey，保持它为null即可。
+
+
+
+
+
+[KMM_Version]: https://github.com/Knightwood/ComposePreferenceMultiplatform

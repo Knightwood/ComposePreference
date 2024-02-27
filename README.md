@@ -2,7 +2,7 @@
 
 like androidx preference library, it can auto save and show preference
 
-
+also we have multiplatform version：[link](KMM_Version)
 
 **[中文](README_cn.md)**
 
@@ -414,3 +414,7 @@ DependenceNode.rootName node
 However, it is not affected by the state of its own node.
 If you want switch A to be affected by its own node status, you only need to leave switch A null
 without specifying the dependenceKey.
+
+
+
+[KMM_Version]: https://github.com/Knightwood/ComposePreferenceMultiplatform
