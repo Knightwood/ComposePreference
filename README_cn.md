@@ -4,7 +4,8 @@
 
 当然，也有跨平台版：[链接](https://github.com/Knightwood/ComposePreferenceMultiplatform)
 
-## **版本** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+## **版本
+** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
 
 ```kotlin
 dependencies {
@@ -22,6 +23,10 @@ dependencies {
 //注：如果使用mmkv,sharedpreference,你自己的工程不要忘记引入相应mmkv,sharedpreference依赖，以及初始化mmkv等。
 ```
 
+* 一些破坏性改动
+  * 方法名 getReadWriteTool 改为 getSingleDataEditor
+  * 接口名 IPreferenceReadWrite 改为 IPreferenceEditor
+
 特性：
 
 使用简单，界面和偏好值读写分离
@@ -33,6 +38,8 @@ dependencies {
 提供界面组件启用状态节点依赖功能
 
 可脱离界面，单独使用偏好值读写工具，并提供了统一写入和读取（使用flow观察值的变化）方法
+
+也可以仅使用ui界面
 
 ## 介绍图
 
@@ -51,17 +58,32 @@ dependencies {
 
 但是注意，sharedpreference不支持存储double，mmkv不支持set<string>类型，他们所支持的有所差异。
 
-还可以继承`PreferenceHolder`和`IPreferenceReadWrite`实现额外的存储过程，例如存储到文件、数据库等。
+还可以继承`PreferenceHolder`和`IPreferenceEditor`实现额外的存储过程，例如存储到文件、数据库等。
 
-对于仅需要preference读写工具，而不需要ui界面的，可以仅引入`com.github.Knightwood.ComposePreference:preference-data-core`
+* 对于仅需要preference读写工具，而不需要ui界面的，可以仅引入`com.github.Knightwood.ComposePreference:preference-data-core`
 和任意一种读写工具。
+
+* 对于仅需要ui界面，可以仅引入`com.github.Knightwood.ComposePreference:preference-ui-compose`
+和`com.github.Knightwood.ComposePreference:preference-data-core`。
+
+示例在app module的MainActivity文件中，一共两个示例，自动存储偏好值和仅使用ui界面
+
+```kotlin
+if (selected == 0) {
+//自动存储偏好值
+    FirstPage()
+} else {
+//仅使用ui界面，不自动存储偏好值
+    SecondPage()
+}
+```
 
 ## 脱离界面，直接使用偏好值读写工具
 
-对于datastore提供了prefStoreHolder.getReadWriteTool()方式
-对于mmkv和SharedPreference,分别提供了两种工具，一种是prefStoreHolder.getReadWriteTool()方式，一种是委托的方式
+对于datastore提供了prefStoreHolder.getSingleDataEditor()方式
+对于mmkv和SharedPreference,分别提供了两种工具，一种是prefStoreHolder.getSingleDataEditor()方式，一种是委托的方式
 
-### prefStoreHolder.getReadWriteTool()方式
+### prefStoreHolder.getSingleDataEditor()方式
 
 MMKV,SharedPreference,DataStore均支持此种方式，这也是Preference组件所需要的读写工具
 
@@ -81,7 +103,7 @@ val prefStoreHolder = DataStorePreferenceHolder.instance(
                         ctx = AppCtx.instance
                     )
 //2，获取某个偏好值
-val pref =prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+val pref =prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = "")
 
 //3，flow持续观察偏好值变更
 pref.read().collect { s ->
@@ -134,9 +156,12 @@ log.d(TAG, helper.name)
 
 ## preference的界面组件
 
-要构建一个preference界面，需要使用`PreferencesScope`
-包裹preference的界面组件（PreferencesScope内部使用了column，因此可以放置任意的compose函数，如果现有的preference组件无法满足需要，可以放置任意compose函数构建界面），且向`PreferencesScope`
-传入上面支持的三种工具之一（当然你也可以自己继承接口定制额外的存储方式，例如数据库和文件）
+* 要构建一个自动存储偏好值的preference界面，需要使用`PreferencesScope`函数
+  包裹preference的界面组件（PreferencesScope内部使用了column，因此可以放置任意的compose函数，如果现有的preference组件无法满足需要，可以放置任意compose函数构建界面），且向`PreferencesScope`
+  传入上面支持的三种工具之一（当然你也可以自己继承接口定制额外的存储方式，例如数据库和文件）
+
+* 如果你不需要自动存储偏好值，也就是说你想单独使用ui界面。
+  直接使用Column包裹preference的界面组件，而不用PreferencesScope即可。
 
 示例代码（仅展示部分组件和参数）：
 

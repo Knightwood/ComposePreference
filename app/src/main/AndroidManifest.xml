@@ -14,7 +14,7 @@
         android:theme="@style/Theme.ComposeTemplate"
         tools:targetApi="31">
         <activity
-            android:name="com.kiylx.composepreference.testcompose.TestNavActivity"
+            android:name="com.kiylx.composepreference.testcompose.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ComposeTemplate">

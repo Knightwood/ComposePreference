@@ -31,3 +31,5 @@ interface IPreferenceEditor<T> {
     suspend fun write(data: T)
 
 }
+//兼容旧名称
+typealias IPreferenceReadWrite<T> = IPreferenceEditor<T>

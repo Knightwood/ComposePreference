@@ -23,6 +23,9 @@ dependencies {
 }
 //Note: If you use mmkv and sharedpreference, don't forget to introduce the corresponding mmkv, sharedpreference dependencies, and initialize mmkv in your own project.
 ```
+* Some breaking changes
+ * The method name "getReadWriteTool" has been changed to "getSingleDataEditor"
+ * The interface name "IPreferenceReadWrite" has been changed to "IPreferenceEditor"
 
 **!!! The following documents are translated by Microsoft Translator**
 
@@ -57,18 +60,33 @@ There are three tools available to store preference values
 However, note that SharedPreference does not support storing double value, and MMKV does not support
 set <string>types, and they support different ones.
 
-You can also inherit PreferenceHolder and IPreferenceReadWrite to implement additional stored
+You can also inherit PreferenceHolder and IPreferenceEditor to implement additional stored
 procedures, such as storing to a file, database, etc.
 
-if you only need preference read/write tool,don not need ui component，could dependence `com.github.Knightwood.ComposePreference:preference-data-core`
-and one read/write tool。
+* if you only need preference editor,don not need ui component，could dependence `com.github.Knightwood.ComposePreference:preference-data-core`
+and one editor。
+
+* if you only need ui component，don not need preference editor，could dependence `com.github.Knightwood.ComposePreference:preference-ui-compose`
+and `com.github.Knightwood.ComposePreference:preference-data-core`
+
+The example is in the MainActivity file of the app module, there are two examples, automatically store preference values and use only the ui interface
+
+```kotlin
+if (selected == 0) {
+//自动存储偏好值
+    FirstPage()
+} else {
+//仅使用ui界面，不自动存储偏好值
+    SecondPage()
+}
+```
 
 ## without ui component,use the preference reading and writing tool directly
 
-datastore can use `prefStoreHolder.getReadWriteTool()`
-mmkv and SharedPreference,Two tools are provided separately，one is `prefStoreHolder.getReadWriteTool()`，another one is Delegate tool
+datastore can use `prefStoreHolder.getSingleDataEditor()`
+mmkv and SharedPreference,Two tools are provided separately，one is `prefStoreHolder.getSingleDataEditor()`，another one is Delegate tool
 
-### prefStoreHolder.getReadWriteTool() 
+### prefStoreHolder.getSingleDataEditor() 
 
 MMKV, SharedPreference, and DataStore all support this method，This is also the read-write tool required by the Preference component
 
@@ -88,7 +106,7 @@ val prefStoreHolder = DataStorePreferenceHolder.instance(
                         ctx = AppCtx.instance
                     )
 //2，get some one preference value
-val pref =prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+val pref =prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = "")
 
 //3，use flow to observe data change 
 pref.read().collect { s ->
@@ -142,12 +160,16 @@ log.d(TAG, helper.name)
 
 ## Interface components
 
-To build a preference interface, you need to wrap the interface component of the preference with '
+* To build a preference interface, you need to wrap the interface component of the preference with '
 Preferences Scope' (the Preferences Scope uses a column inside, so you can place any compose
 function, and if the existing preference component can't meet your needs, you can place any kind of
 compose function to build the interface), and send a message to 'Preferences).
 Scope' passes in one of the three tools supported above (of course, you can also customize
 additional storage methods such as databases and files by inheriting the interface yourself)
+
+* If you don't need to automatically store preferences, that is, you want to use the UI interface alone.
+  You can directly use the column to wrap the interface component of the preference instead of the PreferencesScope.
+
 
 sample code:
 
