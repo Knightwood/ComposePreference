@@ -17,9 +17,7 @@
 
 package com.kiylx.libx.pref_component.mmkv_util;
 
-import android.app.Application
-import android.content.Context
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.kiylx.libx.pref_component.core.PreferenceHolder
 import com.tencent.mmkv.MMKV
 
@@ -30,14 +28,14 @@ class MMKVPreferenceHolder internal constructor(
     private val mmkv: MMKV
 ) : PreferenceHolder() {
 
-    override fun <T : Any> getReadWriteTool(
+    override fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
-    ): IPreferenceReadWrite<T> {
+    ): IPreferenceEditor<T> {
         return hashMap[keyName]?.let {
-            it as IPreferenceReadWrite<T>
+            it as IPreferenceEditor<T>
         } ?: let {
-            val tmp = MMKVReadWritePrefTool(mmkv, keyName, defaultValue)
+            val tmp = MMKVEditor(mmkv, keyName, defaultValue)
             hashMap[keyName] = tmp
             tmp
         }

@@ -33,15 +33,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
-import kotlinx.coroutines.launch
+import com.kiylx.compose_lib.pref_component.PreferenceTypographyTokens.titleMedium
 
 /**
  * @param keyName 标识存储偏好值的key的名称，也是启用状态的节点名称
@@ -55,21 +53,20 @@ import kotlinx.coroutines.launch
 @JvmName("PreferenceRadioGroup2")
 @Composable
 fun PreferenceRadioGroup(
+    modifier: Modifier=Modifier,
     keyName: String,
     labels: List<String>,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     left: Boolean = false,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle =PreferenceTheme.normalTextStyle,
     changed: (newIndex: Int) -> Unit = {},
 ) {
     val labels2 = labels.mapIndexed { index, s ->
         s to index
     }
-    PreferenceRadioGroup(keyName, labels2, enabled, dependenceKey, left, paddingValues, changed)
+    PreferenceRadioGroup(modifier,keyName, labels2, enabled, dependenceKey, left,  dimens, textStyle, changed)
 }
 
 /**
@@ -83,23 +80,21 @@ fun PreferenceRadioGroup(
  */
 @Composable
 fun PreferenceRadioGroup(
+    modifier: Modifier=Modifier,
     keyName: String,
     labelPairs: List<Pair<String, Int>>,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     left: Boolean = false,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle =PreferenceTheme.normalTextStyle,
     changed: (newIndex: Int) -> Unit = {},
 ) {
     if (labelPairs.isEmpty()) {
         throw IllegalArgumentException("labels cannot empty")
     }
-    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = 0)
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = 0)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -108,31 +103,25 @@ fun PreferenceRadioGroup(
     ).enableStateFlow.collectAsState()
 
     var selectedPos by remember {
-        mutableIntStateOf(labelPairs[0].second)
+        mutableIntStateOf(pref.readValue())
     }
-    LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect {
-            selectedPos = it
-            changed(it)
-        }
+    LaunchedEffect(key1 = selectedPos, block = {
+        pref.write(selectedPos)
+        changed(selectedPos)
     })
 
-    fun write(pos: Int) {
-        scope.launch {
-            pref.write(pos)
-        }
-    }
 
-    Column {
+    Column(modifier = modifier) {
         if (left) {
             repeat(labelPairs.size) { pos: Int ->
                 PreferenceSingleChoiceItem(
                     text = labelPairs[pos].first,
                     enabled = dependenceState.value,
                     selected = (labelPairs[pos].second == selectedPos),
-                    paddingValues = paddingValues,
+                    dimens =dimens,
+                    textStyle =textStyle,
                     onClick = {
-                        write(labelPairs[pos].second)
+                        selectedPos = (labelPairs[pos].second)
                     }
                 )
             }
@@ -142,9 +131,10 @@ fun PreferenceRadioGroup(
                     text = labelPairs[pos].first,
                     enabled = dependenceState.value,
                     selected = (labelPairs[pos].second == selectedPos),
-                    paddingValues = paddingValues,
+                    dimens =dimens,
+                    textStyle =textStyle,
                     onClick = {
-                        write(labelPairs[pos].second)
+                        selectedPos = (labelPairs[pos].second)
                     }
                 )
             }
@@ -154,10 +144,8 @@ fun PreferenceRadioGroup(
 
 @Composable
 fun PreferenceSingleChoiceItem(
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
+    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     text: String,
     selected: Boolean,
     enabled: Boolean,
@@ -172,7 +160,7 @@ fun PreferenceSingleChoiceItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             RadioButton(
@@ -185,10 +173,10 @@ fun PreferenceSingleChoiceItem(
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = Dimens.text.end.dp),
+                    .padding(end = dimens.mediumBox.end),
                 text = text,
                 maxLines = 1,
-                style = preferenceMediumTitle,
+                style = textStyle.title,
                 color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )
@@ -200,10 +188,8 @@ fun PreferenceSingleChoiceItem(
 
 @Composable
 fun PreferenceSingleChoiceItemRight(
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.medium.dp,
-        vertical = Dimens.medium.dp
-    ),
+    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     text: String,
     selected: Boolean,
     enabled: Boolean,
@@ -218,16 +204,16 @@ fun PreferenceSingleChoiceItemRight(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = Dimens.text.start.dp, end = Dimens.text.end.dp),
+                    .padding(dimens.mediumBox),
                 text = text,
                 maxLines = 1,
-                style = preferenceMediumTitle,
+                style = textStyle.title,
                 color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )

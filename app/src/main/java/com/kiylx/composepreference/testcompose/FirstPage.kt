@@ -30,10 +30,8 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.kiylx.compose_lib.pref_component.PreferenceCollapseBox
@@ -68,22 +66,49 @@ fun FirstPage() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-
-        //1. 使用dataStore存储偏好值
-//                  val holder=  DataStorePreferenceHolder.instance(
-//                        dataStoreName = "test",
-//                        ctx = AppCtx.instance
-//                    )
-        //1. 使用mmkv存储偏好值
-//                   val holder= MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
-        //3. 使用sharedprefrence存储偏好值
-        val holder = OldPreferenceHolder.instance(
-            AppCtx.instance.getSharedPreferences(
-                "ddd",
-                Context.MODE_PRIVATE
+        val menu = remember {
+            listOf(
+                MenuEntity(
+                    leadingIcon = Icons.Outlined.Edit,
+                    text = "edit",
+                    labelKey = 0
+                ),
+                MenuEntity(
+                    leadingIcon = Icons.Outlined.Settings,
+                    text = "Settings",
+                    labelKey = 1
+                ),
+                MenuDivider,
+                MenuEntity(
+                    leadingIcon = Icons.Outlined.Email,
+                    text = "Send Feedback",
+                    labelKey = 2
+                ),
             )
-        )
+        }
+        //1. 使用dataStore存储偏好值
+//        val holder = remember {
+//            DataStorePreferenceHolder.instance(
+//                dataStoreName = "test",
+//                ctx = AppCtx.instance
+//            )
+//        }
+
+        //2. 使用mmkv存储偏好值
+//        val holder = remember {
+//            MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
+//        }
+        //3. 使用sharedprefrence存储偏好值
+        val holder = remember {
+            OldPreferenceHolder.instance(
+                AppCtx.instance.getSharedPreferences(
+                    "ddd",
+                    Context.MODE_PRIVATE
+                )
+            )
+        }
         PreferencesScope(holder = holder) {
+//            val holder =LocalPrefs.current
             val customNodeName = "customNode"
             //创建一个自定义节点
             val node = holder.registerDependence(customNodeName, true)
@@ -116,7 +141,9 @@ fun FirstPage() {
                 title = "outlined编辑框", keyName = "edit11",
                 defaultValue = "默认文本",
                 icon = Icons.Filled.AccountCircle,
-            )
+            ){
+                Log.d(TAG, "outlined输入框: $it")
+            }
 
             FilledEditTextPreference(
                 defaultValue = "默认文本",
@@ -124,7 +151,7 @@ fun FirstPage() {
                 keyName = "edit12",
                 icon = Icons.Filled.AccountCircle,
                 changed = {
-
+                    Log.d(TAG, "filled输入框: $it ")
                 }
             )
             HorizontalDivider()
@@ -175,24 +202,7 @@ fun FirstPage() {
                 keyName = "PreferenceListMenu",
                 description = "list菜单介绍",
                 dependenceKey = customNodeName,
-                list = listOf(
-                    MenuEntity(
-                        leadingIcon = Icons.Outlined.Edit,
-                        text = "edit",
-                        labelKey = 0
-                    ),
-                    MenuEntity(
-                        leadingIcon = Icons.Outlined.Settings,
-                        text = "Settings",
-                        labelKey = 1
-                    ),
-                    MenuDivider,
-                    MenuEntity(
-                        leadingIcon = Icons.Outlined.Email,
-                        text = "Send Feedback",
-                        labelKey = 2
-                    ),
-                )
+                list = menu
             ) {
                 Log.d(TAG, "menu item labelKey: $it")
             }

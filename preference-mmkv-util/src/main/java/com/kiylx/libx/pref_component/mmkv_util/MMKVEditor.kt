@@ -17,7 +17,7 @@
 
 package com.kiylx.libx.pref_component.mmkv_util
 
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 /**
  * 提供偏好值的读写，MMKV实现功能版本
  */
-class MMKVReadWritePrefTool<T : Any>(
+class MMKVEditor<T : Any>(
     val kv: MMKV,
     val keyName: String,
     val defaultValue: T,
-) : IPreferenceReadWrite<T> {
+) : IPreferenceEditor<T> {
     val TAG="mmkv_tool"
 
     private val flow: MutableSharedFlow<T> = MutableSharedFlow<T>(1)
@@ -69,6 +69,10 @@ class MMKVReadWritePrefTool<T : Any>(
 
     override fun read(): Flow<T> {
         return flow
+    }
+
+    override fun readValue(): T {
+        return readWrite.read()
     }
 
     override suspend fun write(data: T) {

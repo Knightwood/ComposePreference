@@ -18,7 +18,7 @@
 package com.kiylx.libx.pref_component.preference_util;
 
 import android.content.SharedPreferences
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.kiylx.libx.pref_component.core.PreferenceHolder
 
 /**
@@ -28,14 +28,14 @@ class OldPreferenceHolder internal constructor(
     private val sp: SharedPreferences
 ) : PreferenceHolder() {
 
-    override fun <T : Any> getReadWriteTool(
+    override fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
-    ): IPreferenceReadWrite<T> {
+    ): IPreferenceEditor<T> {
         return hashMap[keyName]?.let {
-            it as IPreferenceReadWrite<T>
+            it as IPreferenceEditor<T>
         } ?: let {
-            val tmp = OldReadWritePrefTool(sp, keyName, defaultValue)
+            val tmp = SPEditor(sp, keyName, defaultValue)
             hashMap[keyName] = tmp
             tmp
         }

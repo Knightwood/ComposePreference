@@ -18,22 +18,22 @@
 package com.kiylx.libx.pref_component.preference_util
 
 import android.content.SharedPreferences
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 /**
  * 提供偏好值的读写，MMsp实现功能版本
  */
-class OldReadWritePrefTool<T : Any>(
+class SPEditor<T : Any>(
     private val sp: SharedPreferences,
     val keyName: String,
     val defaultValue: T,
-) : IPreferenceReadWrite<T> {
-    val TAG="prefs_tool"
+) : IPreferenceEditor<T> {
+    val TAG = "prefs_tool"
 
     private val flow: MutableSharedFlow<T> = MutableSharedFlow<T>(1)
-    var readWrite:SharedPreferencesUtil<T> =  (when (defaultValue) {
+    var readWrite: SharedPreferencesUtil<T> = (when (defaultValue) {
         is Int -> {
             sp.intRW(keyName, defaultValue)
         }
@@ -69,6 +69,10 @@ class OldReadWritePrefTool<T : Any>(
 
     override fun read(): Flow<T> {
         return flow
+    }
+
+    override fun readValue(): T {
+        return readWrite.read()
     }
 
     override suspend fun write(data: T) {

@@ -38,7 +38,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -48,7 +47,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 
 /**
  * If apart from input text change you also want to observe the
@@ -129,8 +127,6 @@ fun OutlinedEditTextPreference(
     icon: Any? = null,
     enabled: Boolean = true,
     dependenceKey: String? = null,
-    changed: (it: String) -> Unit = {},
-
     textStyle: TextStyle = LocalTextStyle.current,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -146,11 +142,11 @@ fun OutlinedEditTextPreference(
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = OutlinedTextFieldDefaults.shape,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    changed: (it: String) -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -158,39 +154,25 @@ fun OutlinedEditTextPreference(
         dependenceKey
     ).enableStateFlow.collectAsState()
 
-    var text by remember { mutableStateOf("") }
-    var first by remember {
-        mutableStateOf(true)
-    }
-    LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect {
-           if (first) {
-                text = it
-                first = false
-            }
-            changed(it)
-        }
+    var text by remember { mutableStateOf(pref.readValue()) }
+
+    LaunchedEffect(key1 = text, block = {
+        pref.write(text)
+        changed(text)
     })
 
-    fun write(checked: String) {
-        scope.launch {
-            pref.write(checked)
-        }
-    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal_start.dp, vertical = Dimens.small.dp)
+            .padding(horizontal = PreferenceDimenTokens.medium.dp, vertical = PreferenceDimenTokens.small.dp)
     ) {
         OutlinedTextField(
             value = text,
             onValueChange = {
                 text = it
-                write(it)
             },
             label = { Text(text = title) },
             enabled = dependenceState.value,
-
             textStyle = textStyle,
             placeholder = placeholder,
             trailingIcon = trailingIcon,
@@ -207,13 +189,14 @@ fun OutlinedEditTextPreference(
             interactionSource = interactionSource,
             colors = colors,
             shape = shape,
-            modifier = Modifier.padding(start = Dimens.small.dp, end = Dimens.small.dp),
+            modifier = Modifier.padding(start = PreferenceDimenTokens.small.dp, end = PreferenceDimenTokens.small.dp),
             leadingIcon = { JustIcon(icon = icon) },
         )
     }
 
 
 }
+
 /**
  * If apart from input text change you also want to observe the cursor location, selection range,
  * or IME composition use the TextField overload with the [TextFieldValue] parameter instead.
@@ -275,8 +258,6 @@ fun FilledEditTextPreference(
     icon: Any? = null,
     enabled: Boolean = true,
     dependenceKey: String? = null,
-    changed: (it: String) -> Unit = {},
-
     textStyle: TextStyle = LocalTextStyle.current,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -292,11 +273,11 @@ fun FilledEditTextPreference(
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = TextFieldDefaults.shape,
-    colors: TextFieldColors = TextFieldDefaults.colors()
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    changed: (it: String) -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -304,39 +285,25 @@ fun FilledEditTextPreference(
         dependenceKey
     ).enableStateFlow.collectAsState()
 
-    var text by remember { mutableStateOf("") }
-    var first by remember {
-        mutableStateOf(true)
-    }
-    LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect {
-            if (first) {
-                text = it
-                first = false
-            }
-            changed(it)
-        }
+    var text by remember { mutableStateOf(pref.readValue()) }
+
+    LaunchedEffect(key1 = text, block = {
+        pref.write(text)
+        changed(text)
     })
 
-    fun write(checked: String) {
-        scope.launch {
-            pref.write(checked)
-        }
-    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.all.horizontal_start.dp, vertical = Dimens.small.dp)
+            .padding(horizontal = PreferenceDimenTokens.medium.dp, vertical = PreferenceDimenTokens.small.dp)
     ) {
         TextField(
             value = text,
             onValueChange = {
                 text = it
-                write(it)
             },
             label = { Text(text = title) },
             enabled = dependenceState.value,
-
             textStyle = textStyle,
             placeholder = placeholder,
             trailingIcon = trailingIcon,
@@ -353,7 +320,7 @@ fun FilledEditTextPreference(
             interactionSource = interactionSource,
             colors = colors,
             shape = shape,
-            modifier = Modifier.padding(start = Dimens.small.dp, end = Dimens.small.dp),
+            modifier = Modifier.padding(start = PreferenceDimenTokens.small.dp, end = PreferenceDimenTokens.small.dp),
             leadingIcon = { JustIcon(icon = icon) },
         )
     }

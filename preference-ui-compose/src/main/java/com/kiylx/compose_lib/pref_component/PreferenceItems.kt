@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,12 +52,69 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.Typography.preferenceDescription
-import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
 import com.kiylx.compose_lib.pref_component.icons.ArrowDropDown
 import com.kiylx.compose_lib.pref_component.icons.ArrowDropUp
 import com.kiylx.compose_lib.pref_component.icons.Translate
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+fun PreferenceLayout(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    hasIcon: Boolean = true,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    dependenceKey: String? = null,
+    onLongClickLabel: String? = null,
+    onLongClick: (() -> Unit)? = null,
+    onClickLabel: String? = null,
+    onClick: () -> Unit = {},
+    startContent: @Composable RowScope.(paddingValues: PaddingValues, enabled: Boolean) -> Unit = { _, _ -> },
+    endContent: @Composable RowScope.(paddingValues: PaddingValues, enabled: Boolean) -> Unit = { _, _ -> },
+    mediumContent: @Composable ColumnScope.(enabled: Boolean) -> Unit = { _ -> }
+) {
+    val prefStoreHolder = LocalPrefs.current
+    //不注册自身节点，仅获取目标节点的状态
+    val dependenceState =
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
+    Surface(
+        modifier = modifier.combinedClickable(
+            onClick = onClick,
+            onClickLabel = onClickLabel,
+            enabled = dependenceState.value,
+            onLongClickLabel = onLongClickLabel,
+            onLongClick = onLongClick
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.boxItem),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            startContent(
+                paddingValues = dimens.startItem,
+                enabled = dependenceState.value
+            )
+            MediumTextContainer(
+                icon = hasIcon,
+                paddingValues = dimens.mediumBox
+            ) {
+                mediumContent(enabled = dependenceState.value,)
+            }
+            endContent(
+                paddingValues = dimens.endItem,
+                enabled = dependenceState.value
+            )
+        }
+    }
+
+}
+
 
 /**
  * @param title 标题
@@ -73,11 +131,14 @@ import com.kiylx.compose_lib.pref_component.icons.Translate
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreferenceItem(
+    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
     icon: Any? = null,
     endIcon: Any? = null,
     enabled: Boolean = true,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     dependenceKey: String? = null,
     onLongClickLabel: String? = null,
     onLongClick: (() -> Unit)? = null,
@@ -87,9 +148,12 @@ fun PreferenceItem(
     val prefStoreHolder = LocalPrefs.current
     //不注册自身节点，仅获取目标节点的状态
     val dependenceState =
-        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
     Surface(
-        modifier = Modifier.combinedClickable(
+        modifier = modifier.combinedClickable(
             onClick = onClick,
             onClickLabel = onClickLabel,
             enabled = dependenceState.value,
@@ -100,18 +164,38 @@ fun PreferenceItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = dependenceState.value)
-            MediumTextContainer(icon = icon) {
-                PreferenceItemTitleText(text = title, enabled = dependenceState.value, maxLines = 2)
-                if (description != null) PreferenceItemDescriptionText(
-                    text = description,
-                    enabled = dependenceState.value
+            WrappedIcon(
+                icon = icon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.startItem,
+                enabled = dependenceState.value
+            )
+            MediumTextContainer(
+                icon = icon,
+                paddingValues = dimens.mediumBox
+            ) {
+                PreferenceItemTitleText(
+                    text = title,
+                    style = textStyle.title,
+                    enabled = dependenceState.value, maxLines = 2
                 )
+                if (description != null) {
+                    PreferenceItemDescriptionText(
+                        text = description,
+                        style = textStyle.body,
+                        enabled = dependenceState.value
+                    )
+                }
             }
-            WrappedIcon(icon = endIcon, enabled = dependenceState.value)
+            WrappedIcon(
+                icon = endIcon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.endItem,
+                enabled = dependenceState.value
+            )
         }
     }
 
@@ -133,11 +217,14 @@ fun PreferenceItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreferenceItemVariant(
+    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
     icon: Any? = null,
     endIcon: Any? = null,
     enabled: Boolean = true,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.smallTextStyle,
     dependenceKey: String? = null,
     onLongClickLabel: String? = null,
     onLongClick: () -> Unit = {},
@@ -147,9 +234,12 @@ fun PreferenceItemVariant(
     val prefStoreHolder = LocalPrefs.current
     //不注册自身节点，仅获取目标节点的状态
     val dependenceState =
-        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
     Surface(
-        modifier = Modifier.combinedClickable(
+        modifier = modifier.combinedClickable(
             enabled = dependenceState.value,
             onClick = onClick,
             onClickLabel = onClickLabel,
@@ -160,22 +250,20 @@ fun PreferenceItemVariant(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = Dimens.title.horizontal_start.dp,
-                    end = Dimens.title.horizontal_end.dp,
-                    top = Dimens.title.vertical_top.dp,
-                    bottom = Dimens.title.vertical_top.dp
-                ),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = dependenceState.value)
-            MediumTextContainer(icon = icon) {
+            WrappedIcon(
+                icon = icon, iconSize = dimens.iconSize,
+                paddingValues = dimens.startItem, enabled = dependenceState.value
+            )
+            MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
                 with(MaterialTheme) {
                     PreferenceItemTitleText(
                         text = title,
                         maxLines = 1,
                         enabled = dependenceState.value,
-                        style = typography.titleMedium,
+                        style = textStyle.title,
                         color = colorScheme.onSurface.applyOpacity(enabled = dependenceState.value)
                     )
                     description?.let {
@@ -184,12 +272,17 @@ fun PreferenceItemVariant(
                             enabled = dependenceState.value,
                             color = colorScheme.onSurfaceVariant.applyOpacity(enabled = dependenceState.value),
                             maxLines = 2, overflow = TextOverflow.Ellipsis,
-                            style = preferenceDescription,
+                            style = textStyle.body,
                         )
                     }
                 }
             }
-            WrappedIcon(icon = endIcon, enabled = enabled)
+            WrappedIcon(
+                icon = endIcon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.endItem,
+                enabled = enabled
+            )
         }
     }
 
@@ -207,10 +300,13 @@ fun PreferenceItemVariant(
  */
 @Composable
 fun PreferenceCollapseBox(
+    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
     icon: Any? = null,
     dependenceKey: String? = null,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     enabled: Boolean = true,
     close: Boolean = false,
     stateChanged: (isOpen: Boolean) -> Unit = {},
@@ -222,10 +318,13 @@ fun PreferenceCollapseBox(
     val prefStoreHolder = LocalPrefs.current
     //不注册自身节点，仅获取目标节点的状态
     val dependenceState =
-        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
 
     Surface(
-        modifier = Modifier.toggleable(isOpen, dependenceState.value, null) {
+        modifier = modifier.toggleable(isOpen, dependenceState.value, null) {
             isOpen = it
             stateChanged(it)
         }
@@ -233,16 +332,25 @@ fun PreferenceCollapseBox(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.title.horizontal_start.dp, Dimens.title.vertical_top.dp),
+                .padding(dimens.boxItem),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                WrappedIcon(icon = icon, enabled = dependenceState.value)
-                MediumTextContainer(icon = icon) {
-                    PreferenceItemTitleText(text = title, enabled = dependenceState.value, maxLines = 2)
+                WrappedIcon(
+                    icon = icon, iconSize = dimens.iconSize,
+                    paddingValues = dimens.startItem, enabled = dependenceState.value
+                )
+                MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
+                    PreferenceItemTitleText(
+                        text = title,
+                        enabled = dependenceState.value,
+                        style = textStyle.title,
+                        maxLines = 2
+                    )
                     if (description != null) PreferenceItemDescriptionText(
                         text = description,
+                        style = textStyle.body,
                         enabled = dependenceState.value
                     )
                 }
@@ -250,14 +358,14 @@ fun PreferenceCollapseBox(
                     icon = if (!isOpen) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
                     enabled = dependenceState.value,
                     modifier = Modifier
-                        .padding(end = Dimens.large.dp)
-                        .size(Dimens.large_x.dp),
+                        .padding(end = PreferenceDimenTokens.large.dp)
+                        .size(PreferenceDimenTokens.large_x.dp),
                 )
             }
             AnimatedVisibility(visible = isOpen && dependenceState.value) {
                 Column {
                     content()
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.medium.dp))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = PreferenceDimenTokens.medium.dp))
                 }
             }
         }
@@ -265,7 +373,6 @@ fun PreferenceCollapseBox(
     }
 
 }
-
 
 
 /**
@@ -276,32 +383,42 @@ fun PreferenceCollapseBox(
  */
 @Composable
 fun PreferencesCautionCard(
+    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     icon: Any? = null,
     onClick: () -> Unit = {},
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = Dimens.title.horizontal_start.dp,
-                vertical = Dimens.title.vertical_top.dp
-            )
+            //外层padding
+            .padding(dimens.boxItemVert)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(MaterialTheme.colorScheme.errorContainer.harmonizeWithPrimary())
             .clickable { onClick() }
-            .padding(horizontal = Dimens.medium.dp, vertical = Dimens.large.dp),
+            //内层padding
+            .padding(
+                horizontal = PreferenceDimenTokens.medium.dp,
+                vertical = PreferenceDimenTokens.large.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        WrappedIcon(icon = icon, enabled = true)
-        MediumTextContainer(icon = icon) {
+        WrappedIcon(
+            icon = icon,
+            iconSize = dimens.iconSize,
+            paddingValues = dimens.startItem,
+            enabled = true
+        )
+        MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
             with(MaterialTheme) {
                 PreferenceItemTitleText(
                     text = title,
                     maxLines = 1,
-                    style = typography.titleLarge,
+                    style = textStyle.title,
                     color = colorScheme.onErrorContainer.harmonizeWithPrimary()
                 )
                 description?.let {
@@ -309,8 +426,9 @@ fun PreferencesCautionCard(
                         text = it,
                         color = colorScheme.onErrorContainer.harmonizeWithPrimary(),
                         maxLines = 2, overflow = TextOverflow.Ellipsis,
-                        style = preferenceDescription,
-                    )
+                        style = textStyle.body,
+
+                        )
                 }
             }
         }
@@ -329,40 +447,50 @@ fun PreferencesCautionCard(
  */
 @Composable
 fun PreferencesHintCard(
+    modifier: Modifier = Modifier,
     title: String = "Title ".repeat(2),
     description: String? = "Description text ".repeat(3),
     icon: Any? = Icons.Default.Translate,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     contentColor: Color = MaterialTheme.colorScheme.onSecondary,
     onClick: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
-                horizontal = Dimens.title.horizontal_start.dp,
-                vertical = Dimens.title.vertical_top.dp
+                dimens.boxItemVert
             )
             .clip(MaterialTheme.shapes.extraLarge)
             .background(backgroundColor)
             .clickable { onClick() }
-            .padding(horizontal = Dimens.medium.dp, vertical = Dimens.large.dp),
+            .padding(
+                horizontal = PreferenceDimenTokens.medium.dp,
+                vertical = PreferenceDimenTokens.large.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        WrappedIcon(icon = icon, tint = contentColor)
-        MediumTextContainer(icon = icon) {
+        WrappedIcon(
+            icon = icon,
+            iconSize = dimens.iconSize,
+            paddingValues = dimens.startItem,
+            tint = contentColor
+        )
+        MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
             PreferenceItemTitleText(
                 text = title,
                 maxLines = 1,
-                style = preferenceMediumTitle,
+                style = textStyle.title,
                 color = contentColor
             )
             description?.let {
                 PreferenceItemDescriptionText(
                     text = description,
                     color = contentColor,
+                    style = textStyle.body,
                     maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    style = preferenceDescription,
                 )
             }
         }
@@ -384,12 +512,15 @@ fun PreferencesHintCard(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreferenceItemLargeTitle(
+    modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
     icon: Any? = null,
     endIcon: Any? = null,
     dependenceKey: String? = null,
     enabled: Boolean = true,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.largeTextStyle,
     onLongClickLabel: String? = null,
     onLongClick: (() -> Unit)? = null,
     onClickLabel: String? = null,
@@ -398,10 +529,13 @@ fun PreferenceItemLargeTitle(
     val prefStoreHolder = LocalPrefs.current
     //不注册自身节点，仅获取目标节点的状态
     val dependenceState =
-        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
 
     Surface(
-        modifier = Modifier.combinedClickable(
+        modifier = modifier.combinedClickable(
             onClick = onClick,
             onClickLabel = onClickLabel,
             enabled = dependenceState.value,
@@ -412,27 +546,33 @@ fun PreferenceItemLargeTitle(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = Dimens.medium.dp,
-                    end = Dimens.medium.dp,
-                    top = Dimens.large.dp,
-                    bottom = Dimens.large.dp
-                ),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = dependenceState.value)
-            MediumTextContainer(icon = icon) {
+            WrappedIcon(
+                icon = icon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.startItem,
+                enabled = dependenceState.value
+            )
+            MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
                 PreferenceItemTitleText(
                     text = title,
+                    style = textStyle.title,
                     enabled = dependenceState.value, maxLines = 1,
-                    style = Typography.preferenceLargeTitle
                 )
                 if (description != null) PreferenceItemDescriptionText(
                     text = description,
+                    style = textStyle.body,
                     enabled = dependenceState.value
                 )
             }
-            WrappedIcon(icon = endIcon, enabled = dependenceState.value)
+            WrappedIcon(
+                icon = endIcon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.endItem,
+                enabled = dependenceState.value
+            )
         }
     }
 
@@ -446,39 +586,36 @@ fun PreferenceItemLargeTitle(
  */
 @Composable
 fun PreferenceItemSubTitle(
+    modifier: Modifier = Modifier,
     title: String,
     color: Color = MaterialTheme.colorScheme.primary,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.smallTextStyle,
     dependenceKey: String? = null,
     enabled: Boolean = true,
 ) {
     val prefStoreHolder = LocalPrefs.current
     //不注册自身节点，仅获取目标节点的状态
     val dependenceState =
-        prefStoreHolder.getDependenceNotEmpty(dependenceKey,enabled).enableStateFlow.collectAsState()
+        prefStoreHolder.getDependenceNotEmpty(
+            dependenceKey,
+            enabled
+        ).enableStateFlow.collectAsState()
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(
-                start = Dimens.title.horizontal_start.dp,
-                end = Dimens.title.horizontal_end.dp,
-                top = Dimens.title.vertical_top.dp,
-                bottom = Dimens.title.vertical_bottom.dp
-            ),
+            .padding(dimens.boxItem),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MediumTextContainer() {
+        MediumTextContainer(paddingValues = dimens.mediumBox) {
             PreferenceItemTitleText(
                 text = title,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = Dimens.large_x.dp,
-                        bottom = Dimens.small.dp
-                    ),
+                    .fillMaxWidth(),
                 enabled = dependenceState.value,
                 color = color,
-                style = MaterialTheme.typography.labelLarge
+                style = textStyle.title
             )
         }
     }
@@ -488,13 +625,15 @@ fun PreferenceItemSubTitle(
 
 
 @Composable
-internal fun WrappedIcon(
+fun WrappedIcon(
     icon: Any? = null, enabled: Boolean = true,
+    paddingValues: PaddingValues = PreferenceTheme.preferenceDimens.startItem,
+    iconSize: Dp = PreferenceTheme.preferenceDimens.iconSize,
     tint: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
 ) {
     val iconModifier = Modifier
-        .padding(start = Dimens.icon.start.dp, end = Dimens.icon.end.dp)
-        .size(Dimens.icon.size.dp)
+        .padding(paddingValues)
+        .size(iconSize)
     JustIcon(modifier = iconModifier, icon = icon, enabled = enabled, tint = tint)
 }
 
@@ -540,7 +679,7 @@ internal fun PreferenceItemTitleText(
     modifier: Modifier = Modifier,
     text: String,
     maxLines: Int = 2,
-    style: TextStyle = preferenceMediumTitle,
+    style: TextStyle = PreferenceTheme.typography.titleMedium,
     enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.onBackground,
     overflow: TextOverflow = TextOverflow.Ellipsis
@@ -560,7 +699,7 @@ internal fun PreferenceItemDescriptionText(
     modifier: Modifier = Modifier,
     text: String,
     maxLines: Int = Int.MAX_VALUE,
-    style: TextStyle = preferenceDescription,
+    style: TextStyle = PreferenceTheme.typography.bodyMedium,
     enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     overflow: TextOverflow = TextOverflow.Ellipsis
@@ -581,14 +720,15 @@ internal fun PreferenceItemDescriptionText(
 @Composable
 internal fun RowScope.MediumTextContainer(
     icon: Any? = null,
+    paddingValues: PaddingValues = PreferenceTheme.preferenceDimens.mediumBox,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = Modifier
             .weight(1f)
             .padding(
-                start = if (icon == null) Dimens.text.start.dp else 0.dp,
-                end = Dimens.text.end.dp
+                start = if (icon == null) paddingValues.start else 0.dp,
+                end = paddingValues.end
             ),
     ) {
         content()

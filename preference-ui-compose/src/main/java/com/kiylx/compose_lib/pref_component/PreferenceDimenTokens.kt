@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kiylx.common.lib_materialcolorutilities.blend.Blend
 
@@ -37,7 +38,7 @@ fun Color.harmonizeWith(other: Color) =
 fun Color.harmonizeWithPrimary(): Color =
     this.harmonizeWith(other = MaterialTheme.colorScheme.primary)
 
-object Dimens {
+object PreferenceDimenTokens {
 
     const val small_ss = 2
     const val small_s = 4
@@ -46,67 +47,63 @@ object Dimens {
     const val large = 16
     const val large_x = 24
     const val large_xx = 36
-
-    object all {
-        var horizontal_start = medium
-        var horizontal_end = medium
-        var vertical_top = medium
-        var vertical_bottom = small_ss
-    }
-    object title {
-        var horizontal_start = medium
-        var horizontal_end = medium
-        var vertical_top = large
-        var vertical_bottom = small_ss
-    }
-
-    //头部的icon相关
-    object icon {
-        var size = large_x
-
-        //padding
-        var start = medium
-        var end = medium
-        var top = large
-        var bottom = large
-
-    }
-
-    //中间的文字相关
-    object text {
-        //padding
-        var start = medium
-        var end = medium
-        var top = 0
-        var bottom = 0
-    }
-
-    //最后面的按钮相关
-    object end {
-        var start = large_x
-        var end = small
-    }
 }
 
-object Typography {
+object PreferenceTypographyTokens {
+    //<editor-fold desc="title">
 
-    val preferenceLargeTitle: TextStyle
+    //22sp
+    val titleLarge: TextStyle
         @Composable
-        get() = MaterialTheme.typography.titleLarge.copy(
-            fontSize = 24.sp
-        )
+        get() = MaterialTheme.typography.titleLarge
 
-    val preferenceSmallTitle: TextStyle
+    //20sp
+    val titleMedium: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
+
+    //16sp
+    val titleSmall: TextStyle
         @Composable
         get() = MaterialTheme.typography.titleMedium
+    //</editor-fold>
 
-    val preferenceMediumTitle: TextStyle
+    //<editor-fold desc="body">
+
+    //16sp
+    val bodyLarge: TextStyle
         @Composable
-        get() = MaterialTheme.typography.titleLarge.copy(
-            fontSize = 20.sp
-        )
+        get() = MaterialTheme.typography.bodyLarge
 
-    val preferenceDescription: TextStyle
+    //14sp
+    val bodyMedium: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyMedium
+
+    //12sp
+    val bodySmall: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.bodySmall
+
+    //</editor-fold>
+
+    //<editor-fold desc="label">
+
+    //14sp
+    val labelLarge: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.labelLarge
+
+    //12sp
+    val labelMedium: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.labelMedium
+
+    //11sp
+    val labelSmall: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.labelSmall
+
+    //</editor-fold>
+
 }

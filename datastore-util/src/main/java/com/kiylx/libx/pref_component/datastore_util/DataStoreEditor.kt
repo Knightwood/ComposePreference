@@ -27,19 +27,18 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
  * 提供偏好值的读写，datastore实现功能版本
  */
-class DataStoreReadWritePrefTool<T>(
+class DataStoreEditor<T>(
     val keyName: String,
     val defaultValue: T,
     val dataStore: DataStore<Preferences>
-) : IPreferenceReadWrite<T> {
-
+) : IPreferenceEditor<T> {
     var key: Preferences.Key<T> = (when (defaultValue) {
         is Int -> {
             intPreferencesKey(keyName)
@@ -73,12 +72,20 @@ class DataStoreReadWritePrefTool<T>(
             throw IllegalArgumentException("not support")
         }
     }) as Preferences.Key<T>
+    private var data: T = defaultValue
+    private val flow: Flow<T> = dataStore.data.map { preferences ->
+        // No type safety.
+        val tmp = preferences[key] ?: defaultValue
+        data = tmp
+        tmp
+    }
 
     override fun read(): Flow<T> {
-        return dataStore.data.map { preferences ->
-            // No type safety.
-            preferences[key] ?: defaultValue
-        }
+        return flow
+    }
+
+    override fun readValue(): T {
+        return data
     }
 
     override suspend fun write(data: T) {

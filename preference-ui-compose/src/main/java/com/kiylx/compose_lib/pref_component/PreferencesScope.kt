@@ -28,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.kiylx.libx.pref_component.core.DependenceNode
+import com.kiylx.libx.pref_component.core.DefaultPreferenceHolder
 import com.kiylx.libx.pref_component.core.PreferenceHolder
 
-val LocalPrefs = compositionLocalOf<PreferenceHolder> { error("没有提供值！") }
+val LocalPrefs = compositionLocalOf<PreferenceHolder> {
+    DefaultPreferenceHolder.instance()
+}
 
 /**
  * 在此方法 content中构建偏好值页面
@@ -41,7 +43,9 @@ val LocalPrefs = compositionLocalOf<PreferenceHolder> { error("没有提供值�
  */
 @Composable
 fun PreferencesScope(
-    holder: PreferenceHolder,
+    holder: PreferenceHolder = remember {
+        DefaultPreferenceHolder.instance()
+    },
     content: @Composable () -> Unit
 ) {
     val preferenceStore by remember {

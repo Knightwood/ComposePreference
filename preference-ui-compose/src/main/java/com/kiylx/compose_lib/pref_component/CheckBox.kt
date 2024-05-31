@@ -41,7 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.Typography.preferenceMediumTitle
+import com.kiylx.compose_lib.pref_component.PreferenceTypographyTokens.titleMedium
 import kotlinx.coroutines.launch
 
 private const val TAG = "PrefCheckBoxGroup"
@@ -58,46 +58,44 @@ private const val TAG = "PrefCheckBoxGroup"
 @JvmName("PreferenceCheckBoxGroup2")
 @Composable
 fun PreferenceCheckBoxGroup(
+    modifier: Modifier = Modifier,
     keyName: String,
     labels: List<String>,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     left: Boolean = true,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle =PreferenceTheme.normalTextStyle,
     changed: (newIndex: List<Int>) -> Unit = {},
 ) {
     val labels2 = labels.mapIndexed { index, s ->
         s to index
     }
-    PreferenceCheckBoxGroup(keyName, labels2, enabled, dependenceKey, left, paddingValues, changed)
+    PreferenceCheckBoxGroup(modifier,keyName, labels2, enabled, dependenceKey, left, dimens, textStyle,changed)
 }
 
 /**
  * @param keyName 标识存储偏好值的key的名称，也是启用状态的节点名称
  * @param enabled 是否启用
  * @param dependenceKey 若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
- * @param labelPairs :Pair<text,int> 包含着每个可选条目的显示文本和"存储值label"
+ * @param items :Pair<text,int> 包含着每个可选条目的显示文本和"存储值label"
  * @param left checkbox位于左侧或是右侧
  * @param paddingValues 调整边框的padding
  * @param changed "存储的偏好值label"初始化或更新后，会通过此参数通知
  */
 @Composable
 fun PreferenceCheckBoxGroup(
+    modifier: Modifier= Modifier,
     keyName: String,
-    labelPairs: List<Pair<String, Int>>,
+    items: List<Pair<String, Int>>,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     left: Boolean = true,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
-    changed: (newIndex: List<Int>) -> Unit = {},
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle =PreferenceTheme.normalTextStyle,
+    changed: (selected: List<Int>) -> Unit = {},
 ) {
-    if (labelPairs.isEmpty()){
+    if (items.isEmpty()) {
         throw IllegalArgumentException("labels cannot empty")
     }
     fun getStr(list: List<Int>): String {
@@ -121,7 +119,7 @@ fun PreferenceCheckBoxGroup(
 
     val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = "")
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = "")
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -148,40 +146,41 @@ fun PreferenceCheckBoxGroup(
         }
     }
 
-    Column {
-        repeat(labelPairs.size) { pos: Int ->
+    Column(modifier =modifier) {
+        repeat(items.size) { pos: Int ->
             val checked by remember {
                 derivedStateOf {
-                    selectedList.contains(labelPairs[pos].second)
+                    selectedList.contains(items[pos].second)
                 }
             }
             if (left) {
                 PreferenceCheckBoxItem(
-                    text = labelPairs[pos].first,
+                    text = items[pos].first,
                     selected = checked,
                     enabled = dependenceState.value,
-                    paddingValues = paddingValues,
+                    dimens =dimens,
+                    textStyle =textStyle,
                     onCheckedChanged = { bol ->
                         if (bol) {
-                            selectedList.add(labelPairs[pos].second)
+                            selectedList.add(items[pos].second)
                         } else {
-                            selectedList.remove(labelPairs[pos].second)
+                            selectedList.remove(items[pos].second)
                         }
                         write()
                     }
                 )
             } else {
                 PreferenceCheckBoxItemRight(
-                    text = labelPairs[pos].first,
+                    text = items[pos].first,
                     selected = checked,
+                    dimens =dimens,
+                    textStyle =textStyle,
                     enabled = dependenceState.value,
-                    paddingValues = paddingValues,
-
                     onCheckedChanged = { bol ->
                         if (bol) {
-                            selectedList.add(labelPairs[pos].second)
+                            selectedList.add(items[pos].second)
                         } else {
-                            selectedList.remove(labelPairs[pos].second)
+                            selectedList.remove(items[pos].second)
                         }
                         write()
                     }
@@ -196,35 +195,30 @@ fun PreferenceCheckBoxItem(
     text: String,
     selected: Boolean,
     enabled: Boolean,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
-    onCheckedChanged: (newValue: Boolean) -> Unit
+    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
+    onCheckedChanged: (checked: Boolean) -> Unit
 ) {
-    var checked = selected
     Surface(
         modifier = Modifier.toggleable(
-            value = checked,
+            value = selected,
             enabled = enabled,
         ) {
-            checked = it
-            onCheckedChanged(checked)
+            onCheckedChanged(it)
         }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
             Checkbox(
-                checked = checked,
+                checked = selected,
                 enabled = enabled,
                 onCheckedChange = {
-                    checked = it
-                    onCheckedChanged(checked)
+                    onCheckedChanged(it)
                 },
                 modifier = Modifier
                     .clearAndSetSemantics { },
@@ -233,10 +227,10 @@ fun PreferenceCheckBoxItem(
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = Dimens.text.end.dp),
+                    .padding(end = dimens.mediumBox.end),
                 text = text,
                 maxLines = 1,
-                style = preferenceMediumTitle,
+                style = textStyle.title,
                 color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )
@@ -249,45 +243,40 @@ fun PreferenceCheckBoxItemRight(
     text: String,
     selected: Boolean,
     enabled: Boolean,
-    paddingValues: PaddingValues = PaddingValues(
-        horizontal = Dimens.all.horizontal_start.dp,
-        vertical = Dimens.small.dp
-    ),
-    onCheckedChanged: (newValue: Boolean) -> Unit
+    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
+    onCheckedChanged: (checked: Boolean) -> Unit
 ) {
-    var checked = selected
     Surface(
         modifier = Modifier.toggleable(
-            value = checked,
+            value = selected,
             enabled = enabled,
         ) {
-            checked = it
-            onCheckedChanged(checked)
+            onCheckedChanged(it)
         }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues = paddingValues),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
             Text(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = Dimens.text.start.dp, end = Dimens.text.end.dp),
+                    .padding(dimens.mediumBox),
                 text = text,
                 maxLines = 1,
-                style = preferenceMediumTitle,
+                style = textStyle.title,
                 color = MaterialTheme.colorScheme.onSurface.applyOpacity(enabled),
                 overflow = TextOverflow.Ellipsis
             )
             Checkbox(
-                checked = checked,
+                checked = selected,
                 enabled = enabled,
                 onCheckedChange = {
-                    checked = it
-                    onCheckedChanged(checked)
+                    onCheckedChanged(it)
                 },
                 modifier = Modifier
                     .padding()

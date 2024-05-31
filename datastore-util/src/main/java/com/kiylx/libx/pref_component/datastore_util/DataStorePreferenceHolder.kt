@@ -20,7 +20,7 @@ package com.kiylx.libx.pref_component.datastore_util;
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.kiylx.libx.pref_component.core.IPreferenceReadWrite
+import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.kiylx.libx.pref_component.core.PreferenceHolder
 
 /**
@@ -33,14 +33,14 @@ class DataStorePreferenceHolder internal constructor(
     private val Context.myDataStore by preferencesDataStore(dataStoreName)
     private fun dataStore() = ctx.myDataStore
 
-    override fun <T : Any> getReadWriteTool(
+    override fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
-    ): IPreferenceReadWrite<T> {
+    ): IPreferenceEditor<T> {
         return hashMap[keyName]?.let {
-            it as IPreferenceReadWrite<T>
+            it as IPreferenceEditor<T>
         } ?: let {
-            val tmp = DataStoreReadWritePrefTool(keyName, defaultValue, dataStore())
+            val tmp = DataStoreEditor(keyName, defaultValue, dataStore())
             hashMap[keyName] = tmp
             tmp
         }

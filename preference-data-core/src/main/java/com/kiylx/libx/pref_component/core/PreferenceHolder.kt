@@ -18,10 +18,9 @@
 package com.kiylx.libx.pref_component.core
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 abstract class PreferenceHolder {
-    //记录每个偏好值的key与其对应的偏好值读写工具
+    //记录每个偏好值的key与其对应的编辑工具
     val hashMap: HashMap<String, Any> = hashMapOf()
 
     //记录每个key对应的enable状态
@@ -35,10 +34,17 @@ abstract class PreferenceHolder {
         )
     }
 
-    abstract fun <T : Any> getReadWriteTool(
+    /**
+     * 获取编辑单个偏好值的读写工具，其持有某个key对应的偏好值
+     *
+     * @param keyName String
+     * @param defaultValue T
+     * @return IPreferenceReadWrite<T>
+     */
+    abstract fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
-    ): IPreferenceReadWrite<T>
+    ): IPreferenceEditor<T>
 
     /**
      * 将注册者自身(preference compose function)的状态记录下来，并返回注册者依赖的节点状态

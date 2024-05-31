@@ -30,14 +30,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 
 
 /**
@@ -53,7 +50,10 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun PreferenceSlider(
+    modifier: Modifier = Modifier,
     keyName: String,
+    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     min: Float,
     max: Float,
     steps: Int,
@@ -62,9 +62,8 @@ fun PreferenceSlider(
     dependenceKey: String? = null,
     changed: (newValue: Float) -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = defaultValue)
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -73,34 +72,21 @@ fun PreferenceSlider(
     ).enableStateFlow.collectAsState()
 
     var progress by remember {
-        mutableFloatStateOf(defaultValue)
-    }
-    var first by remember {
-        mutableStateOf(true)
+        mutableFloatStateOf(pref.readValue())
     }
     var updateFlag by remember {
         mutableLongStateOf(0L)
     }
 
-    //读取prefs
-    LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect { s ->
-            if (first) {
-                progress = s
-                first = false
-            }
-            changed(progress)
-        }
-    })
-
     //写入prefs
     LaunchedEffect(key1 = updateFlag, block = {
         pref.write(progress)
+        changed(progress)
     })
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(Dimens.all.horizontal_start.dp, Dimens.all.vertical_bottom.dp),
+            .padding(dimens.boxItem),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -109,10 +95,7 @@ fun PreferenceSlider(
             enabled = dependenceState.value,
             modifier = Modifier
                 .weight(4f)
-                .padding(
-                    start = Dimens.text.start.dp,
-                    end = Dimens.text.end.dp,
-                ),
+                .padding(dimens.mediumBox),
             onValueChange = {
                 progress = it
             },
@@ -125,10 +108,10 @@ fun PreferenceSlider(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = Dimens.text.end.dp),
+                .padding(end = dimens.endItem.end),
             text = String.format("%.2f", progress),
             maxLines = 1,
-            style = Typography.preferenceMediumTitle,
+            style = textStyle.title,
             color = MaterialTheme.colorScheme.onSurface.applyOpacity(dependenceState.value),
             overflow = TextOverflow.Ellipsis
         )

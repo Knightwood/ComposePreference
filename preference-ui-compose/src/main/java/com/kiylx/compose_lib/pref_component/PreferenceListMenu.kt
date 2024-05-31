@@ -31,31 +31,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.kiylx.compose_lib.pref_component.icons.Check
 import com.kiylx.compose_lib.pref_component.icons.MoreVert
-import kotlinx.coroutines.launch
 
 @Composable
 fun PreferenceListMenu(
+    modifier: Modifier = Modifier,
     title: String,
     keyName: String,
     description: String? = null,
     list: List<MenuItem>,
     icon: Any? = null,
     enabled: Boolean = true,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
+    textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     dependenceKey: String? = null,
     changed: (newLabelKey: Int) -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getReadWriteTool(keyName = keyName, defaultValue = 0)
+    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = 0)
     //注册自身节点，并且获取目标节点的状态
     val dependenceState = prefStoreHolder.getDependence(
         keyName,
@@ -66,23 +66,16 @@ fun PreferenceListMenu(
 
     //当前的选择
     var selectLabelKey by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
-    LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect {
-            selectLabelKey = it
-            changed(it)
-        }
+    LaunchedEffect(key1 = selectLabelKey, block = {
+        pref.write(selectLabelKey)
+        changed(selectLabelKey)
     })
-    fun write(labelKey: Int) {
-        scope.launch {
-            pref.write(labelKey)
-        }
-    }
 
     Surface(
-        modifier = Modifier.toggleable(
+        modifier = modifier.toggleable(
             value = expanded,
             enabled = dependenceState.value,
         ) { checked ->
@@ -92,11 +85,14 @@ fun PreferenceListMenu(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.all.horizontal_start.dp, Dimens.all.vertical_top.dp),
+                .padding(dimens.boxItem),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrappedIcon(icon = icon, enabled = dependenceState.value)
-            MediumTextContainer(icon = icon) {
+            WrappedIcon(icon = icon,
+                iconSize = dimens.iconSize,
+                paddingValues = dimens.startItem,
+                enabled = dependenceState.value)
+            MediumTextContainer(icon = icon, paddingValues = dimens.mediumBox) {
                 PreferenceItemTitleText(text = title, enabled = dependenceState.value, maxLines = 2)
                 if (description != null) PreferenceItemDescriptionText(
                     text = description,
@@ -113,6 +109,8 @@ fun PreferenceListMenu(
 //                }
                 WrappedIcon(
                     icon = Icons.Default.MoreVert,
+                    iconSize = dimens.iconSize,
+                    paddingValues = dimens.endItem,
                     enabled = dependenceState.value,
                 )
                 DropdownMenu(
@@ -132,7 +130,6 @@ fun PreferenceListMenu(
                                     text = { Text(entity.text) },
                                     onClick = {
                                         selectLabelKey = entity.labelKey
-                                        write(selectLabelKey)
                                         expanded = false
                                     },
                                     leadingIcon = {
