@@ -6,5 +6,5 @@ plugins {
 }
 
 ext {
-    this["version"] = "1.2.3"
+    this["version"] = "1.2.5"
 }

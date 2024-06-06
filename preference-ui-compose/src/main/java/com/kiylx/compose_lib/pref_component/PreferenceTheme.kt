@@ -149,7 +149,7 @@ data class PreferenceDimens(
      */
     val boxItem: PaddingValues = PaddingValues(
         horizontal = PreferenceDimenTokens.medium.dp,
-        vertical = PreferenceDimenTokens.small.dp
+        vertical = PreferenceDimenTokens.large.dp
     ),
 
     /**

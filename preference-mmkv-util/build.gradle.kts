@@ -55,6 +55,24 @@ afterEvaluate {
                 afterEvaluate {
                     from(components["release"])
                 }
+                pom {
+                    name.set("preference-mmkv-util")
+                    description.set("preference mmkv util")
+                    url.set("https://github.com/Knightwood/ComposePreference")
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("knightwood")
+                            name.set("KnightWood")
+                            email.set("33772264+Knightwood@users.noreply.github.com")
+                        }
+                    }
+                }
             }
         }
     }

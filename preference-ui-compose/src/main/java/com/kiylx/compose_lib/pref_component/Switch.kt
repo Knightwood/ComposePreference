@@ -17,6 +17,7 @@
 
 package com.kiylx.compose_lib.pref_component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -50,6 +51,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kiylx.compose_lib.pref_component.icons.Check
 
+private const val TAG = "Switch"
 
 /**
  * @param keyName 标识存储偏好值的key的名称，也是标识此组件启用状态的节点名称
@@ -109,8 +111,8 @@ fun PreferenceSwitch(
         modifier = modifier.toggleable(
             value = isChecked,
             enabled = dependenceState.value,
-            onValueChange = { checked ->
-                isChecked = checked
+            onValueChange = {
+                isChecked = !isChecked
             }
         )
     ) {
@@ -248,8 +250,8 @@ fun PreferenceSwitchWithDivider(
             )
             Switch(
                 checked = isChecked,
-                onCheckedChange = { checked ->
-                    isChecked = checked
+                onCheckedChange = {
+                    isChecked = !isChecked
                 },
                 modifier = Modifier
                     .padding(dimens.endItem)
@@ -318,7 +320,7 @@ fun PreferenceSwitchWithContainer(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding( dimens.boxItem)
+            .padding(dimens.boxItem)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(
                 (if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline).let {
@@ -328,8 +330,8 @@ fun PreferenceSwitchWithContainer(
             .toggleable(
                 value = isChecked,
                 enabled = dependenceState.value,
-            ) { checked ->
-                isChecked = checked
+            ) {
+                isChecked = !isChecked
             }
             .padding(
                 horizontal = PreferenceDimenTokens.medium.dp,

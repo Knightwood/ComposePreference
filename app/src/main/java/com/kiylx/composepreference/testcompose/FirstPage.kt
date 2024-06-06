@@ -55,7 +55,9 @@ import com.kiylx.compose_lib.pref_component.PreferencesHintCard
 import com.kiylx.compose_lib.pref_component.PreferencesScope
 import com.kiylx.composepreference.AppCtx
 import com.kiylx.libx.pref_component.core.DependenceNode
+import com.kiylx.libx.pref_component.mmkv_util.MMKVPreferenceHolder
 import com.kiylx.libx.pref_component.preference_util.OldPreferenceHolder
+import com.tencent.mmkv.MMKV
 
 
 const val TAG = "TestPage1"
@@ -95,18 +97,18 @@ fun FirstPage() {
 //        }
 
         //2. 使用mmkv存储偏好值
-//        val holder = remember {
-//            MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
-//        }
-        //3. 使用sharedprefrence存储偏好值
         val holder = remember {
+            MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
+        }
+        //3. 使用sharedprefrence存储偏好值
+        /*val holder = remember {
             OldPreferenceHolder.instance(
                 AppCtx.instance.getSharedPreferences(
                     "ddd",
                     Context.MODE_PRIVATE
                 )
             )
-        }
+        }*/
         PreferencesScope(holder = holder) {
 //            val holder =LocalPrefs.current
             val customNodeName = "customNode"

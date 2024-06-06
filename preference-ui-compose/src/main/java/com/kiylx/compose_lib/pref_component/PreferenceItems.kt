@@ -18,6 +18,7 @@
 package com.kiylx.compose_lib.pref_component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +49,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -134,9 +138,18 @@ fun PreferenceItem(
     modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
+    enabled: Boolean = true,
     icon: Any? = null,
     endIcon: Any? = null,
-    enabled: Boolean = true,
+    endIconTint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+
+    containerShape: Shape = RectangleShape,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerContentColor: Color = contentColorFor(containerColor),
+    containerTonalElevation: Dp = 0.dp,
+    containerShadowElevation: Dp = 0.dp,
+    containerBorder: BorderStroke? = null,
+
     dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
     textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
     dependenceKey: String? = null,
@@ -160,6 +173,12 @@ fun PreferenceItem(
             onLongClickLabel = onLongClickLabel,
             onLongClick = onLongClick
         ),
+        shape=containerShape,
+        color = containerColor,
+        contentColor = containerContentColor,
+        tonalElevation = containerTonalElevation,
+        shadowElevation = containerShadowElevation,
+        border = containerBorder,
     ) {
         Row(
             modifier = Modifier
@@ -194,7 +213,8 @@ fun PreferenceItem(
                 icon = endIcon,
                 iconSize = dimens.iconSize,
                 paddingValues = dimens.endItem,
-                enabled = dependenceState.value
+                enabled = dependenceState.value,
+                tint = endIconTint,
             )
         }
     }
@@ -629,12 +649,12 @@ fun WrappedIcon(
     icon: Any? = null, enabled: Boolean = true,
     paddingValues: PaddingValues = PreferenceTheme.preferenceDimens.startItem,
     iconSize: Dp = PreferenceTheme.preferenceDimens.iconSize,
-    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     val iconModifier = Modifier
         .padding(paddingValues)
         .size(iconSize)
-    JustIcon(modifier = iconModifier, icon = icon, enabled = enabled, tint = tint)
+    JustIcon(modifier = iconModifier, icon = icon, enabled = enabled, tint = tint.applyOpacity(enabled))
 }
 
 @Composable
