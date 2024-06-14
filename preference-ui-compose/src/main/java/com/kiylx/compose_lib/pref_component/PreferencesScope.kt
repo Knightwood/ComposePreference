@@ -52,13 +52,6 @@ fun PreferencesScope(
         mutableStateOf(holder)
     }
     CompositionLocalProvider(LocalPrefs provides preferenceStore) {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-            ) {
-                content()
-            }
-        }
+        content()
     }
 }

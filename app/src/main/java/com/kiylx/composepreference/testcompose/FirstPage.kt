@@ -19,7 +19,10 @@ package com.kiylx.composepreference.testcompose
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CenterFocusWeak
@@ -110,181 +113,187 @@ fun FirstPage() {
             )
         }*/
         PreferencesScope(holder = holder) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+            ) {
+
 //            val holder =LocalPrefs.current
-            val customNodeName = "customNode"
-            //创建一个自定义节点
-            val node = holder.registerDependence(customNodeName, true)
-            PreferencesCautionCard(title = "PreferencesCautionCard")
-            PreferencesHintCard(title = "PreferencesHintCard")
+                val customNodeName = "customNode"
+                //创建一个自定义节点
+                val node = holder.registerDependence(customNodeName, true)
+                PreferencesCautionCard(title = "PreferencesCautionCard")
+                PreferencesHintCard(title = "PreferencesHintCard")
 
-            PreferenceItemLargeTitle(title = "PreferenceItem大标题")
-            PreferenceItem(
-                title = "普通的PreferenceItem",
-                description = "可以带图标",
-                icon = Icons.Filled.LiveTv,
-                endIcon = Icons.Filled.ChevronRight
-            )
-            PreferenceItem(
-                title = "绝大多数可带图标",
-                icon = Icons.Filled.Wifi,
-                endIcon = Icons.Filled.ChevronRight
-            )
+                PreferenceItemLargeTitle(title = "PreferenceItem大标题")
+                PreferenceItem(
+                    title = "普通的PreferenceItem",
+                    description = "可以带图标",
+                    icon = Icons.Filled.LiveTv,
+                    endIcon = Icons.Filled.ChevronRight
+                )
+                PreferenceItem(
+                    title = "绝大多数可带图标",
+                    icon = Icons.Filled.Wifi,
+                    endIcon = Icons.Filled.ChevronRight
+                )
 
-            PreferenceItemVariant(
-                title = "PreferenceItem变种",
-                icon = Icons.Filled.AccountCircle,
-                endIcon = Icons.Filled.ChevronRight,
-                description = "但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别"
-            )
+                PreferenceItemVariant(
+                    title = "PreferenceItem变种",
+                    icon = Icons.Filled.AccountCircle,
+                    endIcon = Icons.Filled.ChevronRight,
+                    description = "但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别,但是用起来无差别"
+                )
 
-            HorizontalDivider()
-            PreferenceItemSubTitle(title = "编辑框Preference")
-            OutlinedEditTextPreference(
-                title = "outlined编辑框", keyName = "edit11",
-                defaultValue = "默认文本",
-                icon = Icons.Filled.AccountCircle,
-            ){
-                Log.d(TAG, "outlined输入框: $it")
-            }
-
-            FilledEditTextPreference(
-                defaultValue = "默认文本",
-                title = "Filled编辑框",
-                keyName = "edit12",
-                icon = Icons.Filled.AccountCircle,
-                changed = {
-                    Log.d(TAG, "filled输入框: $it ")
+                HorizontalDivider()
+                PreferenceItemSubTitle(title = "编辑框Preference")
+                OutlinedEditTextPreference(
+                    title = "outlined编辑框", keyName = "edit11",
+                    defaultValue = "默认文本",
+                    icon = Icons.Filled.AccountCircle,
+                ) {
+                    Log.d(TAG, "outlined输入框: $it")
                 }
-            )
-            HorizontalDivider()
 
-
-            PreferenceItemSubTitle(title = "PreferenceItemSubTitle")
-            PreferenceSwitch(
-                keyName = "bol2",
-                title = "启用下面全部",
-                dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
-                description = "关闭开关以禁用下面内容",
-            ) {
-                node.enableStateFlow.tryEmit(it)
-            }
-            PreferenceCollapseBox(
-                title = "可折叠菜单",
-                description = "preference描述",
-                dependenceKey = customNodeName,
-            ) {
-
-                PreferenceSwitch(
-                    keyName = "bol",
-                    title = "title",
-                    dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
-                    description = "description",
-                    icon = Icons.Filled.AccountCircle
-                ) { state ->
-                    //这里获取并修改了当前的enable状态，
-                    //依赖这个节点的会改变显示状态，
-                    //如果当前没有指定依赖，自身也会受到影响
-                    holder.getDependence("bol")?.let {
-                        it.enableStateFlow.tryEmit(state)
+                FilledEditTextPreference(
+                    defaultValue = "默认文本",
+                    title = "Filled编辑框",
+                    keyName = "edit12",
+                    icon = Icons.Filled.AccountCircle,
+                    changed = {
+                        Log.d(TAG, "filled输入框: $it ")
                     }
-                }
-                //依赖keyName为bol的PreferenceSwitch的state
+                )
+                HorizontalDivider()
+
+
+                PreferenceItemSubTitle(title = "PreferenceItemSubTitle")
                 PreferenceSwitch(
-                    keyName = "bol3",
-                    title = "title",
-                    dependenceKey = "bol",
+                    keyName = "bol2",
+                    title = "启用下面全部",
+                    dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
+                    description = "关闭开关以禁用下面内容",
+                ) {
+                    node.enableStateFlow.tryEmit(it)
+                }
+                PreferenceCollapseBox(
+                    title = "可折叠菜单",
+                    description = "preference描述",
+                    dependenceKey = customNodeName,
+                ) {
+
+                    PreferenceSwitch(
+                        keyName = "bol",
+                        title = "title",
+                        dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
+                        description = "description",
+                        icon = Icons.Filled.AccountCircle
+                    ) { state ->
+                        //这里获取并修改了当前的enable状态，
+                        //依赖这个节点的会改变显示状态，
+                        //如果当前没有指定依赖，自身也会受到影响
+                        holder.getDependence("bol")?.let {
+                            it.enableStateFlow.tryEmit(state)
+                        }
+                    }
+                    //依赖keyName为bol的PreferenceSwitch的state
+                    PreferenceSwitch(
+                        keyName = "bol3",
+                        title = "title",
+                        dependenceKey = "bol",
+                        description = "description",
+                        icon = Icons.Filled.CenterFocusWeak
+                    )
+
+                }
+
+                PreferenceListMenu(
+                    title = "list菜单",
+                    keyName = "PreferenceListMenu",
+                    description = "list菜单介绍",
+                    dependenceKey = customNodeName,
+                    list = menu
+                ) {
+                    Log.d(TAG, "menu item labelKey: $it")
+                }
+                HorizontalDivider()
+
+                PreferenceItemSubTitle(
+                    title = "各种switch",
+                    dependenceKey = customNodeName,
+                )
+                PreferenceSwitchWithContainer(
+                    keyName = "bol4",
+                    title = "带Container的Switch",
+                    description = "描述，描述，描述，描述，描述",
+                    dependenceKey = customNodeName,
+                    icon = null
+                )
+
+                PreferenceSwitch(
+                    keyName = "www",
+                    title = "夜间模式",
+                    dependenceKey = customNodeName,//指定依赖为根结点，这样自身就不会受到影响
+                    description = "开关描述",
+                ) {
+                    Log.d(TAG, "FirstPage: $it")
+                    isDarkFlow.tryEmit(it)
+                }
+
+                PreferenceSwitchWithDivider(
+                    keyName = "bol5",
+                    title = "前部可点击switch",
+                    dependenceKey = customNodeName,
                     description = "description",
                     icon = Icons.Filled.CenterFocusWeak
                 )
+                HorizontalDivider()
 
+                PreferenceItemSubTitle(
+                    title = "RadioGroup",
+                    dependenceKey = customNodeName,
+                )
+                PreferenceRadioGroup(
+                    keyName = "radioGroup",
+                    dependenceKey = customNodeName,
+                    labelPairs = listOf(
+                        "first" to 3,
+                        "second" to 1
+                    ), changed = {
+                        Log.d(TAG, "radio: ${it}")
+                    }
+                )
+                HorizontalDivider()
+
+                PreferenceItemSubTitle(
+                    title = "CheckBoxGroup",
+                    dependenceKey = customNodeName,
+                )
+                PreferenceCheckBoxGroup(
+                    keyName = "CheckBoxGroup",
+                    dependenceKey = customNodeName,
+                    labels = listOf(
+                        "first",
+                        "second"
+                    ), changed = {
+                        Log.d(TAG, "checkbox: ${it.joinToString(",")}")
+                    }
+                )
+                HorizontalDivider()
+
+                PreferenceItemSubTitle(
+                    title = "PreferenceSlider",
+                    dependenceKey = customNodeName,
+                )
+                PreferenceSlider(
+                    keyName = "slider",
+                    dependenceKey = customNodeName, //依赖key为customNode的状态
+                    min = 0f,
+                    max = 10f, steps = 9, defaultValue = 0f, changed = {
+                        Log.d(TAG, "slider: $it")
+                    }
+                )
             }
-
-            PreferenceListMenu(
-                title = "list菜单",
-                keyName = "PreferenceListMenu",
-                description = "list菜单介绍",
-                dependenceKey = customNodeName,
-                list = menu
-            ) {
-                Log.d(TAG, "menu item labelKey: $it")
-            }
-            HorizontalDivider()
-
-            PreferenceItemSubTitle(
-                title = "各种switch",
-                dependenceKey = customNodeName,
-            )
-            PreferenceSwitchWithContainer(
-                keyName = "bol4",
-                title = "带Container的Switch",
-                description = "描述，描述，描述，描述，描述",
-                dependenceKey = customNodeName,
-                icon = null
-            )
-
-            PreferenceSwitch(
-                keyName = "www",
-                title = "夜间模式",
-                dependenceKey = customNodeName,//指定依赖为根结点，这样自身就不会受到影响
-                description = "开关描述",
-            ) {
-                Log.d(TAG, "FirstPage: $it")
-                isDarkFlow.tryEmit(it)
-            }
-
-            PreferenceSwitchWithDivider(
-                keyName = "bol5",
-                title = "前部可点击switch",
-                dependenceKey = customNodeName,
-                description = "description",
-                icon = Icons.Filled.CenterFocusWeak
-            )
-            HorizontalDivider()
-
-            PreferenceItemSubTitle(
-                title = "RadioGroup",
-                dependenceKey = customNodeName,
-            )
-            PreferenceRadioGroup(
-                keyName = "radioGroup",
-                dependenceKey = customNodeName,
-                labelPairs = listOf(
-                    "first" to 3,
-                    "second" to 1
-                ), changed = {
-                    Log.d(TAG, "radio: ${it}")
-                }
-            )
-            HorizontalDivider()
-
-            PreferenceItemSubTitle(
-                title = "CheckBoxGroup",
-                dependenceKey = customNodeName,
-            )
-            PreferenceCheckBoxGroup(
-                keyName = "CheckBoxGroup",
-                dependenceKey = customNodeName,
-                labels = listOf(
-                    "first",
-                    "second"
-                ), changed = {
-                    Log.d(TAG, "checkbox: ${it.joinToString(",")}")
-                }
-            )
-            HorizontalDivider()
-
-            PreferenceItemSubTitle(
-                title = "PreferenceSlider",
-                dependenceKey = customNodeName,
-            )
-            PreferenceSlider(
-                keyName = "slider",
-                dependenceKey = customNodeName, //依赖key为customNode的状态
-                min = 0f,
-                max = 10f, steps = 9, defaultValue = 0f, changed = {
-                    Log.d(TAG, "slider: $it")
-                }
-            )
         }
     }
 }

@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -108,7 +109,7 @@ fun PreferenceLayout(
                 icon = hasIcon,
                 paddingValues = dimens.mediumBox
             ) {
-                mediumContent(enabled = dependenceState.value,)
+                mediumContent(enabled = dependenceState.value)
             }
             endContent(
                 paddingValues = dimens.endItem,
@@ -123,10 +124,11 @@ fun PreferenceLayout(
 /**
  * @param title 标题
  * @param description 标题下方的描述信息
- * @param icon 左侧图标
- * @param endIcon 左侧图标
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param icon 左侧图标.如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ * @param endIcon 右侧图标 .如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ * @param dependenceKey
+ *     若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
  * @param onLongClick 长按事件
  * @param onClickLabel onClick 操作的语义/辅助功能标签
@@ -173,7 +175,7 @@ fun PreferenceItem(
             onLongClickLabel = onLongClickLabel,
             onLongClick = onLongClick
         ),
-        shape=containerShape,
+        shape = containerShape,
         color = containerColor,
         contentColor = containerContentColor,
         tonalElevation = containerTonalElevation,
@@ -225,10 +227,11 @@ fun PreferenceItem(
 /**
  * @param title 标题
  * @param description 标题下方的描述信息
- * @param icon 左侧图标
- * @param endIcon 左侧图标
+ * @param icon 左侧图标.如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ * @param endIcon 右侧图标 .如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param dependenceKey
+ *     若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
  * @param onLongClick 长按事件
  * @param onClickLabel onClick 操作的语义/辅助功能标签
@@ -312,7 +315,8 @@ fun PreferenceItemVariant(
  * @param title 标题
  * @param description 标题下方的描述信息
  * @param icon 左侧图标
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param dependenceKey
+ *     若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param enabled 是否启用
  * @param close 默认是打开、关闭状态
  * @param stateChanged 展开、关闭状态事件通知
@@ -520,10 +524,11 @@ fun PreferencesHintCard(
 /**
  * @param title 标题
  * @param description 标题下方的描述信息
- * @param icon 左侧图标
- * @param endIcon 左侧图标
+ * @param icon 左侧图标.如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ * @param endIcon 右侧图标 .如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ * @param dependenceKey
+ *     若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param onLongClickLabel onLongClick 操作的语义/辅助功能标签
  * @param onLongClick 长按事件
  * @param onClickLabel onClick 操作的语义/辅助功能标签
@@ -601,8 +606,9 @@ fun PreferenceItemLargeTitle(
 /**
  * @param title 标题
  * @param color 文本颜色
+ * @param dependenceKey
+ *     若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  */
 @Composable
 fun PreferenceItemSubTitle(
@@ -654,9 +660,17 @@ fun WrappedIcon(
     val iconModifier = Modifier
         .padding(paddingValues)
         .size(iconSize)
-    JustIcon(modifier = iconModifier, icon = icon, enabled = enabled, tint = tint.applyOpacity(enabled))
+    JustIcon(
+        modifier = iconModifier,
+        icon = icon,
+        enabled = enabled,
+        tint = tint.applyOpacity(enabled)
+    )
 }
 
+/**
+ * @param icon 如果为null,则不显示图标，如果传入值无法解析为图标,则显示为[Spacer]
+ */
 @Composable
 internal fun JustIcon(
     modifier: Modifier = Modifier,
@@ -690,6 +704,12 @@ internal fun JustIcon(
                 contentDescription = contentDescription,
                 modifier = modifier,
             )
+        }
+
+        else -> {
+            if (icon != null) {
+                Spacer(modifier = modifier)
+            }
         }
     }
 }
