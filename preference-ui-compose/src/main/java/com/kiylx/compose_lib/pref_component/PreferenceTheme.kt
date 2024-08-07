@@ -45,6 +45,8 @@ object PreferenceTheme {
             labelLarge = PreferenceTypographyTokens.labelLarge,
             labelMedium = PreferenceTypographyTokens.labelLarge,
             labelSmall = PreferenceTypographyTokens.labelSmall,
+
+            isDefault = false
         )
 
     @Composable
@@ -73,7 +75,7 @@ object PreferenceTheme {
     val typography: PreferenceTypography
         @Composable
         get() {
-            if (LocalPreferenceTypography.current.titleMedium == TextStyle.Default) {
+            if (LocalPreferenceTypography.current.isDefault) {
                 return defaultTypography
             }
             return LocalPreferenceTypography.current
@@ -110,7 +112,7 @@ object PreferenceTheme {
         )
 
     /**
-     *  小标题类型的preferenceItem文本样式
+     * 小标题类型的preferenceItem文本样式
      */
     val smallTextStyle: PreferenceTextStyle
         @Composable
@@ -126,21 +128,19 @@ object PreferenceTheme {
 
 //<editor-fold desc="数据类">
 /**
- *  有左侧图标，右侧图标时，水平间距的构成：
- *  [boxItem]+[startItem]+图标+[startItem]+中间文本+[mediumBox]+[endItem]+图标+[endItem]+[boxItem]
- *  没有左侧图标，有右侧图标时，水平间距的构成：
- *  [boxItem]+[mediumBox]+中间文本+[mediumBox]+[endItem]+图标+[endItem]+[boxItem]
- *  没有左侧图标，没有右侧图标时，水平间距的构成：
- *  [boxItem]+[mediumBox]+中间文本+[mediumBox]+[boxItem]
+ * 有左侧图标，右侧图标时，水平间距的构成：
+ * [boxItem]+[startItem]+图标+[startItem]+中间文本+[mediumBox]+[endItem]+图标+[endItem]+[boxItem]
+ * 没有左侧图标，有右侧图标时，水平间距的构成：
+ * [boxItem]+[mediumBox]+中间文本+[mediumBox]+[endItem]+图标+[endItem]+[boxItem]
+ * 没有左侧图标，没有右侧图标时，水平间距的构成： [boxItem]+[mediumBox]+中间文本+[mediumBox]+[boxItem]
  *
- *
+ * @constructor
  * @property boxItem PaddingValues
  * @property boxItemVert PaddingValues
  * @property iconSize Dp
  * @property startItem PaddingValues
  * @property mediumBox PaddingValues
  * @property endItem PaddingValues
- * @constructor
  */
 @Immutable
 data class PreferenceDimens(
@@ -180,6 +180,9 @@ data class PreferenceDimens(
     )
 )
 
+/**
+ * @property isDefault true表示使用系统默认字体，false表示使用的自定义字体
+ */
 @Immutable
 data class PreferenceTypography(
     val titleLarge: TextStyle,
@@ -193,6 +196,8 @@ data class PreferenceTypography(
     val labelLarge: TextStyle,
     val labelMedium: TextStyle,
     val labelSmall: TextStyle,
+
+    val isDefault: Boolean,
 )
 
 @Immutable
@@ -236,6 +241,8 @@ val LocalPreferenceTypography = compositionLocalOf {
         labelLarge = TextStyle.Default,
         labelSmall = TextStyle.Default,
         labelMedium = TextStyle.Default,
+
+        isDefault = true
     )
 }
 

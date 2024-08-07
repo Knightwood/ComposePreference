@@ -52,6 +52,8 @@ fun PreferencesScope(
         mutableStateOf(holder)
     }
     CompositionLocalProvider(LocalPrefs provides preferenceStore) {
-        content()
+        PreferenceTheme.SetTheme {
+            content()
+        }
     }
 }

@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -110,6 +111,7 @@ fun PreferenceSwitch(
     Surface(
         modifier = modifier.toggleable(
             value = isChecked,
+            role = Role.Switch,
             enabled = dependenceState.value,
             onValueChange = {
                 isChecked = !isChecked
@@ -329,6 +331,7 @@ fun PreferenceSwitchWithContainer(
             )
             .toggleable(
                 value = isChecked,
+                role = Role.Switch,
                 enabled = dependenceState.value,
             ) {
                 isChecked = !isChecked
