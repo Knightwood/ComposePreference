@@ -18,5 +18,5 @@
 
 <resources>
 
-    <style name="Theme.ComposeTemplate" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.ComposeTemplate" parent="Theme.AppCompat.DayNight.NoActionBar" />
 </resources>

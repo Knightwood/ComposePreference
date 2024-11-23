@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("maven-publish")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -34,9 +35,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -51,16 +49,10 @@ android {
 }
 
 dependencies {
-    implementation(others.github.knightwood.m3ColorUtilities)
+    implementation(libs.github.knightwood.m3ColorUtilities)
     implementation(libs.kotlin.coroutines.core)
-    //compose
-    val composeBom = platform(composeLibs.androidx.compose.bom)
-    implementation(composeBom)
-    // Material Design 3
+    implementation(platform(composeLibs.androidx.compose.bom))
     implementation(composeLibs.androidx.compose.material3)
-    //icons
-//    implementation("androidx.compose.material:material-icons-extended")
-//    implementation("androidx.compose.material:material-icons-core")
     compileOnly(project(":preference-data-core"))
 }
 

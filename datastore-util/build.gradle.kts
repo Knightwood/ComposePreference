@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
@@ -45,7 +47,7 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     compileOnly(project(":preference-data-core"))
     //datastore
-    implementation(libs.bundles.dataStore) {
+    implementation(libs.androidx.datastore.preferences) {
         exclude("org.jetbrains.kotlinx","kotlinx-coroutines-core")
     }
 }

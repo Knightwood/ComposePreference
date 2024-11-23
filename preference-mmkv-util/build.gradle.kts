@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(libs.kotlin.coroutines.core)
     compileOnly(project(":preference-data-core"))
-    implementation(others.github.mmkv)
+    implementation(libs.github.mmkv)
 }
 afterEvaluate {
     publishing {

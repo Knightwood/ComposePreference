@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -47,9 +48,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -60,33 +59,15 @@ android {
 
 dependencies {
     implementation(libs.bundles.bundleAndroidx)
-//    testImplementation("junit:junit:4.13.2")
-//    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    implementation(libs.google.material){
-        exclude("androidx.activity","activity")
-        exclude("androidx.appcompat","appcompat")
-        exclude("androidx.constraintlayout","constraintlayout")
-        exclude("androidx.core","core")
-        exclude("androidx.recyclerview","recyclerview")
-    }
     implementation(libs.bundles.kotlins)
 
-    //compose
-    val composeBomVersion ="2024.01.00"
-
-    val composeBom = platform("androidx.compose:compose-bom:${composeBomVersion}")
+    val composeBom = platform(composeLibs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
+    implementation(composeLibs.androidx.compose.material3)
 
-    // Choose one of the following:
-    // Material Design 3
-    implementation("androidx.compose.material3:material3:1.2.0")
-    // Android Studio Preview support
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    // UI Tests
-//    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     //icons
     implementation("androidx.compose.material:material-icons-extended")
@@ -98,17 +79,14 @@ dependencies {
     implementation(composeLibs.androidx.lifecycle.viewmodel.compose)
     // Optional - Integration with LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
-    //test
-//    androidTestImplementation(platform("androidx.compose:compose-bom:${composeBomVersion}"))
-
     implementation(composeLibs.google.accompanist.systemUiController)
 
     //datastore
-    implementation(libs.bundles.dataStore) {
+    implementation(libs.androidx.datastore.preferences) {
         exclude("org.jetbrains.kotlinx","kotlinx-coroutines-core")
     }
 
-    implementation(others.github.mmkv)
+    implementation(libs.github.mmkv)
 
     //lib
     implementation(project(":preference-ui-compose"))

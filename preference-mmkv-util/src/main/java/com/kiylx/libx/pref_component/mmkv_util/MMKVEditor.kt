@@ -17,6 +17,7 @@
 
 package com.kiylx.libx.pref_component.mmkv_util
 
+import android.os.Parcelable
 import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
@@ -30,10 +31,10 @@ class MMKVEditor<T : Any>(
     val keyName: String,
     val defaultValue: T,
 ) : IPreferenceEditor<T> {
-    val TAG="mmkv_tool"
+    val TAG = "mmkv_tool"
 
     private val flow: MutableSharedFlow<T> = MutableSharedFlow<T>(1)
-    var readWrite:MmkvUtil<T> =  (when (defaultValue) {
+    var readWrite: MmkvUtil<T> = (when (defaultValue) {
         is Int -> {
             kv.intRW(keyName, defaultValue)
         }
@@ -56,6 +57,10 @@ class MMKVEditor<T : Any>(
 
         is Long -> {
             kv.longRW(keyName, defaultValue)
+        }
+
+        is Parcelable -> {
+            kv.parcelableRW(keyName, defaultValue)
         }
 
         else -> {

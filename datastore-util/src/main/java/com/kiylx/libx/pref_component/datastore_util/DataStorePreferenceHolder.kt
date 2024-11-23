@@ -17,7 +17,7 @@
 
 package com.kiylx.libx.pref_component.datastore_util;
 
-import android.app.Application
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import com.kiylx.libx.pref_component.core.IPreferenceEditor
@@ -28,18 +28,16 @@ import com.kiylx.libx.pref_component.core.PreferenceHolder
  */
 class DataStorePreferenceHolder internal constructor(
     dataStoreName: String,
-    private val ctx: Application,
+    private val ctx: Context,
 ) : PreferenceHolder() {
     private val Context.myDataStore by preferencesDataStore(dataStoreName)
-    private fun dataStore() = ctx.myDataStore
+    fun dataStore() = ctx.myDataStore
 
     override fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
-    ): IPreferenceEditor<T> {
-        return hashMap[keyName]?.let {
-            it as IPreferenceEditor<T>
-        } ?: let {
+    ): DataStoreEditor<T> {
+        return (hashMap[keyName] as? DataStoreEditor<T>) ?: let {
             val tmp = DataStoreEditor(keyName, defaultValue, dataStore())
             hashMap[keyName] = tmp
             tmp
@@ -47,14 +45,18 @@ class DataStorePreferenceHolder internal constructor(
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         @Volatile
         var ps: DataStorePreferenceHolder? = null
+
         fun instance(
             dataStoreName: String,
-            ctx: Application
+            ctx: Context
         ): DataStorePreferenceHolder {
             return ps ?: synchronized(this) {
-                ps ?: DataStorePreferenceHolder(dataStoreName, ctx).also { ps = it }
+                ps ?: DataStorePreferenceHolder(dataStoreName, ctx.applicationContext).also {
+                    ps = it
+                }
             }
         }
     }
