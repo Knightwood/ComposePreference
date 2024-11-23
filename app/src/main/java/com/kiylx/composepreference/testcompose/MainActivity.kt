@@ -22,17 +22,29 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExposurePlus1
 import androidx.compose.material.icons.filled.ExposurePlus2
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.TipsAndUpdates
+import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -45,8 +57,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.kiylx.compose.preference.component.cross.PreferenceItem
+import com.kiylx.compose.preference.component.cross.PreferenceSubTitle
+import com.kiylx.compose.preference.component.cross.PreferenceSwitch
+import com.kiylx.compose.preference.theme.PreferenceIconStyle
+import com.kiylx.compose.preference.theme.PreferenceTheme
 import com.kiylx.composepreference.ui.theme.ComposeTestTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -77,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                 mutableStateOf(0)
             }
             val isD = isDarkFlow.collectAsState()
+            MaterialTheme
             CompositionLocalProvider(LocalTheme provides isD.value) {
                 ComposeTestTheme(
                     darkTheme = LocalTheme.current
@@ -104,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                                         contentDescription = "two"
                                     )
                                 },
-                                label = { Text("First") })
+                                label = { Text("Second") })
                         }
                     }) {
                         Surface(
@@ -115,11 +134,72 @@ class MainActivity : AppCompatActivity() {
                             //同时添加状态栏和导航栏高度对应的上下 padding
                         ) {
                             if (selected == 0) {
+                                Column(
+                                    modifier = Modifier.verticalScroll(rememberScrollState())
+                                ) {
+                                    PreferenceTheme.SetTheme(
+                                        iconStyle = PreferenceIconStyle(
+                                            paddingValues = PaddingValues(8.dp),
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            backgroundColor = MaterialTheme.colorScheme.primary,
+                                        )
+                                    ) {
+                                        PreferenceItem(
+                                            title = "账户",
+                                            icon = Icons.Outlined.AccountCircle,
+                                            desc = "本地、FreshRSS",
+                                        )
+                                        PreferenceItem(
+                                            title = "颜色和样式",
+                                            icon = Icons.Outlined.Palette,
+                                            desc = "主题、色调样式、字体大小",
+                                        )
+                                        PreferenceItem(
+                                            title = "交互",
+                                            icon = Icons.Outlined.TouchApp,
+                                            desc = "初始页面、触感反馈",
+                                        )
+                                        PreferenceItem(
+                                            title = "语言",
+                                            desc = "中文(中国)",
+                                            icon = Icons.Outlined.Language,
+                                        )
+                                        PreferenceItem(
+                                            title = "故障排除",
+                                            icon = Icons.Outlined.BugReport,
+                                            desc = "错误报告、调试工具",
+                                        )
+                                        PreferenceItem(
+                                            enabled = false,
+                                            title = "提示和支持",
+                                            desc = "关于、开源",
+                                            icon = Icons.Outlined.TipsAndUpdates,
+                                        )
+                                        PreferenceSubTitle(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            title = "其他"
+                                        )
+                                        PreferenceItem(
+                                            title = "谷歌账户",
+                                            icon = Icons.Outlined.BugReport,
+                                            desc = "登录谷歌账户，同步设置",
+                                        )
+                                        var checked by remember { mutableStateOf(false) }
+                                        PreferenceSwitch(
+                                            isChecked = checked,
+                                            title = "同步",
+                                            desc = "同步您的账户数据"
+                                        ) {
+                                            checked = it
+                                        }
+                                    }
+                                }
                                 //自动存储偏好值
-                                FirstPage()
+//                                FirstPage()
                             } else {
+
                                 //仅使用ui界面，不自动存储偏好值
-                                SecondPage()
+                                //SecondPage()
                             }
                         }
                     }

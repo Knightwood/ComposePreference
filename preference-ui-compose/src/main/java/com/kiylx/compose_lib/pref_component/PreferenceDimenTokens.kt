@@ -19,6 +19,7 @@ package com.kiylx.compose_lib.pref_component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
@@ -55,15 +56,18 @@ object PreferenceTypographyTokens {
     //22sp
     val titleLarge: TextStyle
         @Composable
+        @ReadOnlyComposable
         get() = MaterialTheme.typography.titleLarge
 
     //20sp
     val titleMedium: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
 
     //16sp
     val titleSmall: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.titleMedium
     //</editor-fold>
@@ -72,16 +76,19 @@ object PreferenceTypographyTokens {
 
     //16sp
     val bodyLarge: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.bodyLarge
 
     //14sp
     val bodyMedium: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.bodyMedium
 
     //12sp
     val bodySmall: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.bodySmall
 
@@ -91,16 +98,19 @@ object PreferenceTypographyTokens {
 
     //14sp
     val labelLarge: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.labelLarge
 
     //12sp
     val labelMedium: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.labelMedium
 
     //11sp
     val labelSmall: TextStyle
+        @ReadOnlyComposable
         @Composable
         get() = MaterialTheme.typography.labelSmall
 

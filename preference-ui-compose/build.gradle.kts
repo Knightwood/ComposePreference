@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kiylx.compose_lib.pref_component"
+    namespace = "com.kiylx.compose.preference"
     compileSdk = 34
 
     defaultConfig {
@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     implementation(platform(composeLibs.androidx.compose.bom))
     implementation(composeLibs.androidx.compose.material3)
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
     compileOnly(project(":preference-data-core"))
 }
 

@@ -38,7 +38,7 @@ class FakeEditor<T : Any>(
 ) : IPreferenceEditor<T> {
     private val stateFlow: MutableStateFlow<T> = MutableStateFlow(defaultValue)
 
-    override fun read(): Flow<T> {
+    override fun flow(): Flow<T> {
         return stateFlow
     }
 

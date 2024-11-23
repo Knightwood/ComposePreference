@@ -34,6 +34,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ import com.kiylx.compose_lib.pref_component.PreferencesHintCard
 import com.kiylx.compose_lib.pref_component.PreferencesScope
 import com.kiylx.composepreference.AppCtx
 import com.kiylx.libx.pref_component.core.DependenceNode
+import com.kiylx.libx.pref_component.datastore_util.DataStorePreferenceHolder
 import com.kiylx.libx.pref_component.mmkv_util.MMKVPreferenceHolder
 import com.kiylx.libx.pref_component.preference_util.OldPreferenceHolder
 import com.tencent.mmkv.MMKV
@@ -92,31 +94,32 @@ fun FirstPage() {
             )
         }
         //1. 使用dataStore存储偏好值
-//        val holder = remember {
-//            DataStorePreferenceHolder.instance(
-//                dataStoreName = "test",
-//                ctx = AppCtx.instance
-//            )
-//        }
+        val holder = remember {
+            DataStorePreferenceHolder.instance(
+                dataStoreName = "test",
+                ctx = AppCtx.instance
+            )
+        }
 
         //2. 使用mmkv存储偏好值
-        val holder = remember {
-            MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
-        }
+//        val holder = remember {
+//            MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
+//        }
         //3. 使用sharedprefrence存储偏好值
-        /*val holder = remember {
-            OldPreferenceHolder.instance(
-                AppCtx.instance.getSharedPreferences(
-                    "ddd",
-                    Context.MODE_PRIVATE
-                )
-            )
-        }*/
+//        val holder = remember {
+//            OldPreferenceHolder.instance(
+//                AppCtx.instance.getSharedPreferences(
+//                    "ddd",
+//                    Context.MODE_PRIVATE
+//                )
+//            )
+//        }
         PreferencesScope(holder = holder) {
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
+                Text(text="FirstPage")
 
 //            val holder =LocalPrefs.current
                 val customNodeName = "customNode"
@@ -276,7 +279,7 @@ fun FirstPage() {
                         "first",
                         "second"
                     ), changed = {
-                        Log.d(TAG, "checkbox: ${it.joinToString(",")}")
+//                        Log.d(TAG, "checkbox: ${it.joinToString(",")}")
                     }
                 )
                 HorizontalDivider()
@@ -286,10 +289,10 @@ fun FirstPage() {
                     dependenceKey = customNodeName,
                 )
                 PreferenceSlider(
-                    keyName = "slider",
+                    keyName = "slider1",
                     dependenceKey = customNodeName, //依赖key为customNode的状态
-                    min = 0f,
-                    max = 10f, steps = 9, defaultValue = 0f, changed = {
+                    min = -1f,
+                    max = 1f, steps = 0, defaultValue = 0f, changed = {
                         Log.d(TAG, "slider: $it")
                     }
                 )

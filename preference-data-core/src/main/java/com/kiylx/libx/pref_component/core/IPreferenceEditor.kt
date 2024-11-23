@@ -24,9 +24,11 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IPreferenceEditor<T> {
 
-    fun read(): Flow<T>
+    fun flow(): Flow<T>
 
     fun readValue(): T
+
+    suspend fun readValueAsync(): T = readValue()
 
     suspend fun write(data: T)
 

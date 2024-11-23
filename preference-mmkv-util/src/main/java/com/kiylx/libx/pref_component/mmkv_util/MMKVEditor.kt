@@ -72,7 +72,7 @@ class MMKVEditor<T : Any>(
         flow.tryEmit(readWrite.read())
     }
 
-    override fun read(): Flow<T> {
+    override fun flow(): Flow<T> {
         return flow
     }
 

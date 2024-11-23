@@ -19,7 +19,6 @@ package com.kiylx.compose_lib.pref_component
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,8 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.PreferenceTypographyTokens.titleMedium
 import kotlinx.coroutines.launch
 
 private const val TAG = "PrefCheckBoxGroup"
@@ -132,7 +129,7 @@ fun PreferenceCheckBoxGroup(
     }
     //读取prefs
     LaunchedEffect(key1 = Unit, block = {
-        pref.read().collect { s ->
+        pref.flow().collect { s ->
             selectedList.clear()
             selectedList.addAll(genList(s))//根据字符串重新生成list
             changed(selectedList)

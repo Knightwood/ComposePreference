@@ -17,6 +17,7 @@
 
 package com.kiylx.libx.pref_component.datastore_util
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -28,9 +29,17 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kiylx.libx.pref_component.core.IPreferenceEditor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.toList
 
+private const val TAG="DataStoreEditor"
 /**
  * 提供偏好值的读写，datastore实现功能版本
  */
@@ -72,20 +81,24 @@ class DataStoreEditor<T>(
             throw IllegalArgumentException("not support")
         }
     }) as Preferences.Key<T>
-    private var data: T = defaultValue
+
     private val flow: Flow<T> = dataStore.data.map { preferences ->
         // No type safety.
         val tmp = preferences[key] ?: defaultValue
-        data = tmp
+        Log.e(TAG, "读取：$tmp" )
         tmp
     }
 
-    override fun read(): Flow<T> {
+    override fun flow(): Flow<T> {
         return flow
     }
 
     override fun readValue(): T {
-        return data
+        throw IllegalAccessException("data store cannot use this function, please use readValueAsync()")
+    }
+
+    override suspend fun readValueAsync(): T {
+        return flow.last()
     }
 
     override suspend fun write(data: T) {

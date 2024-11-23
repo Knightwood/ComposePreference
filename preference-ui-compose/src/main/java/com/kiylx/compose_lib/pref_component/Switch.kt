@@ -17,7 +17,6 @@
 
 package com.kiylx.compose_lib.pref_component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -40,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +50,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.icons.Check
+import com.kiylx.compose.preference.ui.icons.Check
+import kotlinx.coroutines.launch
 
 private const val TAG = "Switch"
 
@@ -61,7 +62,8 @@ private const val TAG = "Switch"
  * @param description 标题下方的描述信息
  * @param icon 左侧图标
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param dependenceKey
+ *    若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param checkedIcon switch置为true时的图标
  * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  */
@@ -89,13 +91,8 @@ fun PreferenceSwitch(
         dependenceKey
     ).enableStateFlow.collectAsState()
 
-    var isChecked by remember {
-        mutableStateOf(pref.readValue())
-    }
-    LaunchedEffect(key1 = isChecked, block = {
-        pref.write(isChecked)
-        changed(isChecked)
-    })
+    val isChecked = pref.flow().collectAsState(defaultValue).value
+    val scope = rememberCoroutineScope()
 
     val thumbContent: (@Composable () -> Unit)? = if (isChecked) {
         { ->
@@ -114,7 +111,10 @@ fun PreferenceSwitch(
             role = Role.Switch,
             enabled = dependenceState.value,
             onValueChange = {
-                isChecked = !isChecked
+                scope.launch {
+                    pref.write(it)
+                    changed(it)
+                }
             }
         )
     ) {
@@ -162,7 +162,8 @@ fun PreferenceSwitch(
  * @param description 标题下方的描述信息
  * @param icon 左侧图标
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param dependenceKey
+ *    若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param checkedIcon switch置为true时的图标
  * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  * @param onClick switch左侧区域点击事件
@@ -274,7 +275,8 @@ fun PreferenceSwitchWithDivider(
  * @param description 标题下方的描述信息
  * @param icon 左侧图标
  * @param enabled 是否启用
- * @param dependenceKey 若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
+ * @param dependenceKey
+ *    若为null,则启用状态依照enable值;若不为null,则启用状态依赖dependenceKey指向的节点
  * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  */
 @Composable

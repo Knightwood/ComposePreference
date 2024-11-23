@@ -59,9 +59,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose_lib.pref_component.icons.ArrowDropDown
-import com.kiylx.compose_lib.pref_component.icons.ArrowDropUp
-import com.kiylx.compose_lib.pref_component.icons.Translate
+import com.kiylx.compose.preference.ui.icons.ArrowDropDown
+import com.kiylx.compose.preference.ui.icons.ArrowDropUp
+import com.kiylx.compose.preference.ui.icons.Translate
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)

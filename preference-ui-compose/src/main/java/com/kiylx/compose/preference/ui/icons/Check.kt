@@ -15,26 +15,30 @@
  *
  */
 
-package com.kiylx.compose_lib.pref_component.icons
+package com.kiylx.compose.preference.ui.icons
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.graphics.vector.ImageVector
 
-public val Icons.Filled.ArrowDropDown: ImageVector
+public val Icons.Filled.Check: ImageVector
     get() {
-        if (_arrowDropDown != null) {
-            return _arrowDropDown!!
+        if (_check != null) {
+            return _check!!
         }
-        _arrowDropDown = materialIcon(name = "Filled.ArrowDropDown") {
+        _check = materialIcon(name = "Filled.Check") {
             materialPath {
-                moveTo(7.0f, 10.0f)
-                lineToRelative(5.0f, 5.0f)
-                lineToRelative(5.0f, -5.0f)
+                moveTo(9.0f, 16.17f)
+                lineTo(4.83f, 12.0f)
+                lineToRelative(-1.42f, 1.41f)
+                lineTo(9.0f, 19.0f)
+                lineTo(21.0f, 7.0f)
+                lineToRelative(-1.41f, -1.41f)
                 close()
             }
         }
-        return _arrowDropDown!!
+        return _check!!
     }
 
-private var _arrowDropDown: ImageVector? = null
+private var _check: ImageVector? = null

@@ -69,6 +69,7 @@ fun SecondPage() {
     PreferenceTheme.SetTheme {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
+            Text(text="SecondPage")
             PreferenceLayout(startContent = { paddings: PaddingValues, enabled: Boolean ->
                 WrappedIcon(
                     icon = Icons.Default.AccountBalanceWallet,
@@ -107,7 +108,7 @@ fun SecondPage() {
             HorizontalDivider()
             PreferenceItemSubTitle(title = "编辑框Preference")
             OutlinedEditTextPreference(
-                title = "outlined编辑框", keyName = "edit11",
+                title = "outlined编辑框", keyName = "edit21",
                 defaultValue = "默认文本",
                 icon = Icons.Filled.AccountCircle,
             )
@@ -115,7 +116,7 @@ fun SecondPage() {
             FilledEditTextPreference(
                 defaultValue = "默认文本",
                 title = "Filled编辑框",
-                keyName = "edit12",
+                keyName = "edit22",
                 icon = Icons.Filled.AccountCircle,
                 changed = {
 
@@ -220,7 +221,7 @@ fun SecondPage() {
                 title = "PreferenceSlider",
             )
             PreferenceSlider(
-                keyName = "slider",
+                keyName = "slider2",
                 min = 0f,
                 max = 10f, steps = 9, defaultValue = 0f, changed = {
                     Log.d(TAG, "slider: $it")

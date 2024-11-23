@@ -37,8 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.kiylx.compose_lib.pref_component.icons.Check
-import com.kiylx.compose_lib.pref_component.icons.MoreVert
+import com.kiylx.compose.preference.ui.icons.Check
+import com.kiylx.compose.preference.ui.icons.MoreVert
 
 @Composable
 fun PreferenceListMenu(

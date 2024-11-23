@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
@@ -31,7 +32,8 @@ val PaddingValues.bottom: Dp
 
 //<editor-fold desc="主题">
 object PreferenceTheme {
-    val defaultTypography
+    private val defaultTypography
+        @ReadOnlyComposable
         @Composable
         get() = PreferenceTypography(
             titleLarge = PreferenceTypographyTokens.titleLarge,
@@ -73,6 +75,7 @@ object PreferenceTheme {
 //        get() = LocalPreferenceColors.current
 
     val typography: PreferenceTypography
+        @ReadOnlyComposable
         @Composable
         get() {
             if (LocalPreferenceTypography.current.isDefault) {
@@ -82,10 +85,12 @@ object PreferenceTheme {
         }
 
     val elevation: PreferenceElevation
+        @ReadOnlyComposable
         @Composable
         get() = LocalPreferenceElevation.current
 
     val preferenceDimens: PreferenceDimens
+        @ReadOnlyComposable
         @Composable
         get() = LocalPreferenceDimens.current
 
@@ -94,6 +99,7 @@ object PreferenceTheme {
      */
     val normalTextStyle: PreferenceTextStyle
         @Composable
+        @ReadOnlyComposable
         get() = PreferenceTextStyle(
             typography.titleMedium,
             typography.bodyMedium,
@@ -105,6 +111,7 @@ object PreferenceTheme {
      */
     val largeTextStyle: PreferenceTextStyle
         @Composable
+        @ReadOnlyComposable
         get() = PreferenceTextStyle(
             typography.titleLarge,
             typography.bodyMedium,
@@ -116,6 +123,7 @@ object PreferenceTheme {
      */
     val smallTextStyle: PreferenceTextStyle
         @Composable
+        @ReadOnlyComposable
         get() = PreferenceTextStyle(
             typography.labelLarge,
             typography.bodyMedium,

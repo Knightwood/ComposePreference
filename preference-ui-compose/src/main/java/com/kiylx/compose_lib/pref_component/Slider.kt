@@ -26,15 +26,18 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import kotlinx.coroutines.CoroutineScope
 
 
 /**
@@ -45,23 +48,24 @@ import androidx.compose.ui.text.style.TextOverflow
  * @param defaultValue 默认值、当前值
  * @param enabled 是否启用
  * @param dependenceKey
- *     若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
+ *    若为null,则启用状态依照enable值，若不为null,则启用状态依赖dependenceKey指向的节点
  * @param changed "存储的偏好值"初始化或更新后，会通过此参数通知
  */
 @Composable
 fun PreferenceSlider(
     modifier: Modifier = Modifier,
     keyName: String,
-    dimens: PreferenceDimens =PreferenceTheme.preferenceDimens,
+    dimens: PreferenceDimens = PreferenceTheme.preferenceDimens,
     textStyle: PreferenceTextStyle = PreferenceTheme.normalTextStyle,
-    min: Float,
-    max: Float,
-    steps: Int,
-    defaultValue: Float,
+    min: Float = 0f,
+    max: Float = 100f,
+    steps: Int = 0,
+    defaultValue: Float = 0f,
     enabled: Boolean = true,
     dependenceKey: String? = null,
     changed: (newValue: Float) -> Unit = {},
 ) {
+    val scope = rememberCoroutineScope()
     val prefStoreHolder = LocalPrefs.current
     val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = defaultValue)
     //注册自身节点，并且获取目标节点的状态
@@ -71,18 +75,30 @@ fun PreferenceSlider(
         dependenceKey
     ).enableStateFlow.collectAsState()
 
+    val currentValue = pref.flow().collectAsState(defaultValue)
+
     var progress by remember {
         mutableFloatStateOf(pref.readValue())
     }
-    var updateFlag by remember {
-        mutableLongStateOf(0L)
+
+    remember(currentValue.value) {
+        if (currentValue.value != progress)
+            progress = currentValue.value
+        progress
+    }
+
+    var finished by remember {
+        mutableStateOf(false)
     }
 
     //写入prefs
-    LaunchedEffect(key1 = updateFlag, block = {
-        pref.write(progress)
-        changed(progress)
+    LaunchedEffect(key1 = finished, block = {
+        if (finished) {
+            pref.write(progress)
+            changed(progress)
+        }
     })
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -97,17 +113,17 @@ fun PreferenceSlider(
                 .weight(4f)
                 .padding(dimens.mediumBox),
             onValueChange = {
+                finished = false
                 progress = it
             },
             steps = steps,
             valueRange = min..max,
             onValueChangeFinished = {
-                updateFlag=System.currentTimeMillis()
+                finished = true
             }
         )
         Text(
             modifier = Modifier
-                .weight(1f)
                 .padding(end = dimens.endItem.end),
             text = String.format("%.2f", progress),
             maxLines = 1,
@@ -117,3 +133,6 @@ fun PreferenceSlider(
         )
     }
 }
+
+
+private const val TAG = "Slider"
