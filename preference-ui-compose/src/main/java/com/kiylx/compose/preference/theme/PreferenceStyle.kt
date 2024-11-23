@@ -23,7 +23,7 @@ data class PreferenceStyle(
 
 //<editor-fold desc="整个外框的样式">
 data class PreferenceBoxStyle(
-    val shape: Shape = RoundedCornerShape(12.dp),
+    val shape: Shape = RectangleShape,
     val color: Color,
     val contentColor: Color,
     val tonalElevation: Dp = 0.dp,

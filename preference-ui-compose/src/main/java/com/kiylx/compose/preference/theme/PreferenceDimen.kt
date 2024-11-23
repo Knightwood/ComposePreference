@@ -19,12 +19,21 @@ data class PreferenceDimen(
     val heightMin: Dp = 48.dp,
     val heightMax: Dp = 56.dp,
     val iconSize: Dp = 24.dp,
+
     val boxPaddingValues: PaddingValues = PaddingValues(
-        start = 20.dp,
-        end = 16.dp,
+        start = 8.dp,
+        end = 8.dp,
         top = 0.dp,
         bottom = 0.dp
     ),
+
+    val boxMarginValues: PaddingValues = PaddingValues(
+        start = 12.dp,
+        end = 12.dp,
+        top = 0.dp,
+        bottom = 0.dp
+    ),
+
     val startPaddingValues: PaddingValues = PaddingValues(
         top = 12.dp,
         bottom = 12.dp,

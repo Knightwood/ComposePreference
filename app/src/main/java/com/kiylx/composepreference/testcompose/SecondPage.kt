@@ -185,7 +185,13 @@ fun SecondPage() {
                 keyName = "bol5",
                 title = "前部可点击switch",
                 description = "description",
-                icon = Icons.Filled.CenterFocusWeak
+                icon = Icons.Filled.CenterFocusWeak,
+                changed = {
+                    Log.d(TAG, "分割线switch change $it")
+                },
+                onClick = {
+                    Log.d(TAG, "分割线switch: 点击事件触发")
+                }
             )
             HorizontalDivider()
 
