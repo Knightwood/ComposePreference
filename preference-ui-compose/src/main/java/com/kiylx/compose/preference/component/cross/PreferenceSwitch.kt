@@ -14,12 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose.preference.theme.PreferenceDimen
-import com.kiylx.compose.preference.theme.PreferenceTheme
-import com.kiylx.compose.preference.theme.defaultPreferenceBoxStyle
+import com.kiylx.compose.preference.theme.Preferences
 import com.kiylx.compose.preference.ui.ComposeSwitch
 import com.kiylx.compose.preference.ui.SamplePreference
-import com.kiylx.compose_lib.pref_component.harmonizeWithPrimary
+import com.kiylx.compose.preference.ui.harmonizeWithPrimary
 
 @Composable
 fun PreferenceSwitch(
@@ -60,7 +58,7 @@ fun PreferenceSwitchWithContainer(
     enabled: Boolean = true,
     onChecked: ((Boolean) -> Unit)? = null,
 ) {
-    PreferenceTheme.CopyTheme(
+    Preferences.CopyTheme(
         dimenProvider = { copy(boxMarginValues = boxMarginValues) },
         boxStyleProvider = { copy(color = color, shape = shape) }
     ) {

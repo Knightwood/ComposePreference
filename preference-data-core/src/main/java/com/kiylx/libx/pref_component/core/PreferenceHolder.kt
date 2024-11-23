@@ -48,6 +48,7 @@ abstract class PreferenceHolder {
 
     /**
      * 将注册者自身(preference compose function)的状态记录下来，并返回注册者依赖的节点状态
+     *
      * @param currentKey 注册者自身的key
      * @param currentState 注册者自身的状态
      * @param targetKey 注册者要依赖于哪个节点的key，如果为null，则依赖于根节点状态
@@ -95,7 +96,7 @@ abstract class PreferenceHolder {
      */
     fun getDependenceNotEmpty(
         key: String?,
-        enable: Boolean=true,
+        enable: Boolean = true,
     ): DependenceNode {
         return dependenceTree[key] ?: DependenceNode(enable, "")
     }
@@ -109,7 +110,10 @@ class DependenceNode(
 ) {
     val enableStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(enable)
 
-//    val enableState = mutableStateOf(enable)
+    //    val enableState = mutableStateOf(enable)
+    suspend fun setEnabled(enable: Boolean) {
+        enableStateFlow.emit(enable)
+    }
 
     companion object {
         const val rootName = "Pref_Dependence_Node_Root"

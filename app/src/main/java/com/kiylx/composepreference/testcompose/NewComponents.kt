@@ -36,7 +36,7 @@ import com.kiylx.compose.preference.component.cross.PreferenceWithDividerSwitch
 import com.kiylx.compose.preference.component.cross.PreferencesCautionCard
 import com.kiylx.compose.preference.theme.PreferenceDimen
 import com.kiylx.compose.preference.theme.PreferenceIconStyle
-import com.kiylx.compose.preference.theme.PreferenceTheme
+import com.kiylx.compose.preference.theme.Preferences
 import com.kiylx.compose.preference.theme.defaultPreferenceBoxStyle
 
 @Composable
@@ -46,7 +46,7 @@ fun NewComponents() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        PreferenceTheme.SetTheme(
+        Preferences.SetTheme(
             dimen = PreferenceDimen(
                 boxPaddingValues = PaddingValues(
                     start = 8.dp,
@@ -54,7 +54,8 @@ fun NewComponents() {
                 )
             ),
             boxStyle = defaultPreferenceBoxStyle.copy(
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+//                color = MaterialTheme.colorScheme.secondaryContainer
             ),
             iconStyle = PreferenceIconStyle(
                 paddingValues = PaddingValues(8.dp),
@@ -83,7 +84,7 @@ fun NewComponents() {
                 title = "附加内容",
                 stateChanged = { expand = !expand })
             {
-                PreferenceTheme.SetTheme {
+                Preferences.SetTheme {
                     Column(modifier = Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp)) {
                         PreferenceItemTest()
                     }
@@ -103,33 +104,28 @@ private fun PreferenceItemTest() {
     PreferenceItem(
         modifier = Modifier,
         title = "账户",
-        icon = Icons.Outlined.AccountCircle,
-        desc = "本地、FreshRSS",
+//        icon = Icons.Outlined.AccountCircle,
+//        desc = "本地、谷歌",
     )
     PreferenceItem(
         title = "颜色和样式",
         icon = Icons.Outlined.Palette,
-        desc = "主题、色调样式、字体大小",
+        desc = "主题、色调样式、字体",
     )
     PreferenceItem(
-        title = "交互",
+        title = "动画",
         icon = Icons.Outlined.TouchApp,
-        desc = "初始页面、触感反馈",
+        desc = "动画反馈、触感反馈",
     )
     PreferenceItem(
         title = "语言",
-        desc = "中文(中国)",
+        desc = "中文(zh)",
         icon = Icons.Outlined.Language,
     )
     PreferenceItem(
-        title = "故障排除",
-        icon = Icons.Outlined.BugReport,
-        desc = "错误报告、调试工具",
-    )
-    PreferenceItem(
         enabled = false,
-        title = "提示和支持",
-        desc = "关于、开源",
+        title = "关于",
+        desc = "开源信息、版权",
         icon = Icons.Outlined.TipsAndUpdates,
     )
 }

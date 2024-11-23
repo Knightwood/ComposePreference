@@ -8,24 +8,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.kiylx.compose.preference.theme.PreferenceTheme
+import androidx.compose.ui.unit.dp
+import com.kiylx.compose.preference.theme.Preferences
 import com.kiylx.compose.preference.theme.fixEnabledColor
-import com.kiylx.compose_lib.pref_component.LocalPrefs
-import kotlinx.coroutines.CoroutineScope
 
 private const val TAG = "PreferenceLayout"
 
@@ -39,7 +37,7 @@ fun SamplePreference(
     end: @Composable (BoxScope.() -> Unit)? = null,
 
     start: @Composable BoxScope.() -> Unit = {
-        val style = PreferenceTheme.iconStyle
+        val style = Preferences.iconStyle
         ParseIcon(
             tint = style.fixEnabledTint(enabled),
             model = icon,
@@ -53,14 +51,14 @@ fun SamplePreference(
     titleContent: @Composable ColumnScope.(title: String) -> Unit = {
         Text(
             it,
-            style = PreferenceTheme.textStyle.titleStyle.fixEnabledColor(enabled),
+            style = Preferences.textStyle.titleStyle.fixEnabledColor(enabled),
         )
     },
 
     descContent: @Composable ColumnScope.(desc: String) -> Unit = {
         Text(
             it,
-            style = PreferenceTheme.textStyle.descriptionTextStyle.fixEnabledColor(enabled),
+            style = Preferences.textStyle.descriptionTextStyle.fixEnabledColor(enabled),
             maxLines = 1
         )
     },
@@ -73,7 +71,9 @@ fun SamplePreference(
         onClick = onClick,
         start = if (icon != null) {
             start
-        } else null,
+        } else {
+            null
+        },
         title = if (title != null) {
             { titleContent(title) }
         } else null,
@@ -94,13 +94,14 @@ fun PreferenceRow(
     description: @Composable (ColumnScope.() -> Unit)? = null,
     end: @Composable (BoxScope.() -> Unit)? = null,
 ) {
-    val boxStyle = PreferenceTheme.boxStyle
+    val boxStyle = Preferences.boxStyle
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(Preferences.dimens.heightMin)
             .padding(
-                PreferenceTheme.dimens.boxMarginValues
+                Preferences.dimens.boxMarginValues
             ),
         shape = boxStyle.shape,
         color = boxStyle.color,
@@ -124,24 +125,23 @@ fun PreferenceRow(
                         )
                     }
                 }
-                .padding(PreferenceTheme.dimens.boxPaddingValues)
+                .padding(Preferences.dimens.boxPaddingValues)
                 .height(IntrinsicSize.Min)
-                .heightIn(PreferenceTheme.dimens.heightMin)
-            ,
+                ,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
             start?.let {
                 Box(
                     modifier = Modifier
-                        .padding(PreferenceTheme.dimens.startPaddingValues)
-                        .sizeIn(PreferenceTheme.dimens.iconSize),
+                        .padding(Preferences.dimens.startPaddingValues)
+                        .sizeIn(Preferences.dimens.iconSize),
                     content = it
                 )
             }
             Column(
                 modifier = Modifier
-                    .padding(PreferenceTheme.dimens.contentPaddingValues)
+                    .padding(Preferences.dimens.contentPaddingValues)
                     .weight(1f),
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -150,40 +150,12 @@ fun PreferenceRow(
             }
             end?.let {
                 Box(
-                    modifier = Modifier.fillMaxHeight()
-                        .padding(PreferenceTheme.dimens.endPaddingValues),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(Preferences.dimens.endPaddingValues),
                     content = it
                 )
             }
         }
     }
-}
-
-@Composable
-fun <T : Any> PreferenceNodeBase(
-    keyName: String,
-    enabled: Boolean,
-    dependenceKey: String?,
-    defaultValue: T,
-    content: @Composable (
-        scope: CoroutineScope,
-        dependenceEnableState: Boolean,
-        valueProvider: () -> T
-    ) -> Unit
-) {
-    val scope = rememberCoroutineScope()
-    val prefStoreHolder = LocalPrefs.current
-    val pref = prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = defaultValue)
-    //注册自身节点，并且获取目标节点的状态
-    val dependenceState: State<Boolean> = prefStoreHolder.getDependence(
-        keyName,
-        enabled,
-        dependenceKey
-    ).enableStateFlow.collectAsState()
-
-    val currentValue = pref.flow().collectAsState(defaultValue)
-    content(
-        scope,
-        dependenceState.value,
-    ) { currentValue.value }
 }

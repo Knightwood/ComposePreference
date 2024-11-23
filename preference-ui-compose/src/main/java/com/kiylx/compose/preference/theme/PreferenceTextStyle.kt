@@ -20,13 +20,9 @@ data class PreferenceTextStyle(
 }
 
 internal fun TextStyle.fixEnabledColor(enabled: Boolean): TextStyle {
-    return if (enabled) {
-        this
-    } else {
-        this.copy(
-            color = this.color.applyOpacity(enabled)
-        )
-    }
+    return if (enabled) this else this.copy(
+        color = this.color.applyOpacity(false)
+    )
 }
 
 internal val defaultPreferenceTextStyle

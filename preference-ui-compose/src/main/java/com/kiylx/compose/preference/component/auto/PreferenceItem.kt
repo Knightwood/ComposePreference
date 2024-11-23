@@ -1,57 +1,26 @@
-package com.kiylx.compose.preference.component.cross
+package com.kiylx.compose.preference.component.auto
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.kiylx.compose.preference.theme.Preferences
 import com.kiylx.compose.preference.ui.ParseIcon
-import com.kiylx.compose.preference.ui.SamplePreference
 import com.kiylx.compose.preference.ui.harmonizeWithPrimary
+import com.kiylx.compose.preference.component.cross.PreferenceCollapseItem as FossPreferenceCollapseItem
+import com.kiylx.compose.preference.component.cross.PreferenceItem as FossPreferenceItem
+import com.kiylx.compose.preference.component.cross.PreferencesCautionCard as FossPreferencesCautionCard
 
-
-@Composable
-fun PreferenceSubTitle(
-    modifier: Modifier = Modifier,
-    paddingValues: PaddingValues = PaddingValues(
-        start = 8.dp,
-        end = 4.dp,
-        top = 20.dp,
-        bottom = 4.dp
-    ),
-    title: String,
-    icon: Any? = null,
-) {
-    Preferences.CopyTheme(dimenProvider = { copy(contentPaddingValues = paddingValues) }) {
-        SamplePreference(
-            modifier = modifier,
-            title = title,
-            titleContent = {
-                Text(
-                    title,
-                    style = Preferences.textStyle.categoryTextStyle,
-                )
-            },
-            icon = icon, desc = null,
-            enabled = false,
-            onClick = null,
-            end = null,
-        )
-    }
-}
+private const val TAG = "PreferenceItem"
 
 @Composable
 fun PreferenceItem(
@@ -60,14 +29,22 @@ fun PreferenceItem(
     icon: Any? = null,
     desc: String? = null,
     enabled: Boolean = true,
+    dependenceKey: String?,
     end: @Composable (BoxScope.() -> Unit)? = null,
     onClick: () -> Unit = {},
-) = SamplePreference(
-    modifier = modifier,
-    title = title, icon = icon, desc = desc,
-    enabled = enabled, onClick = onClick,
-    end = end,
-)
+) {
+    PreferenceNodeBase(dependenceKey = dependenceKey, enabled = enabled) { scope, state ->
+        LaunchedEffect(state) {
+            Log.d(TAG, "依赖状态:$state ")
+        }
+        FossPreferenceItem(
+            modifier = modifier,
+            title = title, icon = icon, desc = desc,
+            enabled = state, onClick = onClick,
+            end = end,
+        )
+    }
+}
 
 @Composable
 fun PreferenceCollapseItem(
@@ -75,6 +52,7 @@ fun PreferenceCollapseItem(
     title: String,
     desc: String? = null,
     enabled: Boolean = true,
+    dependenceKey: String?,
     expand: Boolean = false,
     end: @Composable (BoxScope.() -> Unit) = {
         ParseIcon(
@@ -85,22 +63,18 @@ fun PreferenceCollapseItem(
     stateChanged: (expand: Boolean) -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .animateContentSize()
-    ) {
-        SamplePreference(
+    PreferenceNodeBase(dependenceKey = dependenceKey, enabled = enabled) { scope, state ->
+        FossPreferenceCollapseItem(
             modifier = modifier,
-            title = title, icon = null, desc = desc,
-            enabled = enabled, onClick = { stateChanged(!expand) },
+            title = title,
+            desc = desc,
+            enabled = state,
+            expand = expand,
             end = end,
+            stateChanged = stateChanged,
+            content = content
         )
-        AnimatedVisibility(visible = expand && enabled) {
-            Box(content = content)
-        }
     }
-
-
 }
 
 @Composable
@@ -116,19 +90,22 @@ fun PreferencesCautionCard(
     icon: Any? = null,
     desc: String? = null,
     enabled: Boolean = true,
+    dependenceKey: String?,
     end: @Composable (BoxScope.() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
-    Preferences.CopyTheme(
-        dimenProvider = { copy(boxMarginValues = boxMarginValues) },
-        boxStyleProvider = { copy(color = color, shape = shape) }
-    ) {
-        SamplePreference(
+    PreferenceNodeBase(dependenceKey = dependenceKey, enabled = enabled) { scope, state ->
+        FossPreferencesCautionCard(
             modifier = modifier,
-            title = title, icon = icon, desc = desc,
-            enabled = enabled, onClick = onClick,
+            boxMarginValues = boxMarginValues,
+            color = color,
+            shape = shape,
+            title = title,
+            icon = icon,
+            desc = desc,
+            enabled = state,
             end = end,
+            onClick = onClick
         )
     }
-
 }

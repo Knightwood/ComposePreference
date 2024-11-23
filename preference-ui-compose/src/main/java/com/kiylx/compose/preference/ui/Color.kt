@@ -12,7 +12,7 @@ fun Color.applyAlpha(alpha: Float): Color {
 }
 
 fun Color.applyOpacity(enabled: Boolean): Color {
-    if (this ==Color.Unspecified ||this==Color.Transparent)
+    if (this == Color.Transparent)
         return this
     return if (enabled) this else this.applyAlpha(alpha = 0.62f)
 }

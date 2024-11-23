@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                 mutableStateOf(0)
             }
             val isD = isDarkFlow.collectAsState()
-            MaterialTheme
             CompositionLocalProvider(LocalTheme provides isD.value) {
                 ComposeTestTheme(
                     darkTheme = LocalTheme.current
@@ -117,12 +116,8 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             if (selected == 0) {
                                 NewComponents()
-                                //自动存储偏好值
-//                                FirstPage()
                             } else {
-
-                                //仅使用ui界面，不自动存储偏好值
-                                SecondPage()
+                                NewComponents2(this)
                             }
                         }
                     }

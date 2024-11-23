@@ -1,11 +1,9 @@
 package com.kiylx.compose.preference.theme
 
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.kiylx.compose_lib.pref_component.PreferenceTheme.SetTheme
 
-object PreferenceTheme {
+object Preferences {
 
     val dimens
         @Composable

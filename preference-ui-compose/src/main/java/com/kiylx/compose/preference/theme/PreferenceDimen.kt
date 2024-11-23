@@ -16,8 +16,7 @@ import androidx.compose.ui.unit.dp
  */
 @Immutable
 data class PreferenceDimen(
-    val heightMin: Dp = 48.dp,
-    val heightMax: Dp = 56.dp,
+    val heightMin: Dp = 64.dp,
     val iconSize: Dp = 24.dp,
 
     val boxPaddingValues: PaddingValues = PaddingValues(
