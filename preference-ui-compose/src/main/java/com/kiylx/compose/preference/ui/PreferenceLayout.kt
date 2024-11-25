@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +55,7 @@ fun SamplePreference(
     titleContent: @Composable ColumnScope.(title: String) -> Unit = {
         Text(
             it,
+            maxLines = Preferences.style.titleMaxLine,
             style = Preferences.textStyle.titleStyle.fixEnabledColor(enabled),
         )
     },
@@ -59,7 +64,7 @@ fun SamplePreference(
         Text(
             it,
             style = Preferences.textStyle.descriptionTextStyle.fixEnabledColor(enabled),
-            maxLines = 1
+            maxLines = Preferences.style.descMaxLine,
         )
     },
 
@@ -100,9 +105,7 @@ fun PreferenceRow(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(Preferences.dimens.heightMin)
-            .padding(
-                Preferences.dimens.boxMarginValues
-            ),
+            .padding(Preferences.dimens.boxMarginValues),
         shape = boxStyle.shape,
         color = boxStyle.color,
         contentColor = boxStyle.contentColor,
@@ -113,21 +116,16 @@ fun PreferenceRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .let {
-                    if (onClick == null) {
-                        it
-                    } else {
-                        it.clickable(
-                            interactionSource = null,
-                            enabled = enabled,
-                            onClick = onClick,
-                            indication = rippleOrFallbackImplementation(),
-                        )
-                    }
+                .takeIf({ onClick != null }) {
+                    clickable(
+                        interactionSource = null,
+                        enabled = enabled,
+                        onClick = onClick!!,
+                        indication = rippleOrFallbackImplementation(),
+                    )
                 }
                 .padding(Preferences.dimens.boxPaddingValues)
-                .height(IntrinsicSize.Min)
-                ,
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
@@ -148,12 +146,13 @@ fun PreferenceRow(
                 title?.invoke(this)
                 description?.invoke(this)
             }
-            end?.let {
+            if (end != null) {
                 Box(
                     modifier = Modifier
+                        .minimumInteractiveComponentSize()
                         .fillMaxHeight()
                         .padding(Preferences.dimens.endPaddingValues),
-                    content = it
+                    content = end
                 )
             }
         }

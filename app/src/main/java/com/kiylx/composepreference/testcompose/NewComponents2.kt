@@ -72,15 +72,6 @@ fun NewComponents2(ctx: Context) {
     ) {
         Preferences.SetTheme(
             holder = holder,
-            dimen = PreferenceDimen(
-                boxPaddingValues = PaddingValues(
-                    start = 8.dp,
-                    end = 16.dp
-                )
-            ),
-            boxStyle = defaultPreferenceBoxStyle.copy(
-                shape = RoundedCornerShape(12.dp)
-            ),
             iconStyle = PreferenceIconStyle(
                 paddingValues = PaddingValues(8.dp),
                 tint = MaterialTheme.colorScheme.onPrimary,

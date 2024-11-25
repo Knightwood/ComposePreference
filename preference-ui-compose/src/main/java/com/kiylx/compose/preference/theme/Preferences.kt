@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
 object Preferences {
+    val style
+        @Composable
+        get() = LocalPreferenceStyle.current
 
     val dimens
         @Composable
@@ -33,6 +36,8 @@ object Preferences {
      */
     @Composable
     fun CopyTheme(
+        titleMaxLine: Int = 1,
+        descMaxLine: Int = 2,
         boxStyleProvider: @Composable PreferenceBoxStyle.() -> PreferenceBoxStyle = { this },
         iconStyleProvider: @Composable PreferenceIconStyle.() -> PreferenceIconStyle = { this },
         textStyleProvider: @Composable PreferenceTextStyle.() -> PreferenceTextStyle = { this },
@@ -44,7 +49,7 @@ object Preferences {
             iconStyle = LocalPreferenceStyle.current.iconStyle.iconStyleProvider(),
             textStyle = LocalPreferenceTextStyle.current.textStyleProvider(),
             dimen = LocalPreferenceDimens.current.dimenProvider(),
-            content = content
+            content = content, titleMaxLine = titleMaxLine, descMaxLine = descMaxLine
         )
     }
 
@@ -59,6 +64,8 @@ object Preferences {
      */
     @Composable
     fun SetTheme(
+        titleMaxLine: Int = 1,
+        descMaxLine: Int = 2,
         boxStyle: PreferenceBoxStyle = defaultPreferenceBoxStyle,
         iconStyle: PreferenceIconStyle = defaultIconStyle,
         textStyle: PreferenceTextStyle = defaultPreferenceTextStyle,
@@ -68,7 +75,12 @@ object Preferences {
         CompositionLocalProvider(
             LocalPreferenceDimens provides dimen,
             LocalPreferenceTextStyle provides textStyle,
-            LocalPreferenceStyle provides PreferenceStyle(boxStyle, iconStyle),
+            LocalPreferenceStyle provides PreferenceStyle(
+                boxStyle = boxStyle,
+                iconStyle = iconStyle,
+                titleMaxLine = titleMaxLine,
+                descMaxLine = descMaxLine
+            ),
             content = content
         )
     }

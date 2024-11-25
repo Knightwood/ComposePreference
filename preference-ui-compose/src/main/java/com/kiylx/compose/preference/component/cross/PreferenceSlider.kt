@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kiylx.compose.preference.ui.SamplePreference
+import com.kiylx.compose.preference.ui.takeIf
 
 @Composable
 fun PreferenceSlider(
@@ -30,14 +33,16 @@ fun PreferenceSlider(
             text = it.toString(),
             maxLines = 1,
             modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 12.dp)
-                .fillMaxHeight()
-                .size(width = 46.dp, height = 24.dp)
+                .let { m ->
+                    if (desc != null)
+                        m.align(Alignment.TopStart).padding(top = 12.dp)
+                    else m.align(Alignment.Center)
+                }
+                .width(46.dp)
         )
     },
     onValueChanged: (value: Float) -> Unit,
-    changeFinished: () -> Unit={},
+    changeFinished: () -> Unit = {},
 ) {
     SamplePreference(
         modifier = modifier,

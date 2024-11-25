@@ -74,9 +74,11 @@ fun PreferenceSlider(
             end = end,
             onValueChanged = {
                 progress = it
-                writer.invoke(it)
             },
-            changeFinished = changeFinished
+            changeFinished = {
+                writer.invoke(progress)
+                changeFinished()
+            }
         )
     }
 

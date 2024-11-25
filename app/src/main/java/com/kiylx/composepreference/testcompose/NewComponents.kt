@@ -47,16 +47,9 @@ fun NewComponents() {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Preferences.SetTheme(
-            dimen = PreferenceDimen(
-                boxPaddingValues = PaddingValues(
-                    start = 8.dp,
-                    end = 16.dp
-                )
-            ),
-            boxStyle = defaultPreferenceBoxStyle.copy(
-                shape = RoundedCornerShape(12.dp),
+//            boxStyle = defaultPreferenceBoxStyle.copy(
 //                color = MaterialTheme.colorScheme.secondaryContainer
-            ),
+//            ),
             iconStyle = PreferenceIconStyle(
                 paddingValues = PaddingValues(8.dp),
                 tint = MaterialTheme.colorScheme.onPrimary,
@@ -71,7 +64,10 @@ fun NewComponents() {
             var progress by remember {
                 mutableStateOf(0f)
             }
-            PreferenceSlider(value = progress, desc = "滑动条描述", onValueChanged = { progress = it })
+            PreferenceSlider(
+                value = progress,
+                desc = "滑动条描述",
+                onValueChanged = { progress = it })
             SwitchTest()
             PreferenceSubTitle(title = "多选框", modifier = Modifier)
             CheckBoxTest()

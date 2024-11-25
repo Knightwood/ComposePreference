@@ -37,6 +37,8 @@ val LocalPrefs = compositionLocalOf<PreferenceHolder> {
  */
 @Composable
 fun Preferences.CopyTheme(
+    titleMaxLine: Int = 1,
+    descMaxLine: Int = 2,
     boxStyleProvider: @Composable PreferenceBoxStyle.() -> PreferenceBoxStyle = { this },
     iconStyleProvider: @Composable PreferenceIconStyle.() -> PreferenceIconStyle = { this },
     textStyleProvider: @Composable PreferenceTextStyle.() -> PreferenceTextStyle = { this },
@@ -50,7 +52,7 @@ fun Preferences.CopyTheme(
         textStyle = LocalPreferenceTextStyle.current.textStyleProvider(),
         dimen = LocalPreferenceDimens.current.dimenProvider(),
         holder = holder,
-        content = content
+        content = content, titleMaxLine = titleMaxLine, descMaxLine = descMaxLine
     )
 }
 
@@ -65,6 +67,8 @@ fun Preferences.CopyTheme(
  */
 @Composable
 fun Preferences.SetTheme(
+    titleMaxLine: Int = 1,
+    descMaxLine: Int = 2,
     boxStyle: PreferenceBoxStyle = defaultPreferenceBoxStyle,
     iconStyle: PreferenceIconStyle = defaultIconStyle,
     textStyle: PreferenceTextStyle = defaultPreferenceTextStyle,
@@ -77,7 +81,12 @@ fun Preferences.SetTheme(
     CompositionLocalProvider(
         LocalPreferenceDimens provides dimen,
         LocalPreferenceTextStyle provides textStyle,
-        LocalPreferenceStyle provides PreferenceStyle(boxStyle, iconStyle),
+        LocalPreferenceStyle provides PreferenceStyle(
+            boxStyle,
+            iconStyle,
+            titleMaxLine,
+            descMaxLine
+        ),
         LocalPrefs provides holder,
         content = content
     )

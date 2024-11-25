@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -28,14 +29,18 @@ fun PreferenceSubTitle(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(
         start = 8.dp,
-        end = 4.dp,
-        top = 20.dp,
-        bottom = 4.dp
+        end = 8.dp,
+        top = 24.dp,
+        bottom = 0.dp
     ),
+    color: Color = Color.Transparent,
     title: String,
     icon: Any? = null,
 ) {
-    Preferences.CopyTheme(dimenProvider = { copy(contentPaddingValues = paddingValues) }) {
+    Preferences.CopyTheme(
+        dimenProvider = { copy(boxPaddingValues = paddingValues) },
+        boxStyleProvider = { copy(color = color) },
+    ) {
         SamplePreference(
             modifier = modifier,
             title = title,
@@ -78,6 +83,7 @@ fun PreferenceCollapseItem(
     expand: Boolean = false,
     end: @Composable (BoxScope.() -> Unit) = {
         ParseIcon(
+            modifier = Modifier.align(Alignment.Center),
             model = if (!expand) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
             contentDescription = "icon"
         )

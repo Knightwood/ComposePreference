@@ -19,56 +19,26 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-class ImageParser {
-}
 
-@Composable
-fun SmallIcon(
-    modifier: Modifier = Modifier,
-    model: Any,
-    size: Dp = 24.dp,
-    contentDescription: String? = null,
-    enabled: Boolean = true,
-) {
-    ParseIcon(
-        modifier = modifier
-            .padding(8.dp)
-            .size(size),
-        model = model,
-        contentDescription = contentDescription,
-        enabled = enabled,
-    )
-}
-
-@Composable
-fun CircleIcon(
-    modifier: Modifier = Modifier,
-    model: Any?,
-    contentDescription: String? = null,
-    shape: Shape = CircleShape,
-    paddingValues: PaddingValues = PaddingValues(8.dp),
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    enabled: Boolean = true,
-    tint: Color = MaterialTheme.colorScheme.onPrimary.applyOpacity(enabled)
-) {
-    ParseIcon(
-        modifier = modifier,
-        model = model,
-        paddingValues = paddingValues,
-        tint = tint,
-        shape = shape,
-        backgroundColor = backgroundColor,
-        contentDescription = contentDescription,
-    )
-}
-
+/**
+ * icon组件
+ *
+ * @param modifier icon外层surface的modifier
+ * @param iconModifier icon的modifier
+ * @param model ImageVector 或者 Painter 或者 resourceId
+ * @param contentDescription
+ * @param shape
+ * @param paddingValues
+ * @param backgroundColor
+ * @param enabled
+ * @param tint
+ */
 @Composable
 fun ParseIcon(
-    outModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     model: Any?,
     contentDescription: String? = null,
     shape: Shape = CircleShape,
@@ -78,7 +48,7 @@ fun ParseIcon(
     tint: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
 ) {
     Surface(
-        modifier = outModifier.wrapContentSize(),
+        modifier = modifier.wrapContentSize(),
         color = backgroundColor,
         shape = shape,
     ) {
@@ -87,7 +57,7 @@ fun ParseIcon(
                 Icon(
                     imageVector = model,
                     contentDescription = contentDescription,
-                    modifier = modifier.padding(paddingValues),
+                    modifier = iconModifier.padding(paddingValues),
                     tint = tint
                 )
             }
@@ -96,7 +66,7 @@ fun ParseIcon(
                 Icon(
                     painter = model,
                     contentDescription = contentDescription,
-                    modifier = modifier.padding(paddingValues),
+                    modifier = iconModifier.padding(paddingValues),
                     tint = tint
                 )
             }
@@ -104,7 +74,7 @@ fun ParseIcon(
             is Int -> {
                 Icon(
                     painter = painterResource(id = model),
-                    modifier = modifier.padding(paddingValues),
+                    modifier = iconModifier.padding(paddingValues),
                     contentDescription = contentDescription,
                     tint = tint
                 )

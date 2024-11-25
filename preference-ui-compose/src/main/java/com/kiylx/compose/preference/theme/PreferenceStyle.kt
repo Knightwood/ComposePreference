@@ -16,9 +16,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kiylx.compose.preference.ui.applyOpacity
 
+/**
+ * @property boxStyle
+ * @property iconStyle
+ * @property descMaxLine 描述的最大行数
+ */
 data class PreferenceStyle(
     val boxStyle: PreferenceBoxStyle,
-    val iconStyle: PreferenceIconStyle
+    val iconStyle: PreferenceIconStyle,
+    val titleMaxLine: Int = 1,
+    val descMaxLine: Int = 2,
 )
 
 //<editor-fold desc="整个外框的样式">
@@ -36,6 +43,7 @@ val defaultPreferenceBoxStyle
     get() = PreferenceBoxStyle(
         color = MaterialTheme.colorScheme.surface,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp)
     )
 
 //</editor-fold>
