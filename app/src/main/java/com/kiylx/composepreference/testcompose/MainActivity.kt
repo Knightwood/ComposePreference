@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var selected by remember {
-                mutableStateOf(0)
+                mutableStateOf(1)
             }
             val isD = isDarkFlow.collectAsState()
             CompositionLocalProvider(LocalTheme provides isD.value) {

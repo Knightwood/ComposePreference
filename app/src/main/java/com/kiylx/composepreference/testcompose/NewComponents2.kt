@@ -28,6 +28,7 @@ import com.kiylx.compose.preference.component.auto.PreferenceSwitchWithContainer
 import com.kiylx.compose.preference.component.auto.PreferencesCautionCard
 import com.kiylx.compose.preference.component.auto.SetTheme
 import com.kiylx.compose.preference.component.cross.PreferenceItem
+import com.kiylx.compose.preference.component.cross.PreferencesHintCard
 import com.kiylx.compose.preference.theme.PreferenceDimen
 import com.kiylx.compose.preference.theme.PreferenceIconStyle
 import com.kiylx.compose.preference.theme.Preferences
@@ -80,6 +81,11 @@ fun NewComponents2(ctx: Context) {
         ) {
 
             Column {
+                PreferencesHintCard(
+                    title = "调整您的设置信息",
+                    desc = "账户、翻译、帮助信息等",
+                )
+
                 PreferenceSwitch(
                     defaultValue = false,
                     title = "使用新特性",

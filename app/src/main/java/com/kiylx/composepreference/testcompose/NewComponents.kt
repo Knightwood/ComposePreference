@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LocalDining
@@ -34,10 +32,8 @@ import com.kiylx.compose.preference.component.cross.PreferenceSwitch
 import com.kiylx.compose.preference.component.cross.PreferenceSwitchWithContainer
 import com.kiylx.compose.preference.component.cross.PreferenceWithDividerSwitch
 import com.kiylx.compose.preference.component.cross.PreferencesCautionCard
-import com.kiylx.compose.preference.theme.PreferenceDimen
 import com.kiylx.compose.preference.theme.PreferenceIconStyle
 import com.kiylx.compose.preference.theme.Preferences
-import com.kiylx.compose.preference.theme.defaultPreferenceBoxStyle
 
 @Composable
 fun NewComponents() {

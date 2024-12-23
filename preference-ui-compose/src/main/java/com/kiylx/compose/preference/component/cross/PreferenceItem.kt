@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,6 +129,37 @@ fun PreferencesCautionCard(
     Preferences.CopyTheme(
         dimenProvider = { copy(boxMarginValues = boxMarginValues) },
         boxStyleProvider = { copy(color = color, shape = shape) }
+    ) {
+        SamplePreference(
+            modifier = modifier,
+            title = title, icon = icon, desc = desc,
+            enabled = enabled, onClick = onClick,
+            end = end,
+        )
+    }
+
+}
+
+@Composable
+fun PreferencesHintCard(
+    modifier: Modifier = Modifier,
+    boxMarginValues: PaddingValues = PaddingValues(
+        start = 16.dp,
+        end = 16.dp
+    ),
+    backgroundColor: Color = MaterialTheme.colorScheme.secondary,
+    contentColor: Color = contentColorFor(backgroundColor),
+    shape: Shape = RoundedCornerShape(28.dp),
+    title: String,
+    icon: Any? = null,
+    desc: String? = null,
+    enabled: Boolean = true,
+    end: @Composable (BoxScope.() -> Unit)? = null,
+    onClick: () -> Unit = {},
+) {
+    Preferences.CopyTheme(
+        dimenProvider = { copy(boxMarginValues = boxMarginValues) },
+        boxStyleProvider = { copy(color = backgroundColor, contentColor = contentColor, shape = shape) }
     ) {
         SamplePreference(
             modifier = modifier,
