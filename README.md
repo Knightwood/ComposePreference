@@ -1,89 +1,161 @@
-# Preference component of the Material 3 design
+# preference 工具库
 
-like androidx preference library, it can auto save and show preference
+包含了sharedPreference、mmkv、datastore的读写工具、委托实现，以及界面组件，以及节点依赖功能。
 
-also we have multiplatform version：[link](https://github.com/Knightwood/ComposePreferenceMultiplatform)
+其中，ui组件 与 AndroidX preference库一样，它可以自动保存并显示首选项
 
-**[中文](README_cn.md)**
+当然，也有跨平台版：[链接](https://github.com/Knightwood/ComposePreferenceMultiplatform)
 
-## version [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference)
+**[英文](README_en.md)**
+
+## 版本
+** [![](https://jitpack.io/v/Knightwood/ComposePreference.svg)](https://jitpack.io/#Knightwood/ComposePreference) **
 
 ```kotlin
 dependencies {
-    val version = "1.2.2"
-    //Required
+    val version = "1.2.7"
+    //必选
     implementation("com.github.Knightwood.ComposePreference:preference-data-core:$version")
-    //If you don't need an interface, you can leave this dependency unintroduced
+    //如不需要界面，可以不引入此依赖
     implementation("com.github.Knightwood.ComposePreference:preference-ui-compose:$version")
 
-    //Preference value reading and writing tools， Choose one of the three, or implement your own
+    //偏好值读写工具，下面三选一，或者自己实现读写接口
     implementation("com.github.Knightwood.ComposePreference:preference-util:$version")
     implementation("com.github.Knightwood.ComposePreference:datastore-util:$version")
     implementation("com.github.Knightwood.ComposePreference:preference-mmkv-util:$version")
 }
-//Note: If you use mmkv and sharedpreference, don't forget to introduce the corresponding mmkv, sharedpreference dependencies, and initialize mmkv in your own project.
+//注：如果使用mmkv,sharedpreference,你自己的工程不要忘记引入相应mmkv,sharedpreference依赖，以及初始化mmkv等。
 ```
-* Some breaking changes
- * The method name "getReadWriteTool" has been changed to "getSingleDataEditor"
- * The interface name "IPreferenceReadWrite" has been changed to "IPreferenceEditor"
 
-**!!! The following documents are translated by Microsoft Translator**
+* 一些破坏性改动
+    * ui组件重写
+    * 方法名 getReadWriteTool 改为 getSingleDataEditor
+    * 接口名 IPreferenceReadWrite 改为 IPreferenceEditor
 
-## Characteristic:
+特性：
 
-Simple to use, interface and preference value read and write separation
+使用简单，界面和偏好值读写分离
 
-Preference reading and writing processes can be customized
+支持切换多种存储/读取方式
 
-Provides the UI component to enable the status node dependency function
+可自定义偏好值读写过程工具
 
-Preference reading and writing tools can be used separately from the interface, and a unified
-writing and reading method is provided
+提供界面组件启用状态节点依赖功能
 
-## Preview
+可脱离界面，单独使用偏好值读写工具，并提供了统一写入和读取（使用flow观察值的变化）方法
+
+也可以仅使用ui界面
+
+## 介绍图
 
 |                                               |                                               |                                                                                    |
 |:---------------------------------------------:|:---------------------------------------------:|:----------------------------------------------------------------------------------:|
 | <img src="README.assets/1.jpg" width="210" /> | <img src="README.assets/3.jpg" width="210" /> | <img src="README.assets/Screenrecorder-2023-11-03-20-20-52-372.gif" width="210" /> |
 | <img src="README.assets/2.jpg" width="210" /> | <img src="README.assets/6.jpg" width="210" /> |                   <img src="README.assets/5.jpg" width="210" />                    |
 
-# Usage
+## 支持的存储偏好值的工具
 
-## supported tools for storing preference values
-
-There are three tools available to store preference values
+内置三种可用的存储偏好值的工具
 
 1. DataStore
 2. MMKV
 3. SharedPreference
 
-However, note that SharedPreference does not support storing double value, and MMKV does not support
-set <string>types, and they support different ones.
-SataStore does not support synchronous reads
+但是注意，SharedPreference不支持存储double，mmkv不支持set<string>类型，他们所支持的有所差异。
+DataStore则不支持同步的方式读取。
 
-You can also inherit PreferenceHolder and IPreferenceEditor to implement additional stored
-procedures, such as storing to a file, database, etc.
+还可以继承`PreferenceHolder`和`IPreferenceEditor`实现额外的存储过程，例如存储到文件、数据库等。
 
-* if you only need preference editor,don not need ui component，could dependence `com.github.Knightwood.ComposePreference:preference-data-core`
-and one editor。
+* 对于仅需要preference读写工具，而不需要ui界面的，可以仅引入`com.github.Knightwood.ComposePreference:preference-data-core`
+  和任意一种读写工具。
 
-* if you only need ui component，don not need preference editor，could dependence `com.github.Knightwood.ComposePreference:preference-ui-compose`
-and `com.github.Knightwood.ComposePreference:preference-data-core`
+* 对于仅需要ui界面，可以仅引入`com.github.Knightwood.ComposePreference:preference-ui-compose`
+  和`com.github.Knightwood.ComposePreference:preference-data-core`。
+
+## 委托工具类
+
+使用委托工具，可以像读写普通变量一样读写偏好值
+
+### mmkv 委托工具
+
+```kotlin
+ class MMKVHelper private constructor(val mmkv: MMKV) {
+    //使用委托的方式生成一个委托对象，除了[parcelableM]方法，初始值可选
+    var name by mv.strM("tom", "初始值")
+}
+
+//1. 获取单例
+val helper = MMKVHelper.getInstance(prefs)
+//2. 使用赋值将值存入
+helper.name = "Tom"
+//3. 直接使用即读取值，如果没有值写入，读取出来的会是默认值。
+log.d(TAG, helper.name)
+
+```
+
+### SharedPreference 委托工具
+
+```kotlin
+//注意，PrefsHelper 是单例。
+class PrefsHelper private constructor(val prefs: SharedPreferences) {
+    var isFinish by prefs.boolean("isFinish")
+    var name by prefs.string("name")
+    var age by prefs.int("age")
+    //***其余无关代码省略
+}
+
+//1. 获取单例
+val helper = PrefsHelper.getInstance(prefs)
+//2. 使用赋值将值存入
+helper.name = "Tom"
+//3. 直接使用即读取值，如果没有值写入，读取出来的会是默认值。
+log.d(TAG, helper.name)
+```
+
+
+
+### DataStore 委托工具
+
+```kotlin
+//1. 需要有一个协程作用域
+val scope = CoroutineScope(Dispatchers.IO)
+//2. 你可以将属性委托给datastore，变量名就是key的名称
+var username by dataStore.getting(11, scope)
+
+//3. 对数据读写就可以存储到datastore
+MaterialTheme {
+    //可以在compose中观察数据变化
+    val va = dataStore.asDataFlow<Int>("username").collectAsState(initial = 11)
+    Column {
+        Button(onClick = {
+            val randoms = Random.nextInt(0, 11)
+            //赋值就会将数据写入datastore
+            username = randoms
+            //访问变量就可以得到刚刚写入的数据
+            println(username)
+        }) {
+            Text("Random")
+        }
+        Text("value:${va.value}")
+    }
+}
+```
 
 ## ui
-The UI section is divided into two sets of APIs:
-1. Underneath the Cross package is a pure UI interface, which does not automatically read and store preference values, and has no node dependency functions.
-2. Below the auto package is an interface that can automatically read and store preference values, and supports node dependency functions.
 
-The preference component provides the ability to customize the theme to modify spacing, colors, fonts, borders, etc.
-This is convenient for unifying the styling of components, without having to pass in style-related parameters for each method when writing the interface.
+ui 部分分为了两组api：
+1. cross包下面是纯粹的ui界面，不会自动读取和存储偏好值，也没有节点依赖功能。
+2. auto包下面则是可以自动读取和存储偏好值的界面，并且支持节点依赖功能。
 
-### components usage
-#### without auto read and write,use preference components only
+preference组件提供了自定义主题的功能，以修改间距，颜色，字体，边框等。
+这对于统一组件的样式比较方便，不用在写界面时每个方法都传入一遍样式相关的参数。
 
-These components and methods are all under the 'com.kiylx.compose.preference.component.cross' package
+### ui的使用
+#### 单纯的ui组件
 
-Use 'com.kiylx.compose.preference.theme.Preferences.SetTheme' to set and modify the theme.
+这些组件和方法都在`com.kiylx.compose.preference.component.cross`包下
+
+使用`com.kiylx.compose.preference.theme.Preferences.SetTheme`设置和修改主题。
 
 ```kotlin
 
@@ -136,10 +208,10 @@ fun SettingsScreen() {
 }
 ```
 
-#### Automatically stores read preferences with node-dependent UI components
+#### 自动存储读取偏好值，带节点依赖的ui组件
 
-* To build a preference interface that automatically stores preferences, you need to use the 'com.kiylx.compose.preference.component.auto.SetTheme' function
-  And pass in one of the three tools supported above (of course, you can also inherit the interface yourself to customize additional storage methods, such as databases and files)
+* 要构建一个自动存储偏好值的preference界面，需要使用`com.kiylx.compose.preference.component.auto.SetTheme`函数
+  且传入上面支持的三种工具之一（当然你也可以自己继承接口定制额外的存储方式，例如数据库和文件）
 
 ```
 @Composable
@@ -257,9 +329,9 @@ fun NewComponents2(ctx: Context) {
 }
 ```
 
-### Available components：
+### 可用的组件：
 
-**CARD**
+**大卡片**
 
 * PreferencesCautionCard
 * PreferencesHintCard
@@ -275,7 +347,7 @@ fun NewComponents2(ctx: Context) {
 * PreferenceSwitchWithContainer
 * PreferenceSwitchWithDivider
 
-**Collapse Item**
+**可折叠其他组件的box**
 
 * PreferenceCollapseItem
 
@@ -291,40 +363,33 @@ fun NewComponents2(ctx: Context) {
 
 * PreferenceSlider
 
-## Dependencies and graying
+## 依赖和置灰
 
-* enable usage: When the preference component is set to false, specify the dependenceKey as
-  DependenceNode.rootName, and the component can be grayed out to prevent the corresponding event.
+* enable使用: preference组件传入enable为false的同时，指定dependenceKey为DependenceNode.rootName，可以置灰组件，使之无法相应事件。
 
-* Use of dependencies: e.g. there are three switches: a, b, c
+* 依赖的使用：例如：有三个开关：a,b,c
 
-When switch A is toggled to off, b and c are grayed out.
+当开关a切换为off时，将b和c置灰。
 
-Principle: We use a MutableState to store the enable state, b and c both observe this state, when
-the switch A is off, modify this state, b and c will be reorganized because of the observation of
-this state, so as to achieve the purpose.
+原理：我们使用一个mutableState保存enable状态，b和c都观察这个状态，当开关a为off时修改这个状态，b和c就会因为观察这个状态而重组，从而达到目的。
 
-Each preference composable function will generate such a state according to its key name, and save
-the state in the holder above, so there are two ways to disable b and c when switch A is off:
+每一个preference可组合函数，都会根据自身的keyName生成一个这样的状态，并将状态保存在上面的holder中，所以要达到开关a为off时禁用b和c，有两种方式：
 
-1. Register a state node (e.g. state node 1), specify the dependence keys of b and c as the name of
-   node 1, and then modify the state of node 1
-2. Specify the dependence key of b and c as the key name of a, and then get the node status of a and
-   modify it, but note that the switch a needs to specify the dependence key as something else,
-   otherwise a will also be affected
+1. 自己注册一个状态节点（例如为node1），然后将b，c的dependenceKey指定为node1的name，然后修改这个node1状态
+2. 将b，c的dependenceKey指定为a的keyName，然后获取a的节点状态并进行修改，但是要注意，开关a需要指定dependenceKey为其他，否则a也会受到影响
 
-Example of the first way
+第一种方式例子：
 
 ```kotlin
 PreferencesScope(holder = holder) {
 
-    val node = holder.registerDependence("customNode", true)// 1 create a new state node
+    val node = holder.registerDependence("customNode", true)// 1
 
-//Preference Component
+//PreferenceItem可组合函数
     PreferenceSwitchWithDivider(
         keyName = "bol3",
         title = "title",
-        dependenceKey = "customNode", // 2 Indicates that the state depends on the 'node' above
+        dependenceKey = "customNode", // 2
         description = "description",
         icon = Icons.Filled.CenterFocusWeak
     )
@@ -334,32 +399,30 @@ PreferencesScope(holder = holder) {
         description = "description",
         icon = Icons.Filled.CenterFocusWeak
     ) {
-        node.enableState.value = it //3 Modify the node state
+        node.enableState.value = it //3 修改节点状态
     }
 }
 
 ```
 
-1. Code 1 creates a custom state node with the enable state to true and names the node "custom Node"
-2. Code 2 indicates that the enable state of the Preference Item composable function depends on the
-   state of the node named "custom Node" created in 1
-3. Code 3 modifies the enable state of "custom node" according to the switch, and the composable
-   functions that depend on this node will be affected
+1. 代码1处创建一个了一个自定义状态节点，enable状态为true，并将节点命名为"customNode"
+2. 代码2处表示这个PreferenceItem可组合函数的enable状态依赖于1处创建的名为"customNode"的节点状态
+3. 代码3处根据switch修改了"customNode"的enable状态，此时，依赖此node的可组合函数都会收到影响
 
-Example of the second way
+第二种方式例子
 
 ```kotlin
-PreferencesScope(holder = holder) {
+Preferences.SetTheme(holder = holder) {
     //switch A
     PreferenceSwitch(
         keyName = "bol",
         title = "title",
-        dependenceKey = DependenceNode.rootName,//Specify the dependency as the root node so that it is not affected
+        dependenceKey = DependenceNode.rootName,//指定依赖为根结点，这样自身就不会受到影响
         description = "description"
     ) { state ->
-        //Here the current enable state is obtained and modified,
-        //Dependencies on this node will change the display state,
-        //If you don't currently specify a dependency, you'll also be affected
+        //这里获取并修改了当前的enable状态，
+        //依赖这个节点的会改变显示状态，
+        //如果当前没有指定依赖，自身也会受到影响
         holder.getDependence("bol")?.let {
             it.enableState.value = state
         }
@@ -368,44 +431,39 @@ PreferencesScope(holder = holder) {
     PreferenceSwitch(
         keyName = "bol2",
         title = "title",
-        dependenceKey = "bol", //A state that depends on the status where the key is "bol"
+        dependenceKey = "bol", //依赖key为bol的状态
         description = "description",
         icon = Icons.Filled.CenterFocusWeak
     )
 }
 ```
 
-In this example, there is no create a new state node, but it will achieve the effect.
+这个例子中没有new一个node，却能达到效果。
 
-This is because the preference composable function will generate a node based on its own keyName and
-enable parameters (switch A passes keyName is "bol", enable defaults to true) and saves it. The
-status node can be obtained by calling holder.getDependence(key name).
+这是因为preference可组合函数会根据自身的keyName和enable参数（ switch A 传入的keyName为"bol"
+，enable默认为true），生成一个node保存起来。 可以通过调用holder.getDependence(key name)得到状态节点。
 
-switch B depends on the enabled state registered by switch A, when A obtains the node state through
-the getDependence method and makes modifications,
-switch B will be reassembled and grayed out.
+switch B 依赖于switch A 注册的enable状态，当A通过getDependence方法获取到节点状态并做出修改时，
+switch B 就会重组从而置灰。
 
-However, we found that switch A was not grayed out because of the modified state, because switch A
-specified its dependence as a default built-in state node, so switch A would be affected by the
-DependenceNode.rootName node
-However, it is not affected by the state of its own node.
-If you want switch A to be affected by its own node status, you only need to leave switch A null
-without specifying the dependenceKey.
+但我们发现，switch A却没有因为修改状态被置灰，这是因为 switch A 把自己的dependence指定为了一个默认的内置状态节点，所以switch
+A会受到DependenceNode.rootName节点影响
+却不会受到自身节点状态的影响。
+若希望switch A收到自身节点状态的影响，只需要switch A不指定dependenceKey，保持它为null即可。
 
 
 
+## 直接使用偏好值读写工具
 
-## without ui component,use the preference reading and writing tool directly
+对于datastore提供了prefStoreHolder.getSingleDataEditor()方式
+对于mmkv和SharedPreference,分别提供了两种工具，一种是prefStoreHolder.getSingleDataEditor()方式，一种是委托的方式
 
-datastore can use `prefStoreHolder.getSingleDataEditor()`
-mmkv and SharedPreference,Two tools are provided separately，one is `prefStoreHolder.getSingleDataEditor()`，another one is Delegate tool
+### prefStoreHolder.getSingleDataEditor()方式
 
-### prefStoreHolder.getSingleDataEditor()
-
-MMKV, SharedPreference, and DataStore all support this method，This is also the read-write tool required by the Preference component
+MMKV,SharedPreference,DataStore均支持此种方式，这也是Preference组件所需要的读写工具
 
 ```
-//1，Preference read and write tool
+//1，获取读写工具
 //MMKV
  val prefStoreHolder = MMKVPreferenceHolder.instance(MMKV.defaultMMKV())
 
@@ -420,85 +478,18 @@ val prefStoreHolder = DataStorePreferenceHolder.instance(
                         ctx = AppCtx.instance
                     )
 
-//2，get some one preference value
+//2，获取某个偏好值读写器
 val pref =prefStoreHolder.getSingleDataEditor(keyName = keyName, defaultValue = "")
 
-//3，read preference value
+//3，获取偏好值
+
 pref.flow().collect { s ->
-	//flow
+	//flow收集到偏好值的变更
 }
-or compose state
+或者
 val currentValue = pref.flow().collectAsState(defaultValue)
 
-
-//4， write data to preference
+//4， 写入偏好值
 pref.write("")
 ```
 
-### about mmkv and SharedPreference Delegate tool
-
-With the delegate tool, you can read and write preference values in the same way as you would a normal variable
-
-#### mmkv Delegate tool
-
-```kotlin
- class MMKVHelper private constructor(val mmkv: MMKV) {
-    //Use the delegate method to generate a delegate object, except for the [parcelableM] method, the initial value is optional
-    var name by mv.strM("tom", "初始值")
-   //*****other codes
-}
-
-//1. Get singletons
-val helper = MMKVHelper.getInstance(prefs)
-//2. Use assignments to store values
-helper.name = "Tom"
-//3. read value ,If the value is not written, the default value will be read.
-log.d(TAG, helper.name)
-
-```
-
-#### SharedPreference Delegate tool
-
-```kotlin
-//note，PrefsHelper is a singletons。
-class PrefsHelper private constructor(val prefs: SharedPreferences) {
-    var isFinish by prefs.boolean("isFinish")
-    var name by prefs.string("name")
-    var age by prefs.int("age")
-    //***other codes
-}
-
-//1. Get singletons
-val helper = PrefsHelper.getInstance(prefs)
-//2. Use assignments to store values
-helper.name = "Tom"
-//3. read value ,If the value is not written, the default value will be read.
-log.d(TAG, helper.name)
-```
-
-#### DataStore 委托工具
-
-```kotlin
-//1. 需要有一个协程作用域
-val scope = CoroutineScope(Dispatchers.IO)
-//2. 你可以将属性委托给datastore，变量名就是key的名称
-var username by dataStore.getting(11, scope)
-
-//3. 对数据读写就可以存储到datastore
-MaterialTheme {
-    //可以在compose中观察数据变化
-    val va = dataStore.asDataFlow<Int>("username").collectAsState(initial = 11)
-    Column {
-        Button(onClick = {
-            val randoms = Random.nextInt(0, 11)
-            //赋值就会将数据写入datastore
-            username = randoms
-            //访问变量就可以得到刚刚写入的数据
-            println(username)
-        }) {
-            Text("Random")
-        }
-        Text("value:${va.value}")
-    }
-}
-```
