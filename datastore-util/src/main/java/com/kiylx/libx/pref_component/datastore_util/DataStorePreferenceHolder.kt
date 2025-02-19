@@ -17,44 +17,50 @@
 
 package com.kiylx.libx.pref_component.datastore_util;
 
-import android.annotation.SuppressLint
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.kiylx.libx.pref_component.core.IPreferenceEditor
 import com.kiylx.libx.pref_component.core.PreferenceHolder
+
+
 
 /**
  * 向界面提供、管理PreferenceProvider
+ * ```
+ * val Context.store by preferencesDataStore(name = "test")
+ *
+ * fun example(context: Context){
+ *     val holder = DataStorePreferenceHolder.instance(context.store)
+ * }
+ *
+ * ```
  */
 class DataStorePreferenceHolder internal constructor(
-    dataStoreName: String,
-    private val ctx: Context,
+    private val dataStore: DataStore<Preferences>,
 ) : PreferenceHolder() {
-    private val Context.myDataStore by preferencesDataStore(dataStoreName)
-    fun dataStore() = ctx.myDataStore
 
     override fun <T : Any> getSingleDataEditor(
         keyName: String,
         defaultValue: T,
     ): DataStoreEditor<T> {
         return (hashMap[keyName] as? DataStoreEditor<T>) ?: let {
-            val tmp = DataStoreEditor(keyName, defaultValue, dataStore())
+            val tmp = DataStoreEditor(keyName, defaultValue, dataStore)
             hashMap[keyName] = tmp
             tmp
         }
     }
 
     companion object {
-        @SuppressLint("StaticFieldLeak")
+
         @Volatile
         var ps: DataStorePreferenceHolder? = null
 
         fun instance(
-            dataStoreName: String,
-            ctx: Context
+            dataStore: DataStore<Preferences>
         ): DataStorePreferenceHolder {
             return ps ?: synchronized(this) {
-                ps ?: DataStorePreferenceHolder(dataStoreName, ctx.applicationContext).also {
+                ps ?: DataStorePreferenceHolder(dataStore).also {
                     ps = it
                 }
             }

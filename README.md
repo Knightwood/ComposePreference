@@ -475,3 +475,30 @@ helper.name = "Tom"
 //3. read value ,If the value is not written, the default value will be read.
 log.d(TAG, helper.name)
 ```
+
+#### DataStore 委托工具
+
+```kotlin
+//1. 需要有一个协程作用域
+val scope = CoroutineScope(Dispatchers.IO)
+//2. 你可以将属性委托给datastore，变量名就是key的名称
+var username by dataStore.getting(11, scope)
+
+//3. 对数据读写就可以存储到datastore
+MaterialTheme {
+    //可以在compose中观察数据变化
+    val va = dataStore.asDataFlow<Int>("username").collectAsState(initial = 11)
+    Column {
+        Button(onClick = {
+            val randoms = Random.nextInt(0, 11)
+            //赋值就会将数据写入datastore
+            username = randoms
+            //访问变量就可以得到刚刚写入的数据
+            println(username)
+        }) {
+            Text("Random")
+        }
+        Text("value:${va.value}")
+    }
+}
+```
