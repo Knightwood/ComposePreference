@@ -21,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.datastore.dataStoreFile
 import com.kiylx.compose.preference.component.auto.PreferenceCollapseItem
 import com.kiylx.compose.preference.component.auto.PreferenceItem
 import com.kiylx.compose.preference.component.auto.PreferenceSwitch
@@ -36,16 +37,15 @@ import com.kiylx.compose.preference.theme.defaultPreferenceBoxStyle
 import com.kiylx.composepreference.AppCtx
 import com.kiylx.libx.pref_component.core.DependenceNode
 import com.kiylx.libx.pref_component.datastore_util.DataStorePreferenceHolder
+import com.kiylx.libx.pref_component.datastore_util.getDataStore
 import kotlinx.coroutines.launch
 
 @Composable
 fun NewComponents2(ctx: Context) {
     //1. 使用dataStore存储偏好值
     val holder = remember {
-        DataStorePreferenceHolder.instance(
-            dataStoreName = "test",
-            ctx = AppCtx.instance
-        )
+        val ds = getDataStore(ctx, "test.pb")
+        DataStorePreferenceHolder.instance(ds)
     }
 
     //2. 使用mmkv存储偏好值
