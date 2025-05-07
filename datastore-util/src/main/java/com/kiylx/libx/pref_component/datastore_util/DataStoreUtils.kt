@@ -17,15 +17,11 @@
 
 package com.kiylx.libx.pref_component.datastore_util
 
-import android.app.Application
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.reflect.KClass
 
 /**
  * 批量添加或编辑，参数使用 key to value 生成[Preferences.Pair]
@@ -50,9 +46,51 @@ inline fun <reified T> DataStore<Preferences>.asDataFlow(
 inline fun <reified T> DataStore<Preferences>.asDataFlow(
     key: String,
 ): Flow<T?> {
-    val key1 = DataStoreProvider.getKey<T?>(key)
+    val key1 = getKey<T?>(key)
     return this.data.map { preferences ->
         // No type safety.
         preferences[key1]
     }
+}
+
+fun <T> DataStore<Preferences>.getKey(keyName: String, cls: KClass<*>): Preferences.Key<T> {
+    return (when (cls) {
+        Int::class -> {
+            intPreferencesKey(keyName)
+        }
+
+        Boolean::class -> {
+            booleanPreferencesKey(keyName)
+        }
+
+        String::class -> {
+            stringPreferencesKey(keyName)
+        }
+
+        Double::class -> {
+            doublePreferencesKey(keyName)
+        }
+
+        Float::class -> {
+            floatPreferencesKey(keyName)
+        }
+
+        Long::class -> {
+            longPreferencesKey(keyName)
+        }
+
+        Set::class -> {
+            stringSetPreferencesKey(keyName)
+        }
+
+        else -> {
+            throw IllegalArgumentException("not support")
+
+        }
+    }) as Preferences.Key<T>
+
+}
+
+inline fun <reified T> DataStore<Preferences>.getKey(keyName: String): Preferences.Key<T> {
+    return getKey(keyName, T::class)
 }
